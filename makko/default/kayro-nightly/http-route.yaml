@@ -1,0 +1,15 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: kayro-nightly
+spec:
+  parentRefs:
+    - name: external
+      namespace: gateway
+      sectionName: https
+  hostnames:
+    - "yuri.senk0.com"
+  rules:
+    - backendRefs:
+        - name: kayro-nightly
+          port: 8080
