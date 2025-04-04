@@ -32,7 +32,7 @@ spec:
             memory: 6Gi
           requests:
             cpu: 100m
-            memory: 2Gi
+            memory: 0.5Gi
       - env:
         - name: DISCORD_TOKEN
           valueFrom:
