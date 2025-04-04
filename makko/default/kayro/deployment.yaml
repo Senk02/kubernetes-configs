@@ -31,8 +31,8 @@ spec:
             ephemeral-storage: 4Gi
             memory: 6Gi
           requests:
-            cpu: 2Gi
-            memory: 256Mi
+            cpu: 100m
+            memory: 2Gi
       - env:
         - name: DISCORD_TOKEN
           valueFrom:
