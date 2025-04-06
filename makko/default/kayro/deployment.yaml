@@ -29,10 +29,10 @@ spec:
           limits:
             cpu: "2"
             ephemeral-storage: 4Gi
-            memory: 6Gi
+            memory: 8Gi
           requests:
             cpu: 100m
-            memory: 0.5Gi
+            memory: 2Gi
       - env:
         - name: DISCORD_TOKEN
           valueFrom:
