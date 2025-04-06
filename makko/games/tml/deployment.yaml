@@ -17,8 +17,8 @@ spec:
       labels:
         app: tml
     spec:
-      nodeSelector:
-        kubernetes.io/hostname: k8sw4
+    #  nodeSelector:
+    #    kubernetes.io/hostname: k8sw4
       containers:
       - name: tml
         image: hexlo/terraria-tmodloader-server:latest
