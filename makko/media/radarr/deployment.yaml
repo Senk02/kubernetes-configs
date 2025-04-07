@@ -17,6 +17,8 @@ spec:
       labels:
         app: radarr
     spec:
+      nodeSelector:
+        kubernetes.io/hostname: talos-nht-60v
       containers:
       - image: lscr.io/linuxserver/radarr:latest
         name: radarr
@@ -38,14 +40,12 @@ spec:
         - containerPort: 7878
         resources:
           limits:
-            cpu: 2
+            cpu: "2"
             memory: 2048Mi
             ephemeral-storage: 64Mi
           requests:
             cpu: 150m
             memory: 256Mi
-      nodeSelector: 
-        kubernetes.io/hostname: k8sw4
       volumes:
       - name: media
         persistentVolumeClaim:
@@ -53,7 +53,7 @@ spec:
           readOnly: false
       - name: data
         hostPath:
-          path: /kubernetes/media/data
+          path: /var/mnt/transmission-cache
           type: DirectoryOrCreate
       - name: config
         persistentVolumeClaim:

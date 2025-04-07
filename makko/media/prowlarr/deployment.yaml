@@ -17,8 +17,6 @@ spec:
       labels:
         app: prowlarr
     spec:
-      nodeSelector:
-        kubernetes.io/hostname: k8sw4
       containers:
       - image: lscr.io/linuxserver/prowlarr:latest
         name: prowlarr

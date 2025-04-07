@@ -17,6 +17,8 @@ spec:
       labels:
         app: sonarr
     spec:
+      nodeSelector:
+        kubernetes.io/hostname: talos-nht-60v
       containers:
       - image: lscr.io/linuxserver/sonarr:latest
         name: sonarr
@@ -38,15 +40,13 @@ spec:
         - containerPort: 8989
         resources:
           limits:
-            cpu: 4
+            cpu: "4"
             memory: 2048Mi
             ephemeral-storage: 2Gi
           requests:
             cpu: 100m 
             memory: 512Mi
             ephemeral-storage: 32Mi
-      nodeSelector:
-        kubernetes.io/hostname: k8sw4
       volumes:
       - name: media
         persistentVolumeClaim:
@@ -58,7 +58,7 @@ spec:
           readOnly: false
       - name: data
         hostPath:
-          path: /kubernetes/media/data
+          path: /var/mnt/transmission-cache
           type: DirectoryOrCreate
 ---
 kind: PersistentVolumeClaim
