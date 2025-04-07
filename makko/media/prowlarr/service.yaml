@@ -9,5 +9,4 @@ spec:
   - protocol: TCP
     port: 9696
     targetPort: 9696
-    nodePort: 31003
-  type: NodePort
+  type: ClusterIP
