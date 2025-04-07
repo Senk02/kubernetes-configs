@@ -9,5 +9,4 @@ spec:
   - protocol: TCP
     port: 5055
     targetPort: 5055
-    nodePort: 31008
-  type: NodePort
+  type: ClusterIP
