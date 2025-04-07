@@ -11,5 +11,5 @@ spec:
     - "prowlarr.senk0.com"
   rules:
     - backendRefs:
-        - name: jellyfin
+        - name: prowlarr
           port: 9696
