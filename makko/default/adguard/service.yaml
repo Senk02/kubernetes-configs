@@ -35,4 +35,4 @@ spec:
     port: 443
     targetPort: 443
   type: LoadBalancer
-  loadBalancerIP: 10.0.1.53
+  loadBalancerIP: 10.0.1.133
