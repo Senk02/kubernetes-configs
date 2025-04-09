@@ -16,7 +16,6 @@ spec:
     metadata:
       labels:
         app: wg-easy
-        pod-security.kubernetes.io/enforce: privileged
     spec:
       securityContext:
         sysctls:
