@@ -37,7 +37,7 @@ spec:
         - name: WG_DEFAULT_DNS
           value: "10.0.1.133"
         - name: PASSWORD_HASH
-          value: "$2a$12$rQZ4dgbT7v.XSKBuvYbR9OcRrZcrnsSSc7GL0GuWDQlvlUmDyqNBK"
+          value: "$2a$12$.PczYyQHLAYsQFgQVlFyX.RNQd6USQu1THLoDdBoNW2q5EzWoHETy" # literally the most basic password you know, tina. If your dumbass forgets, you can always do "wgpw your-password" in the execed container
         - name: UI_TRAFFIC_STATS
           value: "true"
         - name: UI_CHART_TYPE
