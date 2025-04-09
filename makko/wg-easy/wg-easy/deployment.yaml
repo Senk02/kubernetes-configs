@@ -30,7 +30,10 @@ spec:
         name: wg-easy
         securityContext:
           capabilities:
-            add: ["NET_ADMIN","SYS_MODULE"] 
+            add: ["NET_ADMIN","SYS_MODULE"]
+          runAsUser: 0
+          runAsGroup: 0
+          fsGroup: 0
         env:
         - name: WG_HOST
           value: "dyn.senk0.com"
