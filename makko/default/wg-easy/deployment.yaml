@@ -16,6 +16,7 @@ spec:
     metadata:
       labels:
         app: wg-easy
+        pod-security.kubernetes.io/enforce: privileged
     spec:
       securityContext:
         sysctls:
@@ -35,7 +36,7 @@ spec:
         - name: WG_HOST
           value: "dyn.senk0.com"
         - name: WG_DEFAULT_DNS
-          value: "10.0.1.53"
+          value: "10.0.1.133"
         - name: PASSWORD_HASH
           value: "$2a$12$rQZ4dgbT7v.XSKBuvYbR9OcRrZcrnsSSc7GL0GuWDQlvlUmDyqNBK"
         - name: UI_TRAFFIC_STATS
@@ -54,7 +55,7 @@ spec:
           protocol: TCP
         resources:
           limits:
-            cpu: 1
+            cpu: "1"
             memory: 64Mi
             ephemeral-storage: 64Mi
           requests:
