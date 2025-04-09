@@ -6,7 +6,7 @@ metadata:
     app: wg-easy
 spec:
   revisionHistoryLimit: 1
-  replicas: 0
+  replicas: 1
   selector:
     matchLabels:
       app: wg-easy
