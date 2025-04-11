@@ -5,6 +5,6 @@
   ],
   ignorePaths: [],
   kubernetes: {
-    fileMatch: ["^kubernetes/.+\\.ya?ml$"],
+    fileMatch: ["^makko/.+\\.ya?ml$"],
   },
 }
