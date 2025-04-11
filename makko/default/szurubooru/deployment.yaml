@@ -24,6 +24,15 @@ spec:
         - name: data
           mountPath: /data
           readOnly: true
+        resources:
+          limits:
+            cpu: 100m
+            memory: 256Mi
+            ephemeral-storage: 64Mi
+          requests:
+            cpu: 20m
+            memory: 64Mi
+            ephemeral-storage: 16Mi
       - name: server
         image: szurubooru/server:latest
         env:
@@ -41,6 +50,15 @@ spec:
           value: "5432"
         - name: LOG_SQL
           value: "0"
+        resources:
+          limits:
+            cpu: 100m
+            memory: 768Mi
+            ephemeral-storage: 128Mi
+          requests:
+            cpu: 20m
+            memory: 64Mi
+            ephemeral-storage: 16Mi
         volumeMounts:
         - name: data
           mountPath: /data
@@ -61,6 +79,15 @@ spec:
           mountPath: /var/lib/postgresql/data
         ports:
         - containerPort: 5432
+        resources:
+          limits:
+            cpu: 100m
+            memory: 256Mi
+            ephemeral-storage: 64Mi
+          requests:
+            cpu: 10m
+            memory: 64Mi
+            ephemeral-storage: 16Mi
       volumes:
       - name: data
         persistentVolumeClaim:

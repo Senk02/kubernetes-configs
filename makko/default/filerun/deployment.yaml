@@ -22,11 +22,17 @@ spec:
         name: mariadb
         env:
         - name: MYSQL_ROOT_PASSWORD
-          value: "twv7TNY8HMRWVY78N3CFR78y"
+          valueFrom:
+            secretKeyRef:
+              name: filerun-root-password
+              key: password
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: filerun-password
+              key: password
         - name: MYSQL_USER
           value: "filerun"
-        - name: MYSQL_PASSWORD
-          value: "686766fy3f948yh95iuhkjht394uht49guhn"
         - name: MYSQL_DATABASE
           value: "filerun"
         volumeMounts:
@@ -53,8 +59,11 @@ spec:
           value: "filerun"
         - name: FR_DB_USER
           value: "filerun"
-        - name: FR_DB_PASS
-          value: "686766fy3f948yh95iuhkjht394uht49guhn"
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: filerun-password
+              key: password
         - name: APACHE_RUN_USER
           value: "www-data"
         - name: APACHE_RUN_USER_ID

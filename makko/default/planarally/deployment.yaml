@@ -18,7 +18,7 @@ spec:
         app: planarally
     spec:
       containers:
-      - image: kruptein/planarally
+      - image: kruptein/planarally:v2025.1.1
         name: planarally
         volumeMounts:
         - name: assets
@@ -29,7 +29,7 @@ spec:
         - containerPort: 8000
         resources:
           limits:
-            cpu: 1
+            cpu: "1"
             memory: 64Mi
             ephemeral-storage: 64Mi
           requests:

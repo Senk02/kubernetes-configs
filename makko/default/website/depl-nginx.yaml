@@ -18,7 +18,7 @@ spec:
         app: nginx
     spec:
       containers:
-      - image: nginx:latest
+      - image: nginx:1.27.4
         name: nginx
         volumeMounts:
         - name: html
@@ -27,7 +27,7 @@ spec:
         - containerPort: 80
         resources:
           limits:
-            cpu: 1
+            cpu: "1"
             memory: 64Mi
             ephemeral-storage: 64Mi
           requests:

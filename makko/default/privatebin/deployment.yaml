@@ -18,7 +18,7 @@ spec:
         app: privatebin
     spec:
       containers:
-      - image: privatebin/nginx-fpm-alpine
+      - image: privatebin/nginx-fpm-alpine:1.7.6
         name: privatebin
         volumeMounts:
         - name: config
@@ -30,7 +30,7 @@ spec:
         - containerPort: 8080
         resources:
           limits:
-            cpu: 1
+            cpu: "1"
             memory: 256Mi
             ephemeral-storage: 64Mi
           requests:

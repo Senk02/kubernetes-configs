@@ -18,7 +18,7 @@ spec:
         app: registry
     spec:
       containers:
-      - image: registry
+      - image: registry:3.0.0
         name: registry
         volumeMounts:
         - name: images
@@ -27,7 +27,7 @@ spec:
         - containerPort: 5000
         resources:
           limits:
-            cpu: 1
+            cpu: "1"
             memory: 256Mi
             ephemeral-storage: 64Mi
           requests:

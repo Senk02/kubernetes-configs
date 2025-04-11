@@ -16,7 +16,7 @@ spec:
     spec:
       initContainers:
       - name: synapse-generate
-        image: matrixdotorg/synapse:latest
+        image: matrixdotorg/synapse:v1.128.0
         env:
           - name: SYNAPSE_SERVER_NAME
             value: "element.senk0.com"
@@ -30,7 +30,7 @@ spec:
           name: synapse-data
       containers:
       - name: synapse
-        image: matrixdotorg/synapse:latest
+        image: matrixdotorg/synapse:v1.128.0
         env:
           - name: "TZ"
             value: "America/Chicago"

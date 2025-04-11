@@ -18,7 +18,7 @@ spec:
         app: archi
     spec:
       containers:
-      - image: justarchi/archisteamfarm
+      - image: justarchi/archisteamfarm:6.1.4.3
         name: archi
         volumeMounts:
         - name: config
@@ -29,7 +29,7 @@ spec:
         - containerPort: 1242 
         resources:
           limits:
-            cpu: 1
+            cpu: "1"
             memory: 256Mi
             ephemeral-storage: 128Mi
           requests:
