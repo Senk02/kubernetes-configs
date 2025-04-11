@@ -18,7 +18,7 @@ spec:
         app: filerun
     spec:
       containers:
-      - image: mariadb:10.1
+      - image: mariadb:11.7
         name: mariadb
         env:
         - name: MYSQL_ROOT_PASSWORD
