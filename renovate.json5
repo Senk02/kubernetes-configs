@@ -1,0 +1,10 @@
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  extends: [
+    "github>senk02/renovate",
+  ],
+  ignorePaths: [],
+  kubernetes: {
+    fileMatch: ["^kubernetes/.+\\.ya?ml$"],
+  },
+}
