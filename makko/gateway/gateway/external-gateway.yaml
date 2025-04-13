@@ -25,3 +25,14 @@ spec:
       allowedRoutes:
         namespaces:
           from: All
+    - protocol: HTTPS
+      port: 8443
+      name: matrix
+      tls:
+        certificateRefs:
+          - kind: Secret
+            name: senk0
+            namespace: certificate
+      allowedRoutes:
+        namespaces:
+          from: All
