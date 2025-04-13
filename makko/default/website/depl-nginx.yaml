@@ -33,6 +33,36 @@ spec:
           requests:
             cpu: 10m
             memory: 16Mi
+      volumes:
+      - name: html
+        persistentVolumeClaim:
+          claimName: nginx-pvc
+          readOnly: false
+      - name: html-iem
+        persistentVolumeClaim:
+          claimName: nginx-iem-pvc
+          readOnly: false
+---
+apiVersion: apps/v1 
+kind: Deployment
+metadata:
+  name: nginx
+  labels:
+    app: nginx
+spec:
+  revisionHistoryLimit: 1
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
       - image: nginx:1.27.4
         name: nginx-iem
         volumeMounts:
@@ -49,10 +79,6 @@ spec:
             cpu: 10m
             memory: 16Mi
       volumes:
-      - name: html
-        persistentVolumeClaim:
-          claimName: nginx-pvc
-          readOnly: false
       - name: html-iem
         persistentVolumeClaim:
           claimName: nginx-iem-pvc
