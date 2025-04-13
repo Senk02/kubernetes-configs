@@ -46,21 +46,21 @@ spec:
 apiVersion: apps/v1 
 kind: Deployment
 metadata:
-  name: nginx
+  name: nginx-iem
   labels:
-    app: nginx
+    app: nginx-iem
 spec:
   revisionHistoryLimit: 1
   replicas: 1
   selector:
     matchLabels:
-      app: nginx
+      app: nginx-iem
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: nginx
+        app: nginx-iem
     spec:
       containers:
       - image: nginx:1.27.4
