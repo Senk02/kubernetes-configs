@@ -33,16 +33,48 @@ spec:
           requests:
             cpu: 10m
             memory: 16Mi
+      - image: nginx:1.27.4
+        name: nginx-iem
+        volumeMounts:
+        - name: html-iem
+          mountPath: /usr/share/nginx/html
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            cpu: "1"
+            memory: 64Mi
+            ephemeral-storage: 64Mi
+          requests:
+            cpu: 10m
+            memory: 16Mi
       volumes:
       - name: html
         persistentVolumeClaim:
           claimName: nginx-pvc
+          readOnly: false
+      - name: html-iem
+        persistentVolumeClaim:
+          claimName: nginx-iem-pvc
           readOnly: false
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: nginx-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 2Gi
+  storageClassName: rook-cephfs
+  volumeMode: Filesystem
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: nginx-iem-pvc
 spec:
   accessModes:
     - ReadWriteMany

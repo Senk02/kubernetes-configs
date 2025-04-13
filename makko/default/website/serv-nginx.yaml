@@ -10,3 +10,16 @@ spec:
     port: 80
     targetPort: 80
   type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-iem
+spec:
+  selector:
+    app: nginx-iem
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+  type: ClusterIP
