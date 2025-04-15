@@ -31,6 +31,8 @@ spec:
           value: "true"
         - name: APP_DEBUG
           value: "true"
+        - name: MEDIA_PATH
+          value: /music
         - name: LASTFM_API_KEY
           valueFrom:
             secretKeyRef:
