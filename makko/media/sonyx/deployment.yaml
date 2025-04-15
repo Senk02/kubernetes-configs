@@ -81,6 +81,9 @@ spec:
           mountPath: /var/www/html/public/img/covers
         - name: search-index
           mountPath: /var/www/html/storage/search-indexes
+        - name: sonyx-env
+          mountPath: /var/www/html/.env
+          subPath: .env
         resources:
           limits:
             cpu: "1"
@@ -127,6 +130,9 @@ spec:
       - name: db-data
         persistentVolumeClaim:
           claimName: database-data-pvc
+      - name: sonyx-env
+        persistentVolumeClaim:
+          claimName: sonyx-env
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
@@ -177,5 +183,18 @@ spec:
   resources:
     requests:
       storage: 5Gi
+  storageClassName: rook-cephfs
+  volumeMode: Filesystem
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: sonyx-env
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
   storageClassName: rook-cephfs
   volumeMode: Filesystem
