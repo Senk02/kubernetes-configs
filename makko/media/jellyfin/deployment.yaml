@@ -17,10 +17,8 @@ spec:
       labels:
         app: jellyfin
     spec:
-      nodeSelector:
-        kubernetes.io/hostname: talos-bm5-aks
       containers:
-      - image: jellyfin/jellyfin:latest
+      - image: jellyfin/jellyfin:10.10.7
         name: jellyfin
         volumeMounts:
         - name: media

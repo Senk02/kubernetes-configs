@@ -18,7 +18,7 @@ spec:
         app: kavita
     spec:
       containers:
-      - image: jvmilazz0/kavita:latest
+      - image: jvmilazz0/kavita:0.8.6
         name: kavita
         volumeMounts:
         - name: media
@@ -33,7 +33,7 @@ spec:
         - containerPort: 5000
         resources:
           limits:
-            cpu: 1
+            cpu: "1"
             memory: 512Mi
             ephemeral-storage: 64Mi
           requests:

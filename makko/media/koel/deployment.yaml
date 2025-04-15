@@ -1,0 +1,172 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sonyx
+  labels:
+    app: sonyx
+spec:
+  revisionHistoryLimit: 1
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sonyx
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: sonyx
+    spec:
+      containers:
+      - image: phanan/koel:7.2.2
+        name: sonyx
+        ports:
+        - containerPort: 80
+        env:
+        - name: STREAMING_METHOD
+          value: x-accel-redirect
+        - name: LASTFM_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: sonyx-secrets
+              key: lastfm-api-key
+        - name: LASTFM_API_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: sonyx-secrets
+              key: lastfm-api-secret
+        - name: SPOTIFY_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: sonyx-secrets
+              key: spotify-client-id
+        - name: SPOTIFY_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: sonyx-secrets
+              key: spotify-client-secret
+        - name: YOUTUBE_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: sonyx-secrets
+              key: youtube-api-key
+        - name: DB_CONNECTION
+          value: pgsql
+        - name: DB_HOST
+          value: localhost
+        - name: DB_PORT
+          value: "5432"
+        - name: DB_USERNAME
+          value: sonyx
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: sonyx-secrets
+              key: db-password
+        - name: DB_DATABASE
+          value: sonyx
+        volumeMounts:
+        - name: music
+          mountPath: /music
+        - name: covers
+          mountPath: /var/www/html/public/img/covers
+        - name: search-index
+          mountPath: /var/www/html/storage/search-indexes
+        resources:
+          limits:
+            cpu: "1"
+            memory: 768Mi
+            ephemeral-storage: 2Gi
+          requests:
+            cpu: 200m
+            memory: 256Mi
+      - image: postgres:13
+        name: database
+        ports:
+        - containerPort: 5432
+        env:
+        - name: POSTGRES_DB
+          value: sonyx
+        - name: POSTGRES_USER
+          value: sonyx
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: sonyx-postgres-password
+              key: password
+        volumeMounts:
+        - name: db-data
+          mountPath: /var/lib/postgresql/data
+        resources:
+          limits:
+            cpu: "1"
+            memory: 512Mi
+            ephemeral-storage: 1Gi
+          requests:
+            cpu: 100m
+            memory: 128Mi
+      volumes:
+      - name: music
+        persistentVolumeClaim:
+          claimName: sonyx-music-pvc
+      - name: covers
+        persistentVolumeClaim:
+          claimName: sonyx-covers-pvc
+      - name: search-index
+        persistentVolumeClaim:
+          claimName: sonyx-search-index-pvc
+      - name: db-data
+        persistentVolumeClaim:
+          claimName: database-data-pvc
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: sonyx-music-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: rook-cephfs-awa
+  volumeMode: Filesystem
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: sonyx-covers-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+  storageClassName: rook-cephfs
+  volumeMode: Filesystem
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: sonyx-search-index-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: rook-cephfs
+  volumeMode: Filesystem
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: database-data-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: rook-cephfs
+  volumeMode: Filesystem
