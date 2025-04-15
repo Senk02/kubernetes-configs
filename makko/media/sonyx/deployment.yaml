@@ -27,6 +27,8 @@ spec:
           value: php
         - name: APP_NAME
           value: "Sonyx"
+        - name: APP_ENV
+          value: production
         - name: FORCE_HTTPS
           value: "true"
         - name: APP_DEBUG
