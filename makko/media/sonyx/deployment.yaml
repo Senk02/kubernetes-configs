@@ -30,7 +30,6 @@ spec:
               mountPath: /data
             - name: music
               mountPath: /music
-              readOnly: true
           resources:
             limits:
               cpu: "1"
@@ -39,12 +38,12 @@ spec:
               cpu: "200m"
               memory: 512Mi
       volumes:
-        - name: data
-          persistentVolumeClaim:
-            claimName: sonyx-data-pvc
-        - name: music
-          persistentVolumeClaim:
-            claimName: sonyx-music-pvc
+      - name: data
+        persistentVolumeClaim:
+          claimName: sonyx-data-pvc
+      - name: music
+        persistentVolumeClaim:
+          claimName: sonyx-music-pvc
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -64,7 +63,7 @@ metadata:
   name: sonyx-music-pvc
 spec:
   accessModes:
-    - ReadOnlyMany
+    - ReadWriteMany
   resources:
     requests:
       storage: 200Gi
