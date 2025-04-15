@@ -33,6 +33,8 @@ spec:
           value: "true"
         - name: MEDIA_PATH
           value: /music
+        - name: STORAGE_DRIVER
+          value: local
         - name: LASTFM_API_KEY
           valueFrom:
             secretKeyRef:
