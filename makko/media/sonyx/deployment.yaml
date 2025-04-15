@@ -28,6 +28,30 @@ spec:
           env:
             - name: ND_BASEURL
               value: "https://sonyx.senk0.com"
+            - name: ND_ENABLESHARING
+              value: "true"
+            - name: ND_ENABLETRANSCODINGCONFIG
+              value: "true"
+            - name: ND_LASTFM_APIKEY
+              valueFrom:
+                secretKeyRef:
+                  name: sonyx-secrets
+                  key: lastfm-api-key
+            - name: ND_LASTFM_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: sonyx-secrets
+                  key: lastfm-api-secret
+            - name: ND_SPOTIFY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: sonyx-secrets
+                  key: spotify-client-id
+            - name: ND_SPOTIFY_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: sonyx-secrets
+                  key: spotify-client-secret
           volumeMounts:
             - name: data
               mountPath: /data
