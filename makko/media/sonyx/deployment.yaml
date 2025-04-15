@@ -28,8 +28,8 @@ spec:
           value: php
         - name: APP_NAME
           value: "Sonyx"
-        - name: APP_KEY
-          value: 81by9p2774oanvfe46cm6u3cnms4jhs5
+        #- name: APP_KEY
+        #  value: 81by9p2774oanvfe46cm6u3cnms4jhs5
         #- name: APP_URL
         #  value: "http://localhost:80"
         - name: APP_DEBUG
