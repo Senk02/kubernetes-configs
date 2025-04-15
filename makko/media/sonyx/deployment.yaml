@@ -92,8 +92,8 @@ spec:
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: sonyx-postgres-password
-              key: password
+              name: sonyx-secrets
+              key: db-password
         volumeMounts:
         - name: db-data
           mountPath: /var/lib/postgresql/data
