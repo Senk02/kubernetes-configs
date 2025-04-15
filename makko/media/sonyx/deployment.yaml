@@ -25,6 +25,10 @@ spec:
         env:
         - name: STREAMING_METHOD
           value: php
+        - name: APP_NAME
+          value: "Sonyx"
+        - name: APP_URL
+          value: "http://localhost:80"
         - name: LASTFM_API_KEY
           valueFrom:
             secretKeyRef:
