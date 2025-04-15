@@ -32,6 +32,8 @@ spec:
           value: "base64:QNlwq1HML44qwlP9CotMY0NGcBe50RoCqg8/MC5efEQ="
         #- name: APP_URL
         #  value: "http://localhost:80"
+        - name: FORCE_HTTPS
+          value: "true"
         - name: APP_DEBUG
           value: "true"
         - name: LASTFM_API_KEY
