@@ -27,8 +27,6 @@ spec:
           value: php
         - name: APP_NAME
           value: "Sonyx"
-        - name: APP_KEY
-          value: "base64:QNlwq1HML44qwlP9CotMY0NGcBe50RoCqg8/MC5efEQ="
         - name: FORCE_HTTPS
           value: "true"
         - name: APP_DEBUG
