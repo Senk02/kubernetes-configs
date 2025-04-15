@@ -22,13 +22,16 @@ spec:
         name: sonyx
         ports:
         - containerPort: 80
+        - containerPort: 8000
         env:
         - name: STREAMING_METHOD
           value: php
         - name: APP_NAME
           value: "Sonyx"
-        - name: APP_URL
-          value: "http://localhost:80"
+        #- name: APP_URL
+        #  value: "http://localhost:80"
+        - name: APP_DEBUG
+          value: "true"
         - name: LASTFM_API_KEY
           valueFrom:
             secretKeyRef:
