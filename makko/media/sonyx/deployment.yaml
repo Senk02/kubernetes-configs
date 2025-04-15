@@ -25,6 +25,9 @@ spec:
           name: sonyx
           ports:
             - containerPort: 4533
+          env:
+            - name: ND_BASEURL
+              value: "https://sonyx.senk0.com"
           volumeMounts:
             - name: data
               mountPath: /data
