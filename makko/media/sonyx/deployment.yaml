@@ -22,7 +22,6 @@ spec:
         name: sonyx
         ports:
         - containerPort: 80
-        - containerPort: 8000
         env:
         - name: STREAMING_METHOD
           value: php
@@ -30,8 +29,6 @@ spec:
           value: "Sonyx"
         - name: APP_KEY
           value: "base64:QNlwq1HML44qwlP9CotMY0NGcBe50RoCqg8/MC5efEQ="
-        #- name: APP_URL
-        #  value: "http://localhost:80"
         - name: FORCE_HTTPS
           value: "true"
         - name: APP_DEBUG
@@ -64,7 +61,7 @@ spec:
         - name: DB_CONNECTION
           value: pgsql
         - name: DB_HOST
-          value: 127.0.0.1
+          value: sonyx-database
         - name: DB_PORT
           value: "5432"
         - name: DB_USERNAME
@@ -91,6 +88,37 @@ spec:
           requests:
             cpu: 200m
             memory: 256Mi
+      volumes:
+      - name: music
+        persistentVolumeClaim:
+          claimName: sonyx-music-pvc
+      - name: covers
+        persistentVolumeClaim:
+          claimName: sonyx-covers-pvc
+      - name: search-index
+        persistentVolumeClaim:
+          claimName: sonyx-search-index-pvc
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sonyx-database
+  labels:
+    app: sonyx-database
+spec:
+  revisionHistoryLimit: 1
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sonyx-database
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: sonyx-database
+    spec:
+      containers:
       - image: postgres:13
         name: database
         ports:
@@ -117,15 +145,6 @@ spec:
             cpu: 100m
             memory: 128Mi
       volumes:
-      - name: music
-        persistentVolumeClaim:
-          claimName: sonyx-music-pvc
-      - name: covers
-        persistentVolumeClaim:
-          claimName: sonyx-covers-pvc
-      - name: search-index
-        persistentVolumeClaim:
-          claimName: sonyx-search-index-pvc
       - name: db-data
         persistentVolumeClaim:
           claimName: database-data-pvc
