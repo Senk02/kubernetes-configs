@@ -24,7 +24,7 @@ spec:
         - containerPort: 80
         env:
         - name: STREAMING_METHOD
-          value: x-accel-redirect
+          value: php
         - name: LASTFM_API_KEY
           valueFrom:
             secretKeyRef:
