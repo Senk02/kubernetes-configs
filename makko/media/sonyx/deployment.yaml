@@ -17,190 +17,55 @@ spec:
       labels:
         app: sonyx
     spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
       containers:
-      - image: phanan/koel:7.2.2
-        name: sonyx
-        ports:
-        - containerPort: 80
-        env:
-        - name: STREAMING_METHOD
-          value: php
-        - name: APP_NAME
-          value: "Sonyx"
-        - name: APP_ENV
-          value: production
-        - name: FORCE_HTTPS
-          value: "true"
-        - name: APP_DEBUG
-          value: "true"
-        - name: MEDIA_PATH
-          value: /music
-        - name: STORAGE_DRIVER
-          value: local
-        - name: LASTFM_API_KEY
-          valueFrom:
-            secretKeyRef:
-              name: sonyx-secrets
-              key: lastfm-api-key
-        - name: LASTFM_API_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: sonyx-secrets
-              key: lastfm-api-secret
-        - name: SPOTIFY_CLIENT_ID
-          valueFrom:
-            secretKeyRef:
-              name: sonyx-secrets
-              key: spotify-client-id
-        - name: SPOTIFY_CLIENT_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: sonyx-secrets
-              key: spotify-client-secret
-        - name: YOUTUBE_API_KEY
-          valueFrom:
-            secretKeyRef:
-              name: sonyx-secrets
-              key: youtube-api-key
-        - name: DB_CONNECTION
-          value: pgsql
-        - name: DB_HOST
-          value: sonyx-database
-        - name: DB_PORT
-          value: "5432"
-        - name: DB_USERNAME
-          value: sonyx
-        - name: DB_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: sonyx-secrets
-              key: db-password
-        - name: DB_DATABASE
-          value: sonyx
-        volumeMounts:
+        - image: deluan/navidrome:latest
+          name: sonyx
+          ports:
+            - containerPort: 4533
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: music
+              mountPath: /music
+              readOnly: true
+          resources:
+            limits:
+              cpu: "1"
+              memory: 1Gi
+            requests:
+              cpu: "200m"
+              memory: 512Mi
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: sonyx-data-pvc
         - name: music
-          mountPath: /music
-        - name: covers
-          mountPath: /var/www/html/public/img/covers
-        - name: search-index
-          mountPath: /var/www/html/storage/search-indexes
-        resources:
-          limits:
-            cpu: "1"
-            memory: 768Mi
-            ephemeral-storage: 2Gi
-          requests:
-            cpu: 200m
-            memory: 256Mi
-      volumes:
-      - name: music
-        persistentVolumeClaim:
-          claimName: sonyx-music-pvc
-      - name: covers
-        persistentVolumeClaim:
-          claimName: sonyx-covers-pvc
-      - name: search-index
-        persistentVolumeClaim:
-          claimName: sonyx-search-index-pvc
+          persistentVolumeClaim:
+            claimName: sonyx-music-pvc
 ---
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: sonyx-database
-  labels:
-    app: sonyx-database
-spec:
-  revisionHistoryLimit: 1
-  replicas: 1
-  selector:
-    matchLabels:
-      app: sonyx-database
-  strategy:
-    type: Recreate
-  template:
-    metadata:
-      labels:
-        app: sonyx-database
-    spec:
-      containers:
-      - image: postgres:13
-        name: database
-        ports:
-        - containerPort: 5432
-        env:
-        - name: POSTGRES_DB
-          value: sonyx
-        - name: POSTGRES_USER
-          value: sonyx
-        - name: POSTGRES_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: sonyx-secrets
-              key: db-password
-        volumeMounts:
-        - name: db-data
-          mountPath: /var/lib/postgresql/data
-        resources:
-          limits:
-            cpu: "1"
-            memory: 512Mi
-            ephemeral-storage: 1Gi
-          requests:
-            cpu: 100m
-            memory: 128Mi
-      volumes:
-      - name: db-data
-        persistentVolumeClaim:
-          claimName: database-data-pvc
----
-kind: PersistentVolumeClaim
 apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: sonyx-data-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi # Adjust size as needed
+  storageClassName: rook-cephfs
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
 metadata:
   name: sonyx-music-pvc
 spec:
   accessModes:
-    - ReadWriteOnce
+    - ReadOnlyMany
   resources:
     requests:
       storage: 200Gi
   storageClassName: rook-cephfs-awa
-  volumeMode: Filesystem
----
-kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
-  name: sonyx-covers-pvc
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 2Gi
-  storageClassName: rook-cephfs
-  volumeMode: Filesystem
----
-kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
-  name: sonyx-search-index-pvc
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
-  storageClassName: rook-cephfs
-  volumeMode: Filesystem
----
-kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
-  name: database-data-pvc
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 5Gi
-  storageClassName: rook-cephfs
-  volumeMode: Filesystem
