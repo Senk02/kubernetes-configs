@@ -17,6 +17,8 @@ spec:
       labels:
         app: jellyfin
     spec:
+      nodeSelector:
+        kubernetes.io/hostname: talos-nht-60v
       containers:
       - image: jellyfin/jellyfin:latest
         name: jellyfin
