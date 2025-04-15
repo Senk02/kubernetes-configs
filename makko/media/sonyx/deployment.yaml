@@ -105,7 +105,7 @@ metadata:
     app: sonyx-database
 spec:
   revisionHistoryLimit: 1
-  replicas: 1
+  replicas: 0
   selector:
     matchLabels:
       app: sonyx-database
