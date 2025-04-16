@@ -58,9 +58,9 @@ spec:
           limits:
             cpu: "1"
             ephemeral-storage: 1Gi
-            memory: 64Mi
+            memory: 256Mi
           requests:
             cpu: 10m
-            memory: 16Mi
+            memory: 128Mi
       restartPolicy: Always
       terminationGracePeriodSeconds: 2
