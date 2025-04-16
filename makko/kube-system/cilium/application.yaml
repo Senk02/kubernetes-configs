@@ -40,6 +40,10 @@ spec:
             enabled: false
           hostRoot: /sys/fs/cgroup
         resources:
+          cilium:
+            requests:
+              cpu: "128m" # Rounded from observed usage
+              memory: "512Mi" # Rounded from observed usage
           ciliumAgent:
             requests:
               cpu: "128m"
