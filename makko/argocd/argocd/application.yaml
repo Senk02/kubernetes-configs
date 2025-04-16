@@ -29,10 +29,19 @@ spec:
           reloader.stakater.com/auto: "true"
         redis-ha:
           enabled: true
+          haproxy:
+            resources:
+              requests:
+                cpu: "100m"
+                memory: "128Mi"
         server:
           autoscaling:
             enabled: true
             minReplicas: 2
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "256Mi"
         controller:
           replicas: 1
         applicationSet:
