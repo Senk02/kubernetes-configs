@@ -39,23 +39,8 @@ spec:
           autoMount:
             enabled: false
           hostRoot: /sys/fs/cgroup
-        resources:
-          cilium:
-            requests:
-              cpu: "128m" # Rounded from observed usage
-              memory: "512Mi" # Rounded from observed usage
-          ciliumAgent:
-            requests:
-              cpu: "128m"
-              memory: "512Mi"
-          ciliumEnvoy:
-            requests:
-              cpu: "16m"
-              memory: "128Mi"
-          ciliumOperator:
-            requests:
-              cpu: "16m"
-              memory: "128Mi"
+        k8sServiceHost: localhost #Remove for most kubernetes clusters
+        k8sServicePort: 7445 #Remove for most kubernetes clusters
         l2announcements:
           enabled: true
         gatewayAPI:
