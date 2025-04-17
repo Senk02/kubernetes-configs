@@ -22,7 +22,7 @@ spec:
         - name: INSTANCE_LISTEN
           value: "0.0.0.0"
         - name: INSTANCE_IP
-          value: 10.0.1.115
+          value: 10.109.71.172
         - name: ETCD_ENDPOINT
           value: "https://10.0.0.73:2379,https://10.0.0.99:2379,https://10.0.0.141:2379"
         livenessProbe:
