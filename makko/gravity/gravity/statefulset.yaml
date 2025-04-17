@@ -26,7 +26,7 @@ spec:
         - name: LISTEN_ONLY
           value: "true"
         - name: ETCD_ENDPOINT
-          value: "http://etcd:2379"
+          value: "http://etcd.gravity.svc.cluster.local:2379"
         #livenessProbe:
         #  httpGet:
         #    path: /healthz/live
