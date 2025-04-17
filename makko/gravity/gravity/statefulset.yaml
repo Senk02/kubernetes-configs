@@ -1,0 +1,57 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: gravity
+  namespace: gravity
+spec:
+  serviceName: gravity
+  replicas: 3
+  selector:
+    matchLabels:
+      app: gravity
+  template:
+    metadata:
+      labels:
+        app: gravity
+    spec:
+      containers:
+      - name: gravity
+        image: ghcr.io/beryju/gravity:stable
+        env:
+        - name: BOOTSTRAP_ROLES
+          value: "dns;dhcp;api;discovery;backup;monitoring;tsdb;tftp"
+        - name: INSTANCE_LISTEN
+          value: "0.0.0.0"
+        - name: ETCD_ENDPOINT
+          value: "https://10.0.0.73:2379,https://10.0.0.99:2379,https://10.0.0.141:2379"
+        ports:
+        - containerPort: 53
+          name: dns-udp
+          protocol: UDP
+        - containerPort: 53
+          name: dns-tcp
+          protocol: TCP
+        - containerPort: 67
+          name: dhcp
+          protocol: UDP
+        - containerPort: 69
+          name: tftp
+          protocol: UDP
+        - containerPort: 8008
+          name: http
+        - containerPort: 8009
+          name: http-metrics
+        volumeMounts:
+        - name: data
+          mountPath: /data
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: rook-cephfs
+      resources:
+        requests:
+          storage: 5Gi
