@@ -1,0 +1,26 @@
+apiVersion: ceph.rook.io/v1
+kind: CephFilesystem
+metadata:
+  name: owofs
+  namespace: rook-ceph
+spec:
+  metadataPool:
+    failureDomain: host
+    replicated:
+      size: 3
+  dataPools:
+    - name: replicated
+      failureDomain: host
+      deviceClass: hdd
+      replicated:
+        size: 3
+  preserveFilesystemOnDelete: true
+  metadataServer:
+    activeCount: 1
+    activeStandby: true
+    resources:
+      limits:
+        memory: "1024Mi"
+      requests:
+        cpu: "500m"
+        memory: "1024Mi"

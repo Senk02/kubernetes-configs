@@ -1,0 +1,87 @@
+apiVersion: ceph.rook.io/v1
+kind: CephCluster
+metadata:
+  name: rook-ceph
+  namespace: rook-ceph
+spec:
+  cephVersion:
+    image: quay.io/ceph/ceph:v18.2.2
+  dataDirHostPath: /var/lib/rook
+  mgr:
+    count: 2
+    allowMultiplePerNode: true
+    modules:
+      - name: rook
+        enabled: true
+  mon:
+    count: 3
+    allowMultiplePerNode: true
+  dashboard:
+    enabled: true
+    ssl: false
+  removeOSDsIfOutAndSafeToRemove: true
+  storage:
+    useAllNodes: false
+    useAllDevices: false
+    nodes:
+    - name: "talos-nht-60v"
+      devices:
+      - name: "/dev/disk/by-id/ata-TEAM_T2531TB_TPBF2309110030301839"
+      - name: "/dev/disk/by-id/ata-TEAM_T2531TB_TPBF2309110030302351"
+      - name: "/dev/disk/by-id/ata-WDC_WD140EDGZ-11B1PA0_9MJ2X7MU"
+      resources:
+        requests:
+          cpu: 100m
+          memory: 1.2Gi
+    - name: "talos-bm5-aks"
+      devices:
+      - name: "/dev/disk/by-id/ata-TEAM_T2531TB_TPBF2312040090101521"
+      - name: "/dev/disk/by-id/ata-TEAM_T2531TB_TPBF2309110030301830"
+      - name: "/dev/disk/by-id/ata-ST4000NM010A-2HZ111_WJG0PHK0"
+      resources:
+        requests:
+          cpu: 100m
+          memory: 1.2Gi
+    - name: "talos-e6m-uzm"
+      devices:
+      - name: "/dev/disk/by-id/ata-OOS14000G_0000CGZ0"
+      resources:
+        requests:
+          cpu: 100m
+          memory: 1.7Gi
+    - name: "talos-73x-rd9"
+      devices:
+      - name: "/dev/disk/by-id/ata-OOS14000G_000F3PGE"
+      - name: "/dev/disk/by-id/ata-ST4000NM010A-2HZ111_WJG0M3DJ"
+      - name: "/dev/disk/by-id/ata-ST4000NM010A-2HZ111_WS22BE9S"
+      - name: "/dev/disk/by-id/nvme-SPCC_M.2_PCIe_SSD_PA9012R001145"
+      - name: "/dev/disk/by-id/nvme-SPCC_M.2_PCIe_SSD_A231207FN4204800465"
+      resources:
+        requests:
+          cpu: 100m
+          memory: 1.5Gi
+  resources:
+    crashcollector:
+      requests:
+        cpu: 100m
+        memory: 60Mi
+    mgr:
+      requests:
+        cpu: 100m
+        memory: 512Mi
+    mon:
+      requests:
+        cpu: 50m
+        memory: 512Mi
+    exporter:
+      requests:
+        cpu: 5m
+        memory: 20Mi
+    csi-rbdplugin-provisioner:
+      requests:
+        cpu: 10m
+        memory: 256Mi
+    csi-cephfsplugin:
+      requests:
+        cpu: 10m
+        memory: 32Mi

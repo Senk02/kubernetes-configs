@@ -1,0 +1,26 @@
+apiVersion: ceph.rook.io/v1
+kind: CephFilesystem
+metadata:
+  name: awafs
+  namespace: rook-ceph
+spec:
+  metadataPool:
+    failureDomain: osd
+    replicated:
+      size: 3
+  dataPools:
+    - name: replicated
+      failureDomain: osd
+      deviceClass: fast-hdd
+      replicated:
+        size: 3
+  preserveFilesystemOnDelete: true
+  metadataServer:
+    activeCount: 1
+    activeStandby: true
+    resources:
+      limits:
+        memory: "1024Mi"
+      requests:
+        cpu: "500m"
+        memory: "1024Mi"

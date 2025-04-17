@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ceph-access
+  namespace: rook-ceph
+spec:
+  selector:
+    app: ceph-access
+  ports:
+  - protocol: TCP
+    port: 22
+    targetPort: 22
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ceph-access-owo
+  namespace: rook-ceph
+spec:
+  selector:
+    app: ceph-access-owo
+  ports:
+  - protocol: TCP
+    port: 22
+    targetPort: 22
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ceph-access-awa
+  namespace: rook-ceph
+spec:
+  selector:
+    app: ceph-access-awa
+  ports:
+  - protocol: TCP
+    port: 22
+    targetPort: 22
+  type: LoadBalancer

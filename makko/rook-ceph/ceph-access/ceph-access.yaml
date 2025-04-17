@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ceph-access
+  namespace: rook-ceph
+  labels:
+    app: ceph-access
+spec:
+  revisionHistoryLimit: 1
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ceph-access
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: ceph-access
+    spec:
+      containers:
+      - image: senk02/ceph-access:latest
+        name: ceph-access
+        env:
+          - name: CEPHFS_USER
+            valueFrom:
+              configMapKeyRef:
+                name: ceph-access-configmap
+                key: CEPHFS_USER
+          - name: CEPHFS_FS
+            value: "uwufs"
+          - name: CEPHFS_MON_ADDR
+            valueFrom:
+              configMapKeyRef:
+                name: ceph-access-configmap
+                key: CEPHFS_MON_ADDR
+        volumeMounts:
+          - name: rook-ceph-admin-keyring
+            mountPath: "/secret"
+            subPath: secret
+            readOnly: true
+          - name: ssh-key-config
+            mountPath: "/root/.ssh/authorized_keys"
+            subPath: authorized_keys
+            readOnly: true
+        ports:
+        - containerPort: 22
+        securityContext:
+          privileged: true
+          capabilities:
+            add:
+              - SYS_ADMIN
+              - MKNOD
+        resources:
+          limits:
+            cpu: "2"
+            memory: 8Gi
+            ephemeral-storage: 20Gi
+          requests:
+            cpu: 10m
+            memory: 2Gi
+      volumes:
+      - name: rook-ceph-admin-keyring
+        secret:
+          secretName: rook-ceph-admin-keyring
+          items:
+          - key: keyring
+            path: secret
+      - name: ssh-key-config
+        configMap:
+          name: ssh-key-config
