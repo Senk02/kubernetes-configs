@@ -25,10 +25,14 @@ spec:
           value: 10.0.1.115
         - name: LISTEN_ONLY
           value: "true"
-        - name: ETCD_PEER_PORT
-          value: "2376"
-        - name: ETCD_ENDPOINT
-          value: "localhost:2375"
+        #livenessProbe:
+        #  httpGet:
+        #    path: /healthz/live
+        #    port: http-metrics
+        #readinessProbe:
+        #  httpGet:
+        #    path: /healthz/ready
+        #    port: http-metrics
         ports:
         - containerPort: 53
           name: dns-udp
