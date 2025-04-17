@@ -32,6 +32,8 @@ spec:
               value: "true"
             - name: ND_ENABLETRANSCODINGCONFIG
               value: "true"
+            - name: ND_IMAGECACHESIZE
+              value: "5000"
             - name: ND_LASTFM_APIKEY
               valueFrom:
                 secretKeyRef:
