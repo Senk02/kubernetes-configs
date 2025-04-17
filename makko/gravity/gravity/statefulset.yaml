@@ -29,14 +29,6 @@ spec:
           value: "2376"
         - name: ETCD_ENDPOINT
           value: "localhost:2375"
-        livenessProbe:
-          httpGet:
-            path: /healthz/live
-            port: http-metrics
-        readinessProbe:
-          httpGet:
-            path: /healthz/ready
-            port: http-metrics
         ports:
         - containerPort: 53
           name: dns-udp
