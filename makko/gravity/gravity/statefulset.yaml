@@ -25,10 +25,12 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: status.podIP
+        - name: ETCD_PEER_PORT
+          value: "2376"
         - name: LISTEN_ONLY
           value: "true"
         - name: ETCD_ENDPOINT
-          value: "http://etcd.gravity.svc.cluster.local:2379"
+          value: "http://etcd:2375"
         #livenessProbe:
         #  httpGet:
         #    path: /healthz/live
