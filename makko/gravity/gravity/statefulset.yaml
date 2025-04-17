@@ -1,9 +1,7 @@
----
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: gravity
-  namespace: gravity
 spec:
   serviceName: gravity
   replicas: 3
