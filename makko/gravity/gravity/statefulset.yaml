@@ -21,10 +21,12 @@ spec:
           value: "dns;api;discovery;backup;monitoring;tsdb;tftp"
         - name: INSTANCE_LISTEN
           value: "0.0.0.0"
-        - name: INSTANCE_IP
-          value: 10.0.1.115
+        #- name: INSTANCE_IP
+        #  value: 10.0.1.115
         - name: LISTEN_ONLY
           value: "true"
+        - name: ETCD_ENDPOINT
+          value: etcd:2379
         #livenessProbe:
         #  httpGet:
         #    path: /healthz/live
