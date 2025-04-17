@@ -25,6 +25,14 @@ spec:
           value: 10.0.1.115
         - name: ETCD_ENDPOINT
           value: "https://10.0.0.73:2379,https://10.0.0.99:2379,https://10.0.0.141:2379"
+        livenessProbe:
+          httpGet:
+            path: /healthz/live
+            port: http-metrics
+        readinessProbe:
+          httpGet:
+            path: /healthz/ready
+            port: http-metrics
         ports:
         - containerPort: 53
           name: dns-udp
