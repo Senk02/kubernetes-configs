@@ -20,8 +20,8 @@ spec:
   ## uses when doing discovery with SRV records.
   ports:
   - name: etcd-client
-    port: 2379
+    port: 2375
   - name: etcd-server
-    port: 2380
+    port: 2376
   - name: etcd-metrics
     port: 8080

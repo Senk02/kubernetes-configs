@@ -21,8 +21,10 @@ spec:
           value: "dns;api;discovery;backup;monitoring;tsdb;tftp"
         - name: INSTANCE_LISTEN
           value: "0.0.0.0"
-        #- name: INSTANCE_IP
-        #  value: 10.0.1.115
+        - name: INSTANCE_IP # 79 to 75 and 80 to 76
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
         - name: LISTEN_ONLY
           value: "true"
         - name: ETCD_ENDPOINT

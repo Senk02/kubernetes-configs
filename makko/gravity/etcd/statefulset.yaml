@@ -88,9 +88,9 @@ spec:
         imagePullPolicy: IfNotPresent
         ports:
         - name: etcd-client
-          containerPort: 2379
+          containerPort: 2375
         - name: etcd-server
-          containerPort: 2380
+          containerPort: 2376
         - name: etcd-metrics
           containerPort: 8080
         ##
@@ -145,7 +145,7 @@ spec:
         ## Configuring etcdctl inside the container to connect to the etcd node
         ## in the container reduces confusion when debugging.
         - name: ETCDCTL_ENDPOINTS
-          value: $(HOSTNAME).$(SERVICE_NAME):2379
+          value: $(HOSTNAME).$(SERVICE_NAME):2375
         ##
         ## TLS client configuration for etcdctl in the container.
         ## These files paths are part of the "etcd-client-certs" volume mount.
@@ -187,9 +187,9 @@ spec:
         ##
         ## URL configurations are parameterized here and you shouldn't need to
         ## do anything with these.
-        - --listen-peer-urls=$(URI_SCHEME)://0.0.0.0:2380
-        - --listen-client-urls=$(URI_SCHEME)://0.0.0.0:2379
-        - --advertise-client-urls=$(URI_SCHEME)://$(HOSTNAME).$(SERVICE_NAME):2379
+        - --listen-peer-urls=$(URI_SCHEME)://0.0.0.0:2376
+        - --listen-client-urls=$(URI_SCHEME)://0.0.0.0:2375
+        - --advertise-client-urls=$(URI_SCHEME)://$(HOSTNAME).$(SERVICE_NAME):2375
         ##
         ## This must be set to "new" for initial cluster bootstrapping. To scale
         ## the cluster up, this should be changed to "existing" when the replica
@@ -207,11 +207,11 @@ spec:
         ## The initial cluster flag needs to be updated to match the number of
         ## replicas configured. When combined, these are a little hard to read.
         ## Here is what a single parameterized peer looks like:
-        ##   etcd-0=$(URI_SCHEME)://etcd-0.$(SERVICE_NAME):2380
-        - --initial-cluster=etcd-0=$(URI_SCHEME)://etcd-0.$(SERVICE_NAME):2380,etcd-1=$(URI_SCHEME)://etcd-1.$(SERVICE_NAME):2380,etcd-2=$(URI_SCHEME)://etcd-2.$(SERVICE_NAME):2380
+        ##   etcd-0=$(URI_SCHEME)://etcd-0.$(SERVICE_NAME):2376
+        - --initial-cluster=etcd-0=$(URI_SCHEME)://etcd-0.$(SERVICE_NAME):2376,etcd-1=$(URI_SCHEME)://etcd-1.$(SERVICE_NAME):2376,etcd-2=$(URI_SCHEME)://etcd-2.$(SERVICE_NAME):2376
         ##
         ## The peer urls flag should be fine as-is.
-        - --initial-advertise-peer-urls=$(URI_SCHEME)://$(HOSTNAME).$(SERVICE_NAME):2380
+        - --initial-advertise-peer-urls=$(URI_SCHEME)://$(HOSTNAME).$(SERVICE_NAME):2376
         ##
         ## This avoids probe failure if you opt to configure TLS.
         - --listen-metrics-urls=http://0.0.0.0:8080
