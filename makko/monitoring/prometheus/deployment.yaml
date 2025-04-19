@@ -50,9 +50,6 @@ spec:
         persistentVolumeClaim:
           claimName: prometheus-data-hdd
           readOnly: false
-      securityContext:
-        fsGroup: 0
-        runAsUser: 0
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
