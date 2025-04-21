@@ -35,7 +35,7 @@ spec:
         - name: VIKUNJA_DATABASE_DATABASE
           value: "vikunja"
         - name: VIKUNJA_SERVICE_JWTSECRET
-          value: "a-super-secure-random-secret"  # Replace with a secure secret
+          value: "a-super-secure-random-secret"
         - name: VIKUNJA_CORS_ENABLE
           value: "true"
         volumeMounts:
