@@ -18,7 +18,7 @@ spec:
         app: nginx
     spec:
       containers:
-      - image: nginx:1.27.4
+      - image: nginx:1.28.0
         name: nginx
         volumeMounts:
         - name: html
@@ -63,7 +63,7 @@ spec:
         app: nginx-iem
     spec:
       containers:
-      - image: nginx:1.27.4
+      - image: nginx:1.28.0
         name: nginx-iem
         volumeMounts:
         - name: html-iem
