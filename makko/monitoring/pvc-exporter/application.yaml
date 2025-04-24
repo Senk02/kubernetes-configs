@@ -2,21 +2,23 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: pvc-exporter
-  namespace: argocd
+  namespace: argocd # Ensure this is the namespace where your Argo CD is installed
+  annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
 spec:
-  project: default
+  project: default # Or the Argo CD project you want to use
   source:
     repoURL: https://kais271.github.io/pvc-exporter/helm3/charts/ # Helm repo URL
     targetRevision: v0.1.4-beta # Chart version
     chart: pvc-exporter # Name of the chart within the repository
     helm:
       valuesObject: # Values to override in the Helm chart
-        namespace: monitoring #This is already in the kubectl command, but good to have here too for full control in Argo
+        namespace: monitoring
   destination:
     server: https://kubernetes.default.svc # The Kubernetes cluster URL
     namespace: monitoring # The namespace where you want to deploy pvc-exporter
   syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-      allowEmpty: false
+    automated: # Enable auto-sync
+      prune: true    # Delete resources no longer defined in Git
+      selfHeal: true # Reconcile differences between Git and cluster state
+      allowEmpty: false # Prevent deleting all resources in the app
