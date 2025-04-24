@@ -4,12 +4,14 @@ metadata:
   name: prometheus-reader
 rules:
 - apiGroups: [""]
-  resources: ["pods"]
+  resources: ["pods", "endpoints", "services"]
   verbs: ["get", "list", "watch"]
-# Add other resource permissions as needed
+# You might need to add more resources depending on your Prometheus configuration
+# For example, to monitor deployments and other apps:
 # - apiGroups: ["apps"]
 #   resources: ["deployments", "statefulsets", "replicasets"]
 #   verbs: ["get", "list", "watch"]
+# To monitor nodes:
 # - apiGroups: [""]
 #   resources: ["nodes"]
 #   verbs: ["get", "list", "watch"]
