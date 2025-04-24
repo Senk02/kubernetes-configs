@@ -20,6 +20,10 @@ spec:
       hostNetwork: true # Recommended for simplicity, exposes metrics directly on the host network
       updateStrategy:
         type: RollingUpdate
+      tolerations:
+      - key: node-role.kubernetes.io/control-plane
+        operator: Exists
+        effect: NoSchedule
       containers:
         - name: node-exporter
           image: prom/node-exporter:latest # Consider using a specific version for stability
