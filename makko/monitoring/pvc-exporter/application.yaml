@@ -9,7 +9,7 @@ spec:
   project: default # Or the Argo CD project you want to use
   source:
     repoURL: https://kais271.github.io/pvc-exporter/helm3/charts/ # Helm repo URL
-    targetRevision: v0.1.3 # Chart version
+    targetRevision: 0.1.3 # Chart version
     chart: pvc-exporter # Name of the chart within the repository
     helm:
       valuesObject: # Values to override in the Helm chart
