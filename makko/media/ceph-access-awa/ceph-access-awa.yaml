@@ -79,7 +79,7 @@ spec:
           claimName: sonyx-music-pvc
       - name: config
         persistentVolumeClaim:
-          claimName: sonyx-config-pvc
+          claimName: awa-config-pvc
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
