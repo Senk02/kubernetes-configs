@@ -1,0 +1,28 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: prometheus-reader
+rules:
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "list", "watch"]
+# Add other resource permissions as needed
+# - apiGroups: ["apps"]
+#   resources: ["deployments", "statefulsets", "replicasets"]
+#   verbs: ["get", "list", "watch"]
+# - apiGroups: [""]
+#   resources: ["nodes"]
+#   verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: prometheus-reader-binding
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: monitoring # Make sure this matches the namespace of your Prometheus service account
+roleRef:
+  kind: ClusterRole
+  name: prometheus-reader
+  apiGroup: rbac.authorization.k8s.io

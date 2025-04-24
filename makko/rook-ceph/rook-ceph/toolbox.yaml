@@ -108,6 +108,14 @@ spec:
             - name: ceph-admin-secret
               mountPath: /var/lib/rook-ceph-mon
               readOnly: true
+          resources:
+            limits:
+              memory: "1024Mi"
+              cpu: "500m"
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+
       volumes:
         - name: ceph-admin-secret
           secret:
