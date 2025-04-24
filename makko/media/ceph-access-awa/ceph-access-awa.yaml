@@ -45,6 +45,8 @@ spec:
             readOnly: true
           - name: music
             mountPath: "/music"
+          - name: config
+            mountPath: "/root/.config"
         ports:
         - containerPort: 22
         #securityContext:
@@ -75,3 +77,18 @@ spec:
       - name: music
         persistentVolumeClaim:
           claimName: sonyx-music-pvc
+      - name: config
+        persistentVolumeClaim:
+          claimName: sonyx-config-pvc
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: awa-config-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: rook-cephfs-awa

@@ -54,6 +54,10 @@ spec:
                 secretKeyRef:
                   name: sonyx-secrets
                   key: spotify-client-secret
+            - name: ND_PROMETHEUS_ENABLED
+              value: "true"
+            - name: ND_PROMETHEUS_METRICSPATH
+              value: "/metrics" # Let's use a consistent path for Kubernetes
           volumeMounts:
             - name: data
               mountPath: /data
