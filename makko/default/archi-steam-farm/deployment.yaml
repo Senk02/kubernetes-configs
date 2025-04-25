@@ -18,7 +18,7 @@ spec:
         app: archi
     spec:
       containers:
-      - image: justarchi/archisteamfarm:6.1.4.3
+      - image: justarchi/archisteamfarm:6.1.5.2
         name: archi
         volumeMounts:
         - name: config
