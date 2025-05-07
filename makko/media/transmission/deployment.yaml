@@ -27,6 +27,12 @@ spec:
         envFrom:
         - configMapRef:
             name: transmission
+        env:
+        - name: OPENVPN_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: transmission
+              key: password
         volumeMounts:
         - name: data
           mountPath: /data
