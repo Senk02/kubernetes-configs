@@ -89,6 +89,8 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: cs2-pvc
+  annotations:
+    pv.beta.kubernetes.io/gid: "1000"
 spec:
   accessModes:
     - ReadWriteOnce
