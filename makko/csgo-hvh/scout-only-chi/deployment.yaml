@@ -20,9 +20,6 @@ spec:
       containers:
       - image: joedwards32/cs2
         name: cs2-dedicated
-        envFrom:
-        - configMapRef:
-            name: cs2-dedicated-config
         env:
         - name: SRCDS_TOKEN
           valueFrom:
@@ -44,6 +41,13 @@ spec:
             secretKeyRef:
               name: cs2-server-secrets
               key: tv-relay-password
+        - name: CS2_SERVERNAME
+          value: "[NA] [CA] Twans HvH - Scout Only"
+        - name: CS2_RCONPW
+          valueFrom:
+            secretKeyRef:
+              name: cs2-server-secrets
+              key: rcon-password
         volumeMounts:
         - name: cs2-data
           mountPath: /home/steam/cs2-dedicated/
