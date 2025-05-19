@@ -64,10 +64,10 @@ spec:
         tty: true
         resources:
           limits:
-            cpu: "2"
+            cpu: "4"
             memory: 4Gi
           requests:
-            cpu: "1"
+            cpu: "2"
             memory: 2Gi
       volumes:
       - name: cs2-data
@@ -86,6 +86,6 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 20Gi
+      storage: 50Gi
   storageClassName: rook-cephfs
   volumeMode: Filesystem
