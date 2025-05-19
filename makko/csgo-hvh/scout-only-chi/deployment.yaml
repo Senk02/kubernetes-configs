@@ -1,0 +1,99 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cs2-dedicated
+  labels:
+    app: cs2-dedicated
+spec:
+  revisionHistoryLimit: 1
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cs2-dedicated
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: cs2-dedicated
+    spec:
+      containers:
+      - image: joedwards32/cs2
+        name: cs2-dedicated
+        envFrom:
+        - configMapRef:
+            name: cs2-dedicated-config
+        env:
+        - name: SRCDS_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: cs2-server-secrets
+              key: srcds-token
+        - name: RCON_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: cs2-server-secrets
+              key: rcon-password
+        - name: TV_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: cs2-server-secrets
+              key: tv-password
+        - name: TV_RELAY_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: cs2-server-secrets
+              key: tv-relay-password
+        volumeMounts:
+        - name: cs2-data
+          mountPath: /home/steam/cs2-dedicated/
+        - name: server-config
+          mountPath: /home/steam/cs2-dedicated/game/csgo/cfg/server_default.cfg
+          subPath: server_default.cfg
+        ports:
+        - containerPort: 27015 # Value from ConfigMap: CS2_PORT
+          name: cs2-tcp
+          protocol: TCP
+        - containerPort: 27015 # Value from ConfigMap: CS2_PORT
+          name: cs2-udp
+          protocol: UDP
+        - containerPort: 27020 # Value from ConfigMap: TV_PORT
+          name: cstv-udp
+          protocol: UDP
+        # If CS2_RCON_PORT is set in the ConfigMap and is a non-empty value,
+        # you might need to define its containerPort here as well if it's different
+        # from the main game port and needs to be mapped by the Service.
+        # For example, if CS2_RCON_PORT is 27016:
+        - containerPort: 27016 # This should correspond to the value of CS2_RCON_PORT
+          name: rcon-tcp
+          protocol: TCP
+        stdin: true
+        tty: true
+        resources:
+          limits:
+            cpu: "2"
+            memory: 4Gi
+          requests:
+            cpu: "1"
+            memory: 2Gi
+      volumes:
+      - name: cs2-data
+        persistentVolumeClaim:
+          claimName: cs2-pvc
+          readOnly: false
+      - name: server-config
+        configMap:
+          name: cs2-server-config
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: cs2-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+  storageClassName: rook-cephfs
+  volumeMode: Filesystem
