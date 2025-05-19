@@ -57,10 +57,6 @@ spec:
         - containerPort: 27020 # Value from ConfigMap: TV_PORT
           name: cstv-udp
           protocol: UDP
-        # If CS2_RCON_PORT is set in the ConfigMap and is a non-empty value,
-        # you might need to define its containerPort here as well if it's different
-        # from the main game port and needs to be mapped by the Service.
-        # For example, if CS2_RCON_PORT is 27016:
         - containerPort: 27016 # This should correspond to the value of CS2_RCON_PORT
           name: rcon-tcp
           protocol: TCP
