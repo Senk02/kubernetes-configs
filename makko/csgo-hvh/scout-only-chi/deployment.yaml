@@ -74,12 +74,18 @@ spec:
             cpu: "2"
             memory: 2Gi
       volumes:
-      - name: cs2-data
-        persistentVolumeClaim:
-          claimName: cs2-pvc
-          readOnly: false
-      #securityContext:
-      #  runAsUser: 
+  #    - name: cs2-data
+  #      persistentVolumeClaim:
+  #        claimName: cs2-pvc
+  #        readOnly: false
+      - name: data
+        hostPath:
+          path: /var/mnt/csgo-hvh
+          type: DirectoryOrCreate
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
