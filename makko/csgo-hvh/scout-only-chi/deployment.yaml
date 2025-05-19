@@ -47,9 +47,6 @@ spec:
         volumeMounts:
         - name: cs2-data
           mountPath: /home/steam/cs2-dedicated/
-        - name: server-config
-          mountPath: /home/steam/cs2-dedicated/game/csgo/cfg
-          subPath: server.cfg
         ports:
         - containerPort: 27015 # Value from ConfigMap: CS2_PORT
           name: cs2-tcp
@@ -81,12 +78,8 @@ spec:
         persistentVolumeClaim:
           claimName: cs2-pvc
           readOnly: false
-      - name: server-config
-        configMap:
-          name: cs2-dedicated-config
-          readOnly: false
-      securityContext:
-        runAsUser: 0
+      #securityContext:
+      #  runAsUser: 0
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
