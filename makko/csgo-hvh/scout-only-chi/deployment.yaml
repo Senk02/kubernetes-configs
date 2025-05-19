@@ -85,7 +85,7 @@ spec:
         configMap:
           name: cs2-server-config
       securityContext:
-        runAsUser: 0
+        runAsUser: 1000
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
