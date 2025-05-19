@@ -84,6 +84,7 @@ spec:
       - name: server-config
         configMap:
           name: cs2-server-config
+          readOnly: false
       securityContext:
         runAsUser: 0
 ---
