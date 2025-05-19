@@ -48,8 +48,8 @@ spec:
         - name: cs2-data
           mountPath: /home/steam/cs2-dedicated/
         - name: server-config
-          mountPath: /home/steam/cs2-dedicated/game/csgo/cfg/server_default.cfg
-          subPath: server_default.cfg
+          mountPath: /home/steam/cs2-dedicated/game/csgo/cfg/server.cfg
+          subPath: server.cfg
         ports:
         - containerPort: 27015 # Value from ConfigMap: CS2_PORT
           name: cs2-tcp
