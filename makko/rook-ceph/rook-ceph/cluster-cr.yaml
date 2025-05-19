@@ -32,7 +32,7 @@ spec:
       resources:
         requests:
           cpu: 100m
-          memory: 1.2Gi
+          memory: 2Gi
     - name: "talos-bm5-aks"
       devices:
       - name: "/dev/disk/by-id/ata-TEAM_T2531TB_TPBF2312040090101521"
@@ -41,14 +41,14 @@ spec:
       resources:
         requests:
           cpu: 100m
-          memory: 1.2Gi
+          memory: 2Gi
     - name: "talos-e6m-uzm"
       devices:
       - name: "/dev/disk/by-id/ata-OOS14000G_0000CGZ0"
       resources:
         requests:
           cpu: 100m
-          memory: 1.7Gi
+          memory: 2Gi
     - name: "talos-73x-rd9"
       devices:
       - name: "/dev/disk/by-id/ata-OOS14000G_000F3PGE"
@@ -59,12 +59,12 @@ spec:
       resources:
         requests:
           cpu: 100m
-          memory: 1.5Gi
+          memory: 2Gi
   resources:
     crashcollector:
       requests:
         cpu: 100m
-        memory: 60Mi
+        memory: 128Mi
     mgr:
       requests:
         cpu: 100m
@@ -84,4 +84,4 @@ spec:
     csi-cephfsplugin:
       requests:
         cpu: 10m
-        memory: 32Mi
+        memory: 64Mi
