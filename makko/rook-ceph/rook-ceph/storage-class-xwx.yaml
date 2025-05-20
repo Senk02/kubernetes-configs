@@ -17,13 +17,26 @@ parameters:
   # Required for provisionVolume: "true"
   pool: xwxfs-replicated
 
-  # The secrets contain Ceph admin credentials. These are generated automatically by the operator
-  # in the same namespace as the cluster.
+  # Performance optimizations
+  mounter: kernel
+  kernelMount: true
   csi.storage.k8s.io/provisioner-secret-name: rook-csi-cephfs-provisioner
   csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
   csi.storage.k8s.io/controller-expand-secret-name: rook-csi-cephfs-provisioner
   csi.storage.k8s.io/controller-expand-secret-namespace: rook-ceph
   csi.storage.k8s.io/node-stage-secret-name: rook-csi-cephfs-node
   csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
+  
+  # Mount options for performance
+  mountOptions: |
+    ms_max_backoff=15
+    recover_session_max_retries=10000
+    recovery_lease=1
+    direct_io=1
+    readahead=0
+    max_readahead=0
+    dcache_getattr_timeout=120
+    dcache_readdir_timeout=120
 
 reclaimPolicy: Delete
+volumeBindingMode: Immediate

@@ -69,6 +69,8 @@ spec:
         volumeMounts:
         - name: cs2-data
           mountPath: /home/steam/cs2-dedicated/
+        - name: cs2-data-xwx
+          mountPath: /home/steam/cs2-dedicated-xwx/
         ports:
         - containerPort: 27015 # Value from ConfigMap: CS2_PORT
           name: cs2-tcp
@@ -96,7 +98,24 @@ spec:
         hostPath:
           path: /var/mnt/csgo-hvh
           type: DirectoryOrCreate
+      - name: cs2-data-xwx
+        persistentVolumeClaim:
+          claimName: hvh-xwx-pvc
+          readOnly: false
       securityContext:
-        runAsUser: 0 # IMPORTANT: This is the pod-level security context.
-        runAsGroup: 0 # It applies as a default to all containers unless overridden.
+        runAsUser: 0
+        runAsGroup: 0
         fsGroup: 1000
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: hvh-xwx-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Gi
+  storageClassName: rook-cephfs-xwx
+
