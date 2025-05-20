@@ -88,9 +88,6 @@ spec:
         hostPath:
           path: /var/mnt/csgo-hvh
           type: DirectoryOrCreate
-      - name: server-config
-        configMap:
-          name: cs2-server-config
       securityContext:
         runAsUser: 1000
         runAsGroup: 1000
