@@ -30,3 +30,4 @@ spec:
     port: 27016 # External port for RCON
     targetPort: rcon-tcp # This should match the name of the rcon port in the deployment's container spec
     protocol: TCP
+  externalTrafficPolicy: Local
