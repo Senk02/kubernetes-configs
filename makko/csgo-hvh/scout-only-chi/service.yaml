@@ -12,10 +12,12 @@ spec:
   - name: cs2-tcp
     port: 27015 # External port, matches CS2_PORT from ConfigMap
     targetPort: cs2-tcp # Matches containerPort name
+    nodePort: 32420
     protocol: TCP
   - name: cs2-udp
     port: 27015 # External port, matches CS2_PORT from ConfigMap
     targetPort: cs2-udp # Matches containerPort name
+    nodePort: 32420
     protocol: UDP
   - name: cstv-udp
     port: 27020 # External port, matches TV_PORT from ConfigMap
