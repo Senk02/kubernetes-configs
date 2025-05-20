@@ -17,6 +17,16 @@ spec:
       labels:
         app: cs2-dedicated
     spec:
+      initContainers:
+      - name: change-volume-ownership
+        image: busybox:1.36 # A small image with basic utilities like chown
+        command: ["sh", "-c", "chown -R 1000:1000 /home/steam/cs2-dedicated"]
+        volumeMounts:
+        - name: cs2-data
+          mountPath: /home/steam/cs2-dedicated
+        securityContext:
+          runAsUser: 0 # Run as root to change ownership
+          runAsGroup: 0
       containers:
       - image: joedwards32/cs2
         name: cs2-dedicated
@@ -74,10 +84,6 @@ spec:
             cpu: "2"
             memory: 2Gi
       volumes:
-  #    - name: cs2-data
-  #      persistentVolumeClaim:
-  #        claimName: cs2-pvc
-  #        readOnly: false
       - name: cs2-data
         hostPath:
           path: /var/mnt/csgo-hvh
@@ -86,16 +92,3 @@ spec:
         runAsUser: 1000
         runAsGroup: 1000
         fsGroup: 1000
----
-kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
-  name: cs2-pvc
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 100Gi
-  storageClassName: rook-cephfs
-  volumeMode: Filesystem
