@@ -59,7 +59,7 @@ spec:
         - name: CS2_SERVERNAME
           value: "[NA] Twans HvH - Scout Only"
         - name: CS2_CFG_URL
-          value: "https://cloud.senk0.com/wl/?id=eWZNm0IiSJqYrICbWUuDvBfKQrkKdb3t&fmode=download"
+          value: "https://github.com/Senk02/kubernetes-configs/blob/main/makko/csgo-hvh/scout-only-chi/cs2.cfg.zip"
         - name: CS2_ADDITIONAL_ARGS
           value: "-insecure"
         volumeMounts:
