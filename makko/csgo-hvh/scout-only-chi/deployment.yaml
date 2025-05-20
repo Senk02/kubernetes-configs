@@ -58,6 +58,10 @@ spec:
               key: rcon-password
         - name: CS2_SERVERNAME
           value: "[NA] Twans HvH - Scout Only"
+        - name: CS2_CFG_URL
+          value: "https://cloud.senk0.com/wl/?id=eWZNm0IiSJqYrICbWUuDvBfKQrkKdb3t&fmode=download"
+        - name: CS2_ADDITIONAL_ARGS
+          value: "-insecure"
         volumeMounts:
         - name: cs2-data
           mountPath: /home/steam/cs2-dedicated/
