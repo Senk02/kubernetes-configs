@@ -30,6 +30,10 @@ spec:
       containers:
       - image: joedwards32/cs2
         name: cs2-dedicated
+        # --- START OF DEBUGGING COMMAND ---
+        command: ["tail"]
+        args: ["-f", "/dev/null"]
+        # --- END OF DEBUGGING COMMAND ---
         env:
         - name: SRCDS_TOKEN
           valueFrom:
@@ -93,6 +97,6 @@ spec:
           path: /var/mnt/csgo-hvh
           type: DirectoryOrCreate
       securityContext:
-        runAsUser: 0
-        runAsGroup: 0
+        runAsUser: 0 # IMPORTANT: This is the pod-level security context.
+        runAsGroup: 0 # It applies as a default to all containers unless overridden.
         fsGroup: 1000
