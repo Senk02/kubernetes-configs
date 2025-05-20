@@ -51,16 +51,19 @@ spec:
             secretKeyRef:
               name: cs2-server-secrets
               key: tv-relay-password
-        - name: CS2_SERVERNAME
-          value: "[NA] [CA] Twans HvH - Scout Only"
         - name: CS2_RCONPW
           valueFrom:
             secretKeyRef:
               name: cs2-server-secrets
               key: rcon-password
+        - name: CS2_SERVERNAME
+          value: "[NA] [CA] Twans HvH - Scout Only"
         volumeMounts:
         - name: cs2-data
           mountPath: /home/steam/cs2-dedicated/
+        - name: server-config
+          mountPath: /home/steam/cs2-dedicated/game/csgo/cfg/server.cfg
+          subPath: server.cfg
         ports:
         - containerPort: 27015 # Value from ConfigMap: CS2_PORT
           name: cs2-tcp
@@ -88,6 +91,9 @@ spec:
         hostPath:
           path: /var/mnt/csgo-hvh
           type: DirectoryOrCreate
+      - name: server-config
+        configMap:
+          name: cs2-server-config
       securityContext:
         runAsUser: 1000
         runAsGroup: 1000
