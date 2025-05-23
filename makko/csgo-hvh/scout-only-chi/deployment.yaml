@@ -31,7 +31,7 @@ spec:
           runAsGroup: 0
       containers:
       - image: joedwards32/cs2
-        name: cs2-dedicated
+        name: cs2-dedicated:latest
         env:
         - name: SRCDS_TOKEN
           valueFrom:
