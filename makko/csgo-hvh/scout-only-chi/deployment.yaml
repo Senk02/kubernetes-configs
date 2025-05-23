@@ -28,8 +28,8 @@ spec:
           runAsUser: 0 # Run as root to change ownership
           runAsGroup: 0
       containers:
-      - image: joedwards32/cs2
-        name: cs2-dedicated:latest
+      - image: joedwards32/cs2:latest
+        name: cs2-dedicated
         env:
         - name: SRCDS_TOKEN
           valueFrom:
@@ -64,7 +64,7 @@ spec:
           value: "-insecure"
         volumeMounts:
         - name: cs2-data-nvme
-          mountPath: /home/steam/cs2-dedicated/
+          mountPath: /home/steam/cs2-dedicated
         ports:
         - containerPort: 27015 # Value from ConfigMap: CS2_PORT
           name: cs2-tcp
