@@ -70,9 +70,9 @@ spec:
           value: "-insecure"
         volumeMounts:
         - name: cs2-data
-          mountPath: /home/steam/cs2-dedicated/
+          mountPath: /home/steam/cs2-dedicated-old/
         - name: cs2-data-nvme
-          mountPath: /home/steam/cs2-dedicated-nvme/
+          mountPath: /home/steam/cs2-dedicated/
         ports:
         - containerPort: 27015 # Value from ConfigMap: CS2_PORT
           name: cs2-tcp
