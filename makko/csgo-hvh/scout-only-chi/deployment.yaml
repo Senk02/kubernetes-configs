@@ -20,12 +20,10 @@ spec:
       initContainers:
       - name: change-volume-ownership
         image: busybox:1.36 # A small image with basic utilities like chown
-        command: ["sh", "-c", "chown -R 1000:1000 /home/steam/cs2-dedicated", "chown -R 1000:1000 /home/steam/cs2-dedicated-nvme"]
+        command: ["sh", "-c", "chown -R 1000:1000 /home/steam/cs2-dedicated"]
         volumeMounts:
-        - name: cs2-data
-          mountPath: /home/steam/cs2-dedicated
         - name: cs2-data-nvme
-          mountPath: /home/steam/cs2-dedicated-nvme
+          mountPath: /home/steam/cs2-dedicated
         securityContext:
           runAsUser: 0 # Run as root to change ownership
           runAsGroup: 0
@@ -65,8 +63,6 @@ spec:
         - name: CS2_ADDITIONAL_ARGS
           value: "-insecure"
         volumeMounts:
-        - name: cs2-data
-          mountPath: /home/steam/cs2-dedicated-old/
         - name: cs2-data-nvme
           mountPath: /home/steam/cs2-dedicated/
         ports:
@@ -87,15 +83,11 @@ spec:
         resources:
           limits:
             cpu: "4"
-            memory: 4Gi
+            memory: 8Gi
           requests:
             cpu: "2"
             memory: 2Gi
       volumes:
-      - name: cs2-data
-        hostPath:
-          path: /var/mnt/csgo-hvh
-          type: DirectoryOrCreate
       - name: cs2-data-nvme
         hostPath:
           path: /var/nvme/csgo-hvh
