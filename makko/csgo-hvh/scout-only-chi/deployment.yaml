@@ -32,10 +32,6 @@ spec:
       containers:
       - image: joedwards32/cs2
         name: cs2-dedicated
-        # --- START OF DEBUGGING COMMAND ---
-        command: ["tail"]
-        args: ["-f", "/dev/null"]
-        # --- END OF DEBUGGING COMMAND ---
         env:
         - name: SRCDS_TOKEN
           valueFrom:
