@@ -80,6 +80,24 @@ spec:
         volumeMounts:
         - name: cs2-data-nvme
           mountPath: /home/steam/cs2-dedicated
+        - name: plugin-configs
+          mountPath: /home/steam/cs2-dedicated/game/csgo/addons/counterstrikesharp/configs/plugins/CS2-Essentials/CS2-Essentials.json
+          subPath: CS2-Essentials.json
+        - name: simpleadmin-config
+          mountPath: /home/steam/cs2-dedicated/game/csgo/addons/counterstrikesharp/configs/plugins/CS2-SimpleAdmin/CS2-SimpleAdmin.json
+          subPath: CS2-SimpleAdmin.json
+        - name: plugin-configs
+          mountPath: /home/steam/cs2-dedicated/game/csgo/addons/counterstrikesharp/configs/plugins/MenuManagerCore/MenuManagerCore.json
+          subPath: MenuManagerCore.json
+        - name: plugin-configs
+          mountPath: /home/steam/cs2-dedicated/game/csgo/addons/counterstrikesharp/configs/plugins/PlayerSettings/PlayerSettings.json
+          subPath: PlayerSettings.json
+        - name: plugin-configs
+          mountPath: /home/steam/cs2-dedicated/game/csgo/addons/counterstrikesharp/configs/plugins/ResetScore/ResetScore.json
+          subPath: ResetScore.json
+        - name: plugin-configs
+          mountPath: /home/steam/cs2-dedicated/game/csgo/addons/counterstrikesharp/configs/plugins/TeleportFix/TeleportFix.json
+          subPath: TeleportFix.json
         ports:
         - containerPort: 27015 # CS2_PORT
           name: cs2-tcp
@@ -104,6 +122,12 @@ spec:
         hostPath:
           path: /var/nvme/csgo-hvh
           type: DirectoryOrCreate
+      - name: plugin-configs
+        secret:
+          secretName: cs2-server-secrets
+      - name: simpleadmin-config
+        secret:
+          secretName: simpleadmin-config
       securityContext:
         runAsUser: 1000
         runAsGroup: 1000
