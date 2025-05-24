@@ -19,13 +19,13 @@ spec:
     spec:
       initContainers:
       - name: change-volume-ownership
-        image: busybox:1.36 # A small image with basic utilities like chown
+        image: busybox:1.36
         command: ["sh", "-c", "chown -R 1000:1000 /home/steam/cs2-dedicated"]
         volumeMounts:
         - name: cs2-data-nvme
           mountPath: /home/steam/cs2-dedicated
         securityContext:
-          runAsUser: 0 # Run as root to change ownership
+          runAsUser: 0
           runAsGroup: 0
       containers:
       - image: joedwards32/cs2:latest
@@ -56,6 +56,16 @@ spec:
             secretKeyRef:
               name: cs2-server-secrets
               key: rcon-password
+        - name: MARIADB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mariadb-root-password
+              key: password
+        - name: MARIADB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mariadb-password
+              key: password
         - name: CS2_SERVERNAME
           value: "[NA] Twans HvH - Scout Only"
         - name: CS2_CFG_URL
@@ -66,16 +76,16 @@ spec:
         - name: cs2-data-nvme
           mountPath: /home/steam/cs2-dedicated
         ports:
-        - containerPort: 27015 # Value from ConfigMap: CS2_PORT
+        - containerPort: 27015 # CS2_PORT
           name: cs2-tcp
           protocol: TCP
-        - containerPort: 27015 # Value from ConfigMap: CS2_PORT
+        - containerPort: 27015 # CS2_PORT
           name: cs2-udp
           protocol: UDP
-        - containerPort: 27020 # Value from ConfigMap: TV_PORT
+        - containerPort: 27020 # TV_PORT
           name: cstv-udp
           protocol: UDP
-        - containerPort: 27016 # This should correspond to the value of CS2_RCON_PORT
+        - containerPort: 27016 # RCON_PORT
           name: rcon-tcp
           protocol: TCP
         stdin: true
