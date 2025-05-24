@@ -59,13 +59,13 @@ spec:
         - name: MARIADB_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: mariadb-root-password
-              key: password
+              name: mariadb-secrets
+              key: mariadb-root-password
         - name: MARIADB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: mariadb-password
-              key: password
+              name: mariadb-secrets
+              key: mariadb-password
         - name: CS2_SERVERNAME
           value: "[NA] Twans HvH - Scout Only"
         - name: CS2_CFG_URL
