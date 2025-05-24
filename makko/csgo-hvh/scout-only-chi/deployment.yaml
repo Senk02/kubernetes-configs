@@ -90,9 +90,6 @@ spec:
         - containerPort: 27020 # TV_PORT
           name: cstv-udp
           protocol: UDP
-        - containerPort: 27016 # RCON_PORT
-          name: rcon-tcp
-          protocol: TCP
         stdin: true
         tty: true
         resources:

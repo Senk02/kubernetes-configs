@@ -23,11 +23,4 @@ spec:
     port: 27020 # External port, matches TV_PORT from ConfigMap
     targetPort: cstv-udp # Matches containerPort name
     protocol: UDP
-  # If you set CS2_RCON_PORT in the ConfigMap and want to expose it, add it here.
-  # Ensure the targetPort matches the containerPort name/number defined in the Deployment.
-  # For example, if CS2_RCON_PORT is 27016:
-  - name: rcon-tcp
-    port: 27016 # External port for RCON
-    targetPort: rcon-tcp # This should match the name of the rcon port in the deployment's container spec
-    protocol: TCP
   externalTrafficPolicy: Local
