@@ -124,7 +124,7 @@ spec:
           type: DirectoryOrCreate
       - name: plugin-configs
         secret:
-          secretName: cs2-server-secrets
+          secretName: plugin-configs
       - name: simpleadmin-config
         secret:
           secretName: simpleadmin-config
