@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cssbans
+  labels:
+    app: cssbans
+spec:
+  revisionHistoryLimit: 1
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cssbans
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: cssbans
+    spec:
+      containers:
+      - image: cssbans/cssbans-php-nginx
+        name: cssbans-php-nginx
+        volumeMounts:
+        - name: cssbans-html
+          mountPath: /var/www/html
+        ports:
+        - containerPort: 8080
+        resources:
+          limits:
+            cpu: "1"
+            memory: 128Mi # Adjusted memory slightly as PHP/Nginx might need more
+            ephemeral-storage: 128Mi
+          requests:
+            cpu: 10m
+            memory: 32Mi
+      volumes:
+      - name: cssbans-html
+        persistentVolumeClaim:
+          claimName: cssbans-pvc
+          readOnly: false
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: cssbans-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 2Gi
+  storageClassName: rook-cephfs
+  volumeMode: Filesystem
