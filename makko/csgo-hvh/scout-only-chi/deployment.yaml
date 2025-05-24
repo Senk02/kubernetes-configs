@@ -80,9 +80,6 @@ spec:
         volumeMounts:
         - name: cs2-data-nvme
           mountPath: /home/steam/cs2-dedicated
-        - name: simpleadmin-config
-          mountPath: /home/steam/cs2-dedicated/game/csgo/addons/counterstrikesharp/configs/plugins/CS2-SimpleAdmin/CS2-SimpleAdmin.json
-          subPath: CS2-SimpleAdmin.json
         ports:
         - containerPort: 27015 # CS2_PORT
           name: cs2-tcp
@@ -110,9 +107,6 @@ spec:
         hostPath:
           path: /var/nvme/csgo-hvh
           type: DirectoryOrCreate
-      - name: simpleadmin-config
-        configMap:
-          name: simpleadmin-config
       securityContext:
         runAsUser: 1000
         runAsGroup: 1000
