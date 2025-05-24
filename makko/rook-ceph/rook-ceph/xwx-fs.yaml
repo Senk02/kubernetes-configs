@@ -7,7 +7,7 @@ spec:
   metadataPool:
     failureDomain: osd
     replicated:
-      size: 1
+      size: 0
     parameters:
       compression_mode: none
       pg_num: 128
@@ -17,7 +17,7 @@ spec:
       failureDomain: osd
       deviceClass: nvme
       replicated:
-        size: 1
+        size: 0
       parameters:
         compression_mode: none
         pg_num: 128
