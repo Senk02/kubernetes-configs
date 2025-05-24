@@ -1,0 +1,101 @@
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: plugin-configs
+  labels:
+    external-secrets.io/type: webhook
+spec:
+  refreshInterval: "5m"
+  secretStoreRef:
+    kind: ClusterSecretStore
+    name: bitwarden-login
+  target:
+    creationPolicy: Owner
+    template:
+      data:
+        # Player Settings Configuration
+        PlayerSettings.json: |
+          {
+            "DatabaseParams": {
+              "Host": "mariadb:3306",
+              "Name": "csgo-hvh",
+              "User": "csgo-hvh",
+              "Password": "{{ .mariadb_password | toString }}",
+              "Table": "settings_"
+            },
+            "ConfigVersion": 1
+          }
+        # Menu Manager Configuration
+        MenuManagerCore.json: |
+          {
+            "DefaultMenu": "ButtonMenu",
+            "SoundScroll": "",
+            "SoundClick": "",
+            "SoundDisabled": "",
+            "SoundBack": "",
+            "SoundExit": "",
+            "MoveWhileOpenMenu": false,
+            "ButtonsConfig": {
+              "UpButton": 8,
+              "DownButton": 16,
+              "LeftButton": 512,
+              "RightButton": 1024,
+              "SelectButton": 32,
+              "ExitButton": 8192,
+              "BackButton": 4
+            },
+            "IgnoreErrors": true,
+            "MenuLinesCount": 6,
+            "UseMetamodMenu": false,
+            "UseMetamodMenuReplace": false,
+            "ConfigVersion": 1
+          }
+        # CS2 Essentials Configuration
+        CS2-Essentials.json: |
+          {
+            "RapidFireFixMethod": 1,
+            "RapidFireReflectScale": 1,
+            "AllowedAwpCount": -1,
+            "AllowedScoutCount": -1,
+            "AllowedAutoSniperCount": -1,
+            "UnmatchedFriendlyFire": true,
+            "RestrictTeleport": true,
+            "AllowAdPrint": true,
+            "AllowSettingsPrint": true,
+            "AllowResetScore": true,
+            "AllowRageQuit": true,
+            "ChatPrefix": "[{Red}Hv{DarkRed}H{Default}.gg]",
+            "CustomVoteSettings": {
+              "FriendlyFireVote": true,
+              "TeleportFixVote": true,
+              "RapidFireVote": "full",
+              "Style": "center"
+            },
+            "ConfigVersion": 4
+          }
+        # Reset Score Configuration
+        ResetScore.json: |
+          {
+            "ResetScoreChatTag": "{Red}[Resetscore]{Default}",
+            "ResetScoreOnlyVip": false,
+            "SetScoreAdminFlag": "@css/cheats",
+            "ResetScoreVipFlag": "@css/vip",
+            "DisableResetScoreMVP": false,
+            "Version": 4,
+            "ConfigVersion": 1
+          }
+        # Teleport Fix Configuration
+        TeleportFix.json: |
+          {
+            "ChatPrefix": "[{Red}Hv{DarkRed}H{Default}.gg]",
+            "ConfigVersion": 1
+          }
+  data:
+    - secretKey: mariadb_password
+      sourceRef:
+        storeRef:
+          name: bitwarden-login
+          kind: ClusterSecretStore
+      remoteRef:
+        key: 6b3da1b0-d854-44fe-b902-c36ad6906cec
+        property: password

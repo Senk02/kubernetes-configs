@@ -80,12 +80,12 @@ spec:
         volumeMounts:
         - name: cs2-data-nvme
           mountPath: /home/steam/cs2-dedicated
-        - name: plugin-configs
-          mountPath: /home/steam/cs2-dedicated/game/csgo/addons/counterstrikesharp/configs/plugins/CS2-Essentials/CS2-Essentials.json
-          subPath: CS2-Essentials.json
         - name: simpleadmin-config
           mountPath: /home/steam/cs2-dedicated/game/csgo/addons/counterstrikesharp/configs/plugins/CS2-SimpleAdmin/CS2-SimpleAdmin.json
           subPath: CS2-SimpleAdmin.json
+        - name: plugin-configs
+          mountPath: /home/steam/cs2-dedicated/game/csgo/addons/counterstrikesharp/configs/plugins/CS2-Essentials/CS2-Essentials.json
+          subPath: CS2-Essentials.json
         - name: plugin-configs
           mountPath: /home/steam/cs2-dedicated/game/csgo/addons/counterstrikesharp/configs/plugins/MenuManagerCore/MenuManagerCore.json
           subPath: MenuManagerCore.json
