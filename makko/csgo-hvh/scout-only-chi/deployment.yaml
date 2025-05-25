@@ -131,6 +131,9 @@ spec:
       - name: simpleadmin-config
         secret:
           secretName: simpleadmin-config
+      - name: zenith-config
+        secret:
+          secretName: zenith-config
       securityContext:
         runAsUser: 1000
         runAsGroup: 1000
