@@ -1,42 +1,42 @@
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
-  name: rook-cephfs-xwx
-# Change "rook-ceph" provisioner prefix to match the operator namespace if needed
-provisioner: rook-ceph.cephfs.csi.ceph.com
-allowVolumeExpansion: true
-parameters:
-  # clusterID is the namespace where the rook cluster is running
-  # If you change this namespace, also change the namespace below where the secret namespaces are defined
-  clusterID: rook-ceph
-
-  # CephFS filesystem name into which the volume shall be created
-  fsName: xwxfs
-
-  # Ceph pool into which the volume shall be created
-  # Required for provisionVolume: "true"
-  pool: xwxfs-replicated
-
-  # Performance optimizations
-  mounter: kernel
-  kernelMount: true
-  csi.storage.k8s.io/provisioner-secret-name: rook-csi-cephfs-provisioner
-  csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
-  csi.storage.k8s.io/controller-expand-secret-name: rook-csi-cephfs-provisioner
-  csi.storage.k8s.io/controller-expand-secret-namespace: rook-ceph
-  csi.storage.k8s.io/node-stage-secret-name: rook-csi-cephfs-node
-  csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
-  
-  # Mount options for performance
-  mountOptions: |
-    ms_max_backoff=15
-    recover_session_max_retries=10000
-    recovery_lease=1
-    direct_io=1
-    readahead=0
-    max_readahead=0
-    dcache_getattr_timeout=120
-    dcache_readdir_timeout=120
-
-reclaimPolicy: Delete
-volumeBindingMode: Immediate
+# apiVersion: storage.k8s.io/v1
+# kind: StorageClass
+# metadata:
+#   name: rook-cephfs-xwx
+# # Change "rook-ceph" provisioner prefix to match the operator namespace if needed
+# provisioner: rook-ceph.cephfs.csi.ceph.com
+# allowVolumeExpansion: true
+# parameters:
+#   # clusterID is the namespace where the rook cluster is running
+#   # If you change this namespace, also change the namespace below where the secret namespaces are defined
+#   clusterID: rook-ceph
+# 
+#   # CephFS filesystem name into which the volume shall be created
+#   fsName: xwxfs
+# 
+#   # Ceph pool into which the volume shall be created
+#   # Required for provisionVolume: "true"
+#   pool: xwxfs-replicated
+# 
+#   # Performance optimizations
+#   mounter: kernel
+#   kernelMount: true
+#   csi.storage.k8s.io/provisioner-secret-name: rook-csi-cephfs-provisioner
+#   csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
+#   csi.storage.k8s.io/controller-expand-secret-name: rook-csi-cephfs-provisioner
+#   csi.storage.k8s.io/controller-expand-secret-namespace: rook-ceph
+#   csi.storage.k8s.io/node-stage-secret-name: rook-csi-cephfs-node
+#   csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
+#   
+#   # Mount options for performance
+#   mountOptions: |
+#     ms_max_backoff=15
+#     recover_session_max_retries=10000
+#     recovery_lease=1
+#     direct_io=1
+#     readahead=0
+#     max_readahead=0
+#     dcache_getattr_timeout=120
+#     dcache_readdir_timeout=120
+# 
+# reclaimPolicy: Delete
+# volumeBindingMode: Immediate

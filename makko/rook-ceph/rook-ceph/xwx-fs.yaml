@@ -1,42 +1,42 @@
-apiVersion: ceph.rook.io/v1
-kind: CephFilesystem
-metadata:
-  name: xwxfs
-  namespace: rook-ceph
-spec:
-  metadataPool:
-    failureDomain: osd
-    replicated:
-      size: 0
-    parameters:
-      compression_mode: none
-      pg_num: 128
-      pgp_num: 128
-  dataPools:
-    - name: replicated
-      failureDomain: osd
-      deviceClass: nvme
-      replicated:
-        size: 0
-      parameters:
-        compression_mode: none
-        pg_num: 128
-        pgp_num: 128
-        target_size_ratio: 0.5
-        cache_mode: writeback
-        min_read_recency_for_promote: 0
-        hit_set_count: 4
-        hit_set_period: 600
-  preserveFilesystemOnDelete: true
-  metadataServer:
-    activeCount: 2  # Increased for better metadata handling
-    activeStandby: true
-    resources:
-      limits:
-        cpu: "2"
-        memory: "4Gi"
-      requests:
-        cpu: "1"
-        memory: "2Gi"
-    # Higher priority class for faster scheduling
-    priorityClassName: system-node-critical
+# apiVersion: ceph.rook.io/v1
+# kind: CephFilesystem
+# metadata:
+#   name: xwxfs
+#   namespace: rook-ceph
+# spec:
+#   metadataPool:
+#     failureDomain: osd
+#     replicated:
+#       size: 1
+#     parameters:
+#       compression_mode: none
+#       pg_num: 128
+#       pgp_num: 128
+#   dataPools:
+#     - name: replicated
+#       failureDomain: osd
+#       deviceClass: nvme
+#       replicated:
+#         size: 1
+#       parameters:
+#         compression_mode: none
+#         pg_num: 128
+#         pgp_num: 128
+#         target_size_ratio: 0.5
+#         cache_mode: writeback
+#         min_read_recency_for_promote: 0
+#         hit_set_count: 4
+#         hit_set_period: 600
+#   preserveFilesystemOnDelete: true
+#   metadataServer:
+#     activeCount: 2  # Increased for better metadata handling
+#     activeStandby: true
+#     resources:
+#       limits:
+#         cpu: "2"
+#         memory: "4Gi"
+#       requests:
+#         cpu: "1"
+#         memory: "2Gi"
+#     # Higher priority class for faster scheduling
+#     priorityClassName: system-node-critical

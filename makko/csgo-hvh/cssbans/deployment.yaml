@@ -28,7 +28,7 @@ spec:
         resources:
           limits:
             cpu: "1"
-            memory: 128Mi # Adjusted memory slightly as PHP/Nginx might need more
+            memory: 128Mi
             ephemeral-storage: 128Mi
           requests:
             cpu: 10m
