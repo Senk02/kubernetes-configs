@@ -83,6 +83,9 @@ spec:
         - name: simpleadmin-config
           mountPath: /home/steam/cs2-dedicated/game/csgo/addons/counterstrikesharp/configs/plugins/CS2-SimpleAdmin/CS2-SimpleAdmin.json
           subPath: CS2-SimpleAdmin.json
+        - name: zenith-config
+          mountPath: /home/steam/cs2-dedicated/game/csgo/addons/counterstrikesharp/configs/zenith/core.yaml
+          subPath: core.yaml
         - name: plugin-configs
           mountPath: /home/steam/cs2-dedicated/game/csgo/addons/counterstrikesharp/configs/plugins/CS2-Essentials/CS2-Essentials.json
           subPath: CS2-Essentials.json
