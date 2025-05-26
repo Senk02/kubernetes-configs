@@ -53,7 +53,7 @@ spec:
         # CS2 Essentials Configuration
         CS2-Essentials.json: |
           {
-            "RapidFireFixMethod": 1,
+            "RapidFireFixMethod": 0,
             "RapidFireReflectScale": 1,
             "AllowedAwpCount": -1,
             "AllowedScoutCount": -1,
