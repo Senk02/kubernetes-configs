@@ -64,10 +64,10 @@ spec:
             "AllowSettingsPrint": true,
             "AllowResetScore": true,
             "AllowRageQuit": true,
-            "ChatPrefix": "[{Red}Hv{DarkRed}H{Default}.gg]",
+            "ChatPrefix": "[{Purple}Twans{White}-{Blue}HVH]",
             "CustomVoteSettings": {
-              "FriendlyFireVote": true,
-              "TeleportFixVote": true,
+              "FriendlyFireVote": false,
+              "TeleportFixVote": false,
               "RapidFireVote": "full",
               "Style": "center"
             },
@@ -87,7 +87,7 @@ spec:
         # Teleport Fix Configuration
         TeleportFix.json: |
           {
-            "ChatPrefix": "[{Red}Hv{DarkRed}H{Default}.gg]",
+            "ChatPrefix": "[{Purple}Twans{White}-{Blue}HVH]",
             "ConfigVersion": 1
           }
   data:
