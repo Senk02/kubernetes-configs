@@ -119,7 +119,7 @@ spec:
             memory: 12Gi
           requests:
             cpu: "2"
-            memory: 2Gi
+            memory: 4Gi
       volumes:
       - name: cs2-data-nvme
         hostPath:
