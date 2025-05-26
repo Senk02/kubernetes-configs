@@ -58,13 +58,13 @@ spec:
             "AllowedAwpCount": -1,
             "AllowedScoutCount": -1,
             "AllowedAutoSniperCount": -1,
-            "UnmatchedFriendlyFire": true,
+            "UnmatchedFriendlyFire": false,
             "RestrictTeleport": true,
-            "AllowAdPrint": true,
-            "AllowSettingsPrint": true,
+            "AllowAdPrint": false,
+            "AllowSettingsPrint": false,
             "AllowResetScore": true,
             "AllowRageQuit": true,
-            "ChatPrefix": "[{Purple}Twans{White}-{Blue}HVH]",
+            "ChatPrefix": "[{Purple}Twans{White}-{Blue}HVH{White}]",
             "CustomVoteSettings": {
               "FriendlyFireVote": false,
               "TeleportFixVote": false,
@@ -87,7 +87,7 @@ spec:
         # Teleport Fix Configuration
         TeleportFix.json: |
           {
-            "ChatPrefix": "[{Purple}Twans{White}-{Blue}HVH]",
+            "ChatPrefix": "[{Purple}Twans{White}-{Blue}HVH{White}]",
             "ConfigVersion": 1
           }
   data:
