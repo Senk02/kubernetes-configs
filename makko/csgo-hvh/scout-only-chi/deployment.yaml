@@ -17,6 +17,8 @@ spec:
       labels:
         app: cs2-dedicated
     spec:
+      nodeSelector:
+        kubernetes.io/hostname: talos-73x-rd9
       initContainers:
       - name: change-volume-ownership
         image: busybox:1.37
@@ -119,7 +121,7 @@ spec:
             memory: 10Gi
           requests:
             cpu: "2"
-            memory: 6Gi
+            memory: 4Gi
       volumes:
       - name: cs2-data-nvme
         hostPath:
