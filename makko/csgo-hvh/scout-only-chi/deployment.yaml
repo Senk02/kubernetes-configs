@@ -115,11 +115,11 @@ spec:
         tty: true
         resources:
           limits:
-            cpu: "6"
-            memory: 16Gi
+            cpu: "4"
+            memory: 10Gi
           requests:
             cpu: "2"
-            memory: 4Gi
+            memory: 6Gi
       volumes:
       - name: cs2-data-nvme
         hostPath:
