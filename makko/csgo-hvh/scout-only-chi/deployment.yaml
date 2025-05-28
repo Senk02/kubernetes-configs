@@ -79,6 +79,10 @@ spec:
           value: "https://github.com/Senk02/kubernetes-configs/raw/refs/heads/main/makko/csgo-hvh/scout-only-chi/cs2.cfg.tgz"
         - name: CS2_ADDITIONAL_ARGS
           value: "-insecure"
+        - name: CS2_MAPGROUP
+          value: "mg_tournament"
+        - name: CS2_STARTMAP
+          value: "de_mirage"
         volumeMounts:
         - name: cs2-data-nvme
           mountPath: /home/steam/cs2-dedicated
