@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: xyzzy
+  labels:
+    app: xyzzy
+spec:
+  revisionHistoryLimit: 1
+  replicas: 1
+  selector:
+    matchLabels:
+      app: xyzzy
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: xyzzy
+    spec:
+      containers:
+      - image: emcniece/dockeryourxyzzy:latest
+        name: xyzzy
+        ports:
+        - containerPort: 8080
+        resources:
+          limits:
+            cpu: "1"
+            memory: 128Mi
+            ephemeral-storage: 128Mi
+          requests:
+            cpu: 50m
+            memory: 64Mi
