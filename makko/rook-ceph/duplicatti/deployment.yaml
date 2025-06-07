@@ -37,7 +37,7 @@ spec:
                 name: ceph-access-configmap
                 key: CEPHFS_MON_ADDR
         volumeMounts:
-          - name: ceph-auth-key
+          - name: rook-ceph-admin-keyring
             mountPath: "/secret"
             subPath: secret
             readOnly: true 
@@ -64,11 +64,11 @@ spec:
         persistentVolumeClaim:
           claimName: duplicati-data
           readOnly: false
-      - name: ceph-auth-key
+      - name: rook-ceph-admin-keyring
         secret:
-          secretName: ceph-auth-key
+          secretName: rook-ceph-admin-keyring
           items:
-          - key: secretfile
+          - key: keyring
             path: secret
 ---
 kind: PersistentVolumeClaim
