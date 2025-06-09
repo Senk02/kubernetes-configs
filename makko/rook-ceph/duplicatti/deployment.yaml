@@ -43,6 +43,8 @@ spec:
             readOnly: true 
           - name: data
             mountPath: /data
+          - name: pcbackup
+            mountPath: /mnt/pcbackup
         securityContext:
           privileged: true
           capabilities:
@@ -63,6 +65,10 @@ spec:
       - name: data
         persistentVolumeClaim:
           claimName: duplicati-data
+          readOnly: false
+      - name: pcbackup
+        persistentVolumeClaim:
+          claimName: pcbackup
           readOnly: false
       - name: rook-ceph-admin-keyring
         secret:
