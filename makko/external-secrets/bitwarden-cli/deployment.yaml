@@ -22,10 +22,7 @@ spec:
         name: bitwarden-cli
         env:
           - name: BW_HOST
-            valueFrom:
-              secretKeyRef:
-                name: bitwarden-cli
-                key: BW_HOST
+            value: "http://10.106.152.136"
           - name: BW_USER
             valueFrom:
               secretKeyRef:
