@@ -9,4 +9,5 @@ spec:
   - protocol: TCP
     port: 25565
     targetPort: 25565
-  type: ClusterIP
+    nodePort: 31222
+  type: NodePort
