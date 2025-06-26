@@ -42,8 +42,6 @@ spec:
           value: "-Dfml.queryResult=confirm"
         - name: USE_AIKAR_FLAGS
           value: "true"
-        - name: SYNC_CHUNK_WRITES
-          value: "false"
         - name: TZ
           value: "America/Chicago"
         volumeMounts:
