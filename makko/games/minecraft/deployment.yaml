@@ -1,21 +1,21 @@
 apiVersion: apps/v1 
 kind: Deployment
 metadata:
-  name: minecraft2
+  name: boofcraft
   labels:
-    app: minecraft2
+    app: boofcraft
 spec:
   revisionHistoryLimit: 1
-  replicas: 0
+  replicas: 1
   selector:
     matchLabels:
-      app: minecraft2
+      app: boofcraft
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: minecraft2
+        app: boofcraft
     spec:
       containers:
       - image: itzg/minecraft-server:java8
@@ -28,7 +28,7 @@ spec:
         - name: VERSION
           value: "1.12.2"
         - name: MEMORY
-          value: "8G"    
+          value: "8G"
         volumeMounts:
         - name: data
           mountPath: /data
@@ -46,16 +46,16 @@ spec:
       volumes:
       - name: data
         persistentVolumeClaim:
-          claimName: minecraft-data
+          claimName: minecraft-boofcraft
           readOnly: false
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: minecraft-data
+  name: minecraft-boofcraft
 spec:
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   resources:
     requests:
       storage: 24Gi
