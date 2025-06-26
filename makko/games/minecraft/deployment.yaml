@@ -40,7 +40,7 @@ spec:
           value: "-Dfml.queryResult=confirm"
         - name: USE_AIKAR_FLAGS
           value: "true"
-        - name: USE_SIMD_FLAGS
+        - name: SYNC_CHUNK_WRITES
           value: "true"
         volumeMounts:
         - name: data
