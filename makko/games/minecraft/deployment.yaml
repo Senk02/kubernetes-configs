@@ -39,7 +39,9 @@ spec:
         - name: CF_SLUG
           value: enigmatica2expert
         - name: JVM_OPTS
-          value: "-Dfml.queryResult=confirm -server -Xms4G -Xmx4G -XX:+UseG1GC -XX:MaxGCPauseMillis=50 -XX:+UnlockExperimentalVMOptions"
+          value: "-Dfml.queryResult=confirm"
+        - name: USE_AIKAR_FLAGS
+          value: "true"
         volumeMounts:
         - name: data
           mountPath: /data
