@@ -40,6 +40,8 @@ spec:
           value: "-Dfml.queryResult=confirm"
         - name: USE_AIKAR_FLAGS
           value: "true"
+        - name: USE_SIMD_FLAGS
+          value: "true"
         volumeMounts:
         - name: data
           mountPath: /data
