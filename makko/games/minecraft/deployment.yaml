@@ -24,11 +24,18 @@ spec:
         - name: EULA
           value: "TRUE"
         - name: TYPE
-          value: "FORGE"
+          value: "AUTO_CURSEFORGE"
         - name: VERSION
           value: "1.12.2"
         - name: MEMORY
           value: "8G"
+        - name: CF_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: curseforge-api-key
+              key: password
+        - name: CF_SLUG
+          value: enigmatica2expert
         volumeMounts:
         - name: data
           mountPath: /data
