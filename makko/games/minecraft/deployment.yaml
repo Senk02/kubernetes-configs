@@ -61,11 +61,11 @@ spec:
             memory: 2Gi
             ephemeral-storage: 64Mi
       volumes:
-      - name: data
+      - name: data2
         persistentVolumeClaim:
           claimName: minecraft-boofcraft
           readOnly: false
-      - name: data2
+      - name: data
         hostPath:
           path: /var/mnt/boofcraft
           type: DirectoryOrCreate
