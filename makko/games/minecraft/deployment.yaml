@@ -36,6 +36,8 @@ spec:
               key: password
         - name: CF_SLUG
           value: enigmatica2expert
+        - name: JVM_OPTS
+          value: "-Dfml.queryResult=confirm"
         volumeMounts:
         - name: data
           mountPath: /data
