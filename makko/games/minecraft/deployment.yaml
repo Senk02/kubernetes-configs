@@ -17,8 +17,6 @@ spec:
       labels:
         app: boofcraft
     spec:
-      nodeSelector:
-        kubernetes.io/hostname: talos-73x-rd9
       containers:
       - image: itzg/minecraft-server:java8
         name: minecraft
@@ -45,8 +43,6 @@ spec:
         volumeMounts:
         - name: data
           mountPath: /data
-        - name: data2
-          mountPath: /data2
         ports:
         - containerPort: 25565
         resources:
@@ -63,10 +59,6 @@ spec:
         persistentVolumeClaim:
           claimName: minecraft-boofcraft
           readOnly: false
-      - name: data2
-        hostPath:
-          path: /var/mnt/boofcraft
-          type: DirectoryOrCreate
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
