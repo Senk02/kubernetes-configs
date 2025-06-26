@@ -42,6 +42,8 @@ spec:
           value: "true"
         - name: SYNC_CHUNK_WRITES
           value: "true"
+        - name: TZ
+          value: "America/Chicago"
         volumeMounts:
         - name: data
           mountPath: /data
