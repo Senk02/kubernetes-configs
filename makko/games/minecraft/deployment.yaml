@@ -52,11 +52,11 @@ spec:
         resources:
           limits:
             cpu: "2"
-            memory: 8192Mi
+            memory: 12Gi
             ephemeral-storage: 64Mi
           requests:
             cpu: 100m
-            memory: 2048Mi
+            memory: 4Gi
             ephemeral-storage: 64Mi
       volumes:
       - name: data
