@@ -30,7 +30,7 @@ spec:
         - name: VERSION
           value: "1.12.2"
         - name: MEMORY
-          value: "8G"
+          value: "6G"
         - name: CF_API_KEY
           valueFrom:
             secretKeyRef:
@@ -52,7 +52,7 @@ spec:
         resources:
           limits:
             cpu: "2"
-            memory: 12Gi
+            memory: 8Gi
             ephemeral-storage: 64Mi
           requests:
             cpu: 100m
