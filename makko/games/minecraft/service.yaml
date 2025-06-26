@@ -1,13 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: minecraft2
+  name: boofcraft
 spec:
   selector:
-    app: minecraft2
+    app: boofcraft
   ports:
   - protocol: TCP
     port: 25565
     targetPort: 25565
-    nodePort: 31227
-  type: NodePort
+  type: LoadBalancer

@@ -39,7 +39,7 @@ spec:
         - name: CF_SLUG
           value: enigmatica2expert
         - name: JVM_OPTS
-          value: "-Dfml.queryResult=confirm"
+          value: "-Dfml.queryResult=confirm -server -Xms4G -Xmx4G -XX:+UseG1GC -XX:MaxGCPauseMillis=50 -XX:+UnlockExperimentalVMOptions"
         volumeMounts:
         - name: data
           mountPath: /data
