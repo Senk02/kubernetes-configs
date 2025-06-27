@@ -18,7 +18,7 @@ spec:
         app: boofcraft
     spec:
       nodeSelector:
-        kubernetes.io/hostname: talos-73x-rd9
+        kubernetes.io/hostname: talos-yha-nr5
       containers:
       - image: itzg/minecraft-server:java8
         name: minecraft
@@ -30,7 +30,7 @@ spec:
         - name: VERSION
           value: "1.12.2"
         - name: MEMORY
-          value: "6G"
+          value: "10G"
         - name: CF_API_KEY
           valueFrom:
             secretKeyRef:
@@ -54,7 +54,7 @@ spec:
         resources:
           limits:
             cpu: "2"
-            memory: 8Gi
+            memory: 12Gi
             ephemeral-storage: 64Mi
           requests:
             cpu: 100m
