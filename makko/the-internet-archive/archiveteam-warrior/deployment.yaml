@@ -282,62 +282,6 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: archiveteam-tracker-warrior
-  labels:
-    app: archiveteam-tracker-warrior
-spec:
-  revisionHistoryLimit: 1
-  replicas: 1
-  selector:
-    matchLabels:
-      app: archiveteam-tracker-warrior
-  strategy:
-    type: Recreate
-  template:
-    metadata:
-      labels:
-        app: archiveteam-tracker-warrior
-    spec:
-      containers:
-      - image: atdr.meo.ws/archiveteam/tracker
-        name: tracker-warrior
-        args:
-        - --concurrent
-        - "1"
-        - "Senk0"
-        volumeMounts:
-        - name: tracker-data
-          mountPath: /data
-        ports:
-        - containerPort: 8001
-        resources:
-          limits:
-            cpu: 100m
-            memory: 128Mi
-          requests:
-            cpu: 10m
-            memory: 48Mi
-      volumes:
-      - name: tracker-data
-        persistentVolumeClaim:
-          claimName: archiveteam-tracker-pvc
----
-kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
-  name: archiveteam-tracker-pvc
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 50Gi
-  storageClassName: rook-cephfs-hdd
-  volumeMode: Filesystem
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
   name: archiveteam-glitch-warrior
   labels:
     app: archiveteam-glitch-warrior
