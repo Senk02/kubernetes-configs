@@ -265,3 +265,16 @@ spec:
       - name: imgur-data
         persistentVolumeClaim:
           claimName: archiveteam-imgur-pvc
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: archiveteam-imgur-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 50Gi
+  storageClassName: rook-cephfs-hdd
+  volumeMode: Filesystem
