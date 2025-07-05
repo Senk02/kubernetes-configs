@@ -278,3 +278,339 @@ spec:
       storage: 50Gi
   storageClassName: rook-cephfs-hdd
   volumeMode: Filesystem
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: archiveteam-tracker-warrior
+  labels:
+    app: archiveteam-tracker-warrior
+spec:
+  revisionHistoryLimit: 1
+  replicas: 1
+  selector:
+    matchLabels:
+      app: archiveteam-tracker-warrior
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: archiveteam-tracker-warrior
+    spec:
+      containers:
+      - image: atdr.meo.ws/archiveteam/tracker
+        name: tracker-warrior
+        args:
+        - --concurrent
+        - "1"
+        - "Senk0"
+        volumeMounts:
+        - name: tracker-data
+          mountPath: /data
+        ports:
+        - containerPort: 8001
+        resources:
+          limits:
+            cpu: 100m
+            memory: 128Mi
+          requests:
+            cpu: 10m
+            memory: 48Mi
+      volumes:
+      - name: tracker-data
+        persistentVolumeClaim:
+          claimName: archiveteam-tracker-pvc
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: archiveteam-tracker-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 50Gi
+  storageClassName: rook-cephfs-hdd
+  volumeMode: Filesystem
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: archiveteam-glitch-warrior
+  labels:
+    app: archiveteam-glitch-warrior
+spec:
+  revisionHistoryLimit: 1
+  replicas: 1
+  selector:
+    matchLabels:
+      app: archiveteam-glitch-warrior
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: archiveteam-glitch-warrior
+    spec:
+      containers:
+      - image: atdr.meo.ws/archiveteam/glitch-grab
+        name: glitch-warrior
+        args:
+        - --concurrent
+        - "1"
+        - "Senk0"
+        volumeMounts:
+        - name: glitch-data
+          mountPath: /data
+        ports:
+        - containerPort: 8001
+        resources:
+          limits:
+            cpu: 100m
+            memory: 128Mi
+          requests:
+            cpu: 10m
+            memory: 48Mi
+      volumes:
+      - name: glitch-data
+        persistentVolumeClaim:
+          claimName: archiveteam-glitch-pvc
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: archiveteam-glitch-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 50Gi
+  storageClassName: rook-cephfs-hdd
+  volumeMode: Filesystem
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: archiveteam-metaadlibrary-warrior
+  labels:
+    app: archiveteam-metaadlibrary-warrior
+spec:
+  revisionHistoryLimit: 1
+  replicas: 1
+  selector:
+    matchLabels:
+      app: archiveteam-metaadlibrary-warrior
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: archiveteam-metaadlibrary-warrior
+    spec:
+      containers:
+      - image: atdr.meo.ws/archiveteam/metaadlibrary-grab
+        name: metaadlibrary-warrior
+        args:
+        - --concurrent
+        - "1"
+        - "Senk0"
+        volumeMounts:
+        - name: metaadlibrary-data
+          mountPath: /data
+        ports:
+        - containerPort: 8001
+        resources:
+          limits:
+            cpu: 100m
+            memory: 128Mi
+          requests:
+            cpu: 10m
+            memory: 48Mi
+      volumes:
+      - name: metaadlibrary-data
+        persistentVolumeClaim:
+          claimName: archiveteam-metaadlibrary-pvc
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: archiveteam-metaadlibrary-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 50Gi
+  storageClassName: rook-cephfs-hdd
+  volumeMode: Filesystem
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: archiveteam-fc2-warrior
+  labels:
+    app: archiveteam-fc2-warrior
+spec:
+  revisionHistoryLimit: 1
+  replicas: 1
+  selector:
+    matchLabels:
+      app: archiveteam-fc2-warrior
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: archiveteam-fc2-warrior
+    spec:
+      containers:
+      - image: atdr.meo.ws/archiveteam/fc2-grab
+        name: fc2-warrior
+        args:
+        - --concurrent
+        - "1"
+        - "Senk0"
+        volumeMounts:
+        - name: fc2-data
+          mountPath: /data
+        ports:
+        - containerPort: 8001
+        resources:
+          limits:
+            cpu: 100m
+            memory: 128Mi
+          requests:
+            cpu: 10m
+            memory: 48Mi
+      volumes:
+      - name: fc2-data
+        persistentVolumeClaim:
+          claimName: archiveteam-fc2-pvc
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: archiveteam-fc2-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 50Gi
+  storageClassName: rook-cephfs-hdd
+  volumeMode: Filesystem
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: archiveteam-twitch-warrior
+  labels:
+    app: archiveteam-twitch-warrior
+spec:
+  revisionHistoryLimit: 1
+  replicas: 1
+  selector:
+    matchLabels:
+      app: archiveteam-twitch-warrior
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: archiveteam-twitch-warrior
+    spec:
+      containers:
+      - image: atdr.meo.ws/archiveteam/twitch-grab
+        name: twitch-warrior
+        args:
+        - --concurrent
+        - "1"
+        - "Senk0"
+        volumeMounts:
+        - name: twitch-data
+          mountPath: /data
+        ports:
+        - containerPort: 8001
+        resources:
+          limits:
+            cpu: 100m
+            memory: 128Mi
+          requests:
+            cpu: 10m
+            memory: 48Mi
+      volumes:
+      - name: twitch-data
+        persistentVolumeClaim:
+          claimName: archiveteam-twitch-pvc
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: archiveteam-twitch-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 50Gi
+  storageClassName: rook-cephfs-hdd
+  volumeMode: Filesystem
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: archiveteam-usgovernment-warrior
+  labels:
+    app: archiveteam-usgovernment-warrior
+spec:
+  revisionHistoryLimit: 1
+  replicas: 1
+  selector:
+    matchLabels:
+      app: archiveteam-usgovernment-warrior
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: archiveteam-usgovernment-warrior
+    spec:
+      containers:
+      - image: atdr.meo.ws/archiveteam/usgovernment-grab
+        name: usgovernment-warrior
+        args:
+        - --concurrent
+        - "1"
+        - "Senk0"
+        volumeMounts:
+        - name: usgovernment-data
+          mountPath: /data
+        ports:
+        - containerPort: 8001
+        resources:
+          limits:
+            cpu: 100m
+            memory: 128Mi
+          requests:
+            cpu: 10m
+            memory: 48Mi
+      volumes:
+      - name: usgovernment-data
+        persistentVolumeClaim:
+          claimName: archiveteam-usgovernment-pvc
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: archiveteam-usgovernment-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 50Gi
+  storageClassName: rook-cephfs-hdd
+  volumeMode: Filesystem
