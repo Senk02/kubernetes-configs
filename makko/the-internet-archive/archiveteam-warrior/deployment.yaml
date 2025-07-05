@@ -299,11 +299,11 @@ spec:
         app: archiveteam-tracker-warrior
     spec:
       containers:
-      - image: atdr.meo.ws/archiveteam/terroroftinytown-grab
+      - image: atdr.meo.ws/archiveteam/metaadlibrary-grab
         name: tracker-warrior
         args:
         - --concurrent
-        - "1"
+        - "20"
         - "Senk0"
         volumeMounts:
         - name: tracker-data
