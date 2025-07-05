@@ -6,7 +6,7 @@ metadata:
     app: archiveteam-warrior
 spec:
   revisionHistoryLimit: 1
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: archiveteam-warrior
@@ -24,7 +24,9 @@ spec:
         - name: DOWNLOADER
           value: "Senk0"
         - name: CONCURRENT_ITEMS
-          value: "10"
+          value: "6"
+        - name: SELECTED_PROJECT
+          value: "auto"
         volumeMounts:
         - name: data
           mountPath: /data
@@ -32,11 +34,11 @@ spec:
         - containerPort: 8001
         resources:
           limits:
-            cpu: "2"
-            memory: 2Gi
+            cpu: 100m
+            memory: 128Mi
           requests:
-            cpu: 250m
-            memory: 512Mi
+            cpu: 10m
+            memory: 48Mi
       volumes:
       - name: data
         persistentVolumeClaim:
