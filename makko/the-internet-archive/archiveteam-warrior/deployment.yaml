@@ -299,7 +299,7 @@ spec:
         app: archiveteam-tracker-warrior
     spec:
       containers:
-      - image: atdr.meo.ws/archiveteam/urlteam-grab
+      - image: atdr.meo.ws/archiveteam/terroroftinytown-grab
         name: tracker-warrior
         args:
         - --concurrent
