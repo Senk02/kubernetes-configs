@@ -50,7 +50,7 @@ metadata:
   name: archiveteam-warrior-pvc
 spec:
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   resources:
     requests:
       storage: 50Gi
