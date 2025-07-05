@@ -21,11 +21,10 @@ spec:
       containers:
       - image: atdr.meo.ws/archiveteam/blogger-grab
         name: blogger-warrior
-        env:
-        - name: DOWNLOADER
-          value: "Senk0"
-        - name: CONCURRENT_ITEMS
-          value: "1"
+        args:
+        - --concurrent
+        - "1"
+        - "Senk0"
         volumeMounts:
         - name: blogger-data
           mountPath: /data
@@ -78,11 +77,10 @@ spec:
       containers:
       - image: atdr.meo.ws/archiveteam/youtube-grab
         name: youtube-warrior
-        env:
-        - name: DOWNLOADER
-          value: "Senk0"
-        - name: CONCURRENT_ITEMS
-          value: "1"
+        args:
+        - --concurrent
+        - "1"
+        - "Senk0"
         volumeMounts:
         - name: youtube-data
           mountPath: /data
@@ -135,11 +133,10 @@ spec:
       containers:
       - image: atdr.meo.ws/archiveteam/mediafire-grab
         name: mediafire-warrior
-        env:
-        - name: DOWNLOADER
-          value: "Senk0"
-        - name: CONCURRENT_ITEMS
-          value: "1"
+        args:
+        - --concurrent
+        - "1"
+        - "Senk0"
         volumeMounts:
         - name: mediafire-data
           mountPath: /data
@@ -192,11 +189,10 @@ spec:
       containers:
       - image: atdr.meo.ws/archiveteam/pastebin-grab
         name: pastebin-warrior
-        env:
-        - name: DOWNLOADER
-          value: "Senk0"
-        - name: CONCURRENT_ITEMS
-          value: "1"
+        args:
+        - --concurrent
+        - "1"
+        - "Senk0"
         volumeMounts:
         - name: pastebin-data
           mountPath: /data
@@ -249,11 +245,10 @@ spec:
       containers:
       - image: atdr.meo.ws/archiveteam/imgur-grab
         name: imgur-warrior
-        env:
-        - name: DOWNLOADER
-          value: "Senk0"
-        - name: CONCURRENT_ITEMS
-          value: "1"
+        args:
+        - --concurrent
+        - "1"
+        - "Senk0"
         volumeMounts:
         - name: imgur-data
           mountPath: /data
@@ -270,16 +265,3 @@ spec:
       - name: imgur-data
         persistentVolumeClaim:
           claimName: archiveteam-imgur-pvc
----
-kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
-  name: archiveteam-imgur-pvc
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 50Gi
-  storageClassName: rook-cephfs-hdd
-  volumeMode: Filesystem
