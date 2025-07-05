@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: archiveteam-warrior
+  labels:
+    app: archiveteam-warrior
+spec:
+  revisionHistoryLimit: 1
+  replicas: 1
+  selector:
+    matchLabels:
+      app: archiveteam-warrior
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: archiveteam-warrior
+    spec:
+      containers:
+      - image: atdr.meo.ws/archiveteam/warrior-dockerfile
+        name: archiveteam-warrior
+        env:
+        - name: DOWNLOADER
+          value: "Senk0"
+        - name: CONCURRENT_ITEMS
+          value: "10"
+        volumeMounts:
+        - name: data
+          mountPath: /data
+        ports:
+        - containerPort: 8001
+        resources:
+          limits:
+            cpu: "2"
+            memory: 2Gi
+          requests:
+            cpu: 250m
+            memory: 512Mi
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: archiveteam-warrior-pvc
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: archiveteam-warrior-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 50Gi
+  storageClassName: rook-cephfs-hdd
+  volumeMode: Filesystem
