@@ -18,7 +18,7 @@ spec:
         app: jellyseer
     spec:
       containers:
-      - image: fallenbagel/jellyseerr:2.5.2
+      - image: fallenbagel/jellyseerr:2.7.1
         name: jellyseer
         env:
         - name: LOG_LEVEL
