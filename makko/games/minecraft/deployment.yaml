@@ -58,7 +58,7 @@ spec:
             ephemeral-storage: 64Mi
           requests:
             cpu: 100m
-            memory: 6Gi
+            memory: 4Gi
             ephemeral-storage: 64Mi
       volumes:
       - name: data2
