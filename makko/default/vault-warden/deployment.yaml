@@ -18,7 +18,7 @@ spec:
         app: vault-warden
     spec:
       containers:
-      - image: vaultwarden/server:1.33.2
+      - image: vaultwarden/server:1.34.3
         name: vault-warden
         volumeMounts:
         - name: data
