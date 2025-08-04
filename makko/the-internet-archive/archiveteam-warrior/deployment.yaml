@@ -7,7 +7,7 @@ metadata:
     app: archiveteam-blogger-warrior
 spec:
   revisionHistoryLimit: 1
-  replicas: 1
+  replicas: 0
   selector:
     matchLabels:
       app: archiveteam-blogger-warrior
@@ -63,7 +63,7 @@ metadata:
     app: archiveteam-youtube-warrior
 spec:
   revisionHistoryLimit: 1
-  replicas: 1
+  replicas: 0
   selector:
     matchLabels:
       app: archiveteam-youtube-warrior
@@ -119,7 +119,7 @@ metadata:
     app: archiveteam-mediafire-warrior
 spec:
   revisionHistoryLimit: 1
-  replicas: 1
+  replicas: 0
   selector:
     matchLabels:
       app: archiveteam-mediafire-warrior
@@ -175,7 +175,7 @@ metadata:
     app: archiveteam-pastebin-warrior
 spec:
   revisionHistoryLimit: 1
-  replicas: 1
+  replicas: 0
   selector:
     matchLabels:
       app: archiveteam-pastebin-warrior
@@ -231,7 +231,7 @@ metadata:
     app: archiveteam-imgur-warrior
 spec:
   revisionHistoryLimit: 1
-  replicas: 1
+  replicas: 0
   selector:
     matchLabels:
       app: archiveteam-imgur-warrior
@@ -287,7 +287,7 @@ metadata:
     app: archiveteam-tracker-warrior
 spec:
   revisionHistoryLimit: 1
-  replicas: 1
+  replicas: 0
   selector:
     matchLabels:
       app: archiveteam-tracker-warrior
@@ -343,7 +343,7 @@ metadata:
     app: archiveteam-glitch-warrior
 spec:
   revisionHistoryLimit: 1
-  replicas: 1
+  replicas: 0
   selector:
     matchLabels:
       app: archiveteam-glitch-warrior
@@ -399,7 +399,7 @@ metadata:
     app: archiveteam-metaadlibrary-warrior
 spec:
   revisionHistoryLimit: 1
-  replicas: 1
+  replicas: 0
   selector:
     matchLabels:
       app: archiveteam-metaadlibrary-warrior
@@ -455,7 +455,7 @@ metadata:
     app: archiveteam-fc2-warrior
 spec:
   revisionHistoryLimit: 1
-  replicas: 1
+  replicas: 0
   selector:
     matchLabels:
       app: archiveteam-fc2-warrior
@@ -511,7 +511,7 @@ metadata:
     app: archiveteam-twitch-warrior
 spec:
   revisionHistoryLimit: 1
-  replicas: 1
+  replicas: 0
   selector:
     matchLabels:
       app: archiveteam-twitch-warrior
@@ -567,7 +567,7 @@ metadata:
     app: archiveteam-usgovernment-warrior
 spec:
   revisionHistoryLimit: 1
-  replicas: 1
+  replicas: 0
   selector:
     matchLabels:
       app: archiveteam-usgovernment-warrior
