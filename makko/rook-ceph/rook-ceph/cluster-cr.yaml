@@ -28,7 +28,6 @@ spec:
       devices:
       - name: "/dev/disk/by-id/ata-TEAM_T2531TB_TPBF2309110030301839"
       - name: "/dev/disk/by-id/ata-TEAM_T2531TB_TPBF2309110030302351"
-      - name: "/dev/disk/by-id/ata-WDC_WD140EDGZ-11B1PA0_9MJ2X7MU"
       resources:
         requests:
           cpu: 100m
@@ -55,6 +54,9 @@ spec:
       - name: "/dev/disk/by-id/ata-ST4000NM010A-2HZ111_WJG0M3DJ"
       - name: "/dev/disk/by-id/ata-ST4000NM010A-2HZ111_WS22BE9S"
       - name: "/dev/disk/by-id/nvme-SPCC_M.2_PCIe_SSD_PA9012R001145"
+    - name: "talos-yha-nr5"
+      devices:
+      - name: "/dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi2"
       resources:
         requests:
           cpu: 100m
