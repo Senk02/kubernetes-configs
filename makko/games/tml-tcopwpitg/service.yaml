@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: tml
+  name: tml-tcopwpitg
 spec:
   selector:
-    app: tml
+    app: tml-tcopwpitg
   ports:
   - protocol: TCP
     port: 7777
