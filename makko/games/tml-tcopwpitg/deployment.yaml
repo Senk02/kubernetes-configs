@@ -23,7 +23,7 @@ spec:
       - name: tml-tcopwpitg
         image: hexlo/terraria-tmodloader-server:latest
         command: ["/bin/bash", "-c"]
-        args: ["/home/tml/manage-tModLoaderServer.sh start -port 7777 -world /home/tml/Worlds/The-Council-of-People-Who-Peaked-in-Third-Grade.wld -players 4"]
+        args: ["/home/tml/manage-tModLoaderServer.sh start -port 7777 -world /home/tml/Worlds/The_Council_of_People_Who_Peaked_in_Third_Grade.wld -players 4"]
         tty: true
         stdin: true
         ports:
@@ -38,11 +38,11 @@ spec:
           mountPath: /home/tml/Worlds
         env:
         - name: AUTOCREATE
-          value: "1"
+          value: "3"
         - name: WORLDNAME
-          value: "The-Council-of-People-Who-Peaked-in-Third-Grade.wld"
+          value: "The_Council_of_People_Who_Peaked_in_Third_Grade.wld"
         - name: DIFFICULTY
-          value: "2"
+          value: "1"
         - name: MOTD
           value: "You are the Council of People Who Peaked in Third Grade"
         resources:
