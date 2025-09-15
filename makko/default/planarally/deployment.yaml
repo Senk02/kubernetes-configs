@@ -18,7 +18,7 @@ spec:
         app: planarally
     spec:
       containers:
-      - image: kruptein/planarally:v2025.1.1
+      - image: kruptein/planarally:v2025.3.0
         name: planarally
         volumeMounts:
         - name: assets
