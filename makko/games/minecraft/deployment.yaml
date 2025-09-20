@@ -6,7 +6,7 @@ metadata:
     app: boofcraft
 spec:
   revisionHistoryLimit: 1
-  replicas: 1
+  replicas: 0
   selector:
     matchLabels:
       app: boofcraft
