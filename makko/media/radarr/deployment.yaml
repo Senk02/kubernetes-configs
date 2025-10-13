@@ -59,6 +59,8 @@ spec:
         persistentVolumeClaim:
           claimName: radarr-config
           readOnly: false
+      securityContext:
+        fsGroup: 1000
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1

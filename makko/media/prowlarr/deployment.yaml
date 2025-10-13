@@ -45,6 +45,8 @@ spec:
         persistentVolumeClaim:
           claimName: prowlarr-config
           readOnly: false
+      securityContext:
+        fsGroup: 1000
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1

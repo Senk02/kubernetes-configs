@@ -24,9 +24,9 @@ spec:
         name: sonarr
         env:
         - name: PUID
-          value: "0"
+          value: "1000"
         - name: PGID
-          value: "0"
+          value: "1000"
         - name: TZ
           value: "America/Chicago"
         volumeMounts:
@@ -60,6 +60,8 @@ spec:
         hostPath:
           path: /var/mnt/transmission-cache
           type: DirectoryOrCreate
+      securityContext:
+        fsGroup: 1000
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
