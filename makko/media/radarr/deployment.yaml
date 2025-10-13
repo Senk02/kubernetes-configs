@@ -1,4 +1,4 @@
-apiVersion: apps/v1 
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: radarr
@@ -20,7 +20,7 @@ spec:
       nodeSelector:
         kubernetes.io/hostname: talos-nht-60v
       containers:
-      - image: lscr.io/linuxserver/radarr:5.27.5
+      - image: lscr.io/linuxserver/radarr:5.25.0
         name: radarr
         env:
         - name: PUID
@@ -59,8 +59,6 @@ spec:
         persistentVolumeClaim:
           claimName: radarr-config
           readOnly: false
-      securityContext:
-        fsGroup: 1000
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
