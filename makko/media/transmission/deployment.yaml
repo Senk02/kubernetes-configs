@@ -22,7 +22,6 @@ spec:
       - image: haugene/transmission-openvpn:5.3.1
         name: transmission
         securityContext:
-          runAsUser: 0
           capabilities:
             add: ["NET_ADMIN"]
         envFrom:
@@ -53,4 +52,6 @@ spec:
           path: /var/mnt/transmission-cache
           type: DirectoryOrCreate
       securityContext:
-        fsGroup: 1000
+        runAsUser: 0
+        runAsGroup: 0
+        fsGroup: 0
