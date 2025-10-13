@@ -20,9 +20,6 @@ spec:
       containers:
       - image: ghcr.io/flaresolverr/flaresolverr:v3.4.2
         name: flaresolverr
-        env:
-        - name: TIMEOUT
-          value: "60000"
         ports:
         - containerPort: 8191
         resources:
