@@ -50,9 +50,6 @@ spec:
         volumeMounts:
         - mountPath: /data
           name: upload-data
-        - mountPath: /etc/localtime
-          name: localtime
-          readOnly: true
       - env:
         - name: DB_HOSTNAME
           value: "127.0.0.1"
@@ -131,10 +128,6 @@ spec:
         persistentVolumeClaim:
           claimName: immich-db-pvc
           readOnly: false
-      - hostPath:
-          path: /etc/localtime
-          type: File
-        name: localtime
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
