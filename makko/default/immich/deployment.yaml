@@ -1,0 +1,163 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: immich
+  name: immich
+  namespace: default
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app: immich
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: immich
+    spec:
+      containers:
+      - env:
+        - name: DB_HOSTNAME
+          value: "127.0.0.1"
+        - name: DB_USERNAME
+          value: "postgres"
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: immich
+              key: db-password
+        - name: DB_DATABASE_NAME
+          value: "immich"
+        - name: REDIS_HOSTNAME
+          value: "127.0.0.1"
+        image: ghcr.io/immich-app/immich-server:release
+        imagePullPolicy: Always
+        name: immich-server
+        ports:
+        - containerPort: 2283
+          protocol: TCP
+        resources:
+          limits:
+            cpu: "4"
+            ephemeral-storage: 2Gi
+            memory: 4Gi
+          requests:
+            cpu: 100m
+            memory: 512Mi
+        volumeMounts:
+        - mountPath: /data
+          name: upload-data
+        - mountPath: /etc/localtime
+          name: localtime
+          readOnly: true
+      - env:
+        - name: DB_HOSTNAME
+          value: "127.0.0.1"
+        - name: DB_USERNAME
+          value: "postgres"
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: immich
+              key: db-password
+        - name: DB_DATABASE_NAME
+          value: "immich"
+        image: ghcr.io/immich-app/immich-machine-learning:release
+        imagePullPolicy: Always
+        name: immich-machine-learning
+        resources:
+          limits:
+            cpu: "4"
+            ephemeral-storage: 10Gi
+            memory: 4Gi
+          requests:
+            cpu: 100m
+            memory: 1Gi
+        volumeMounts:
+        - mountPath: /cache
+          name: model-cache
+      - image: docker.io/valkey/valkey:8-bookworm@sha256:fea8b3e67b15729d4bb70589eb03367bab9ad1ee89c876f54327fc7c6e618571
+        imagePullPolicy: Always
+        name: redis
+        resources:
+          limits:
+            cpu: "1"
+            ephemeral-storage: 256Mi
+            memory: 256Mi
+          requests:
+            cpu: 10m
+            memory: 64Mi
+      - env:
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: immich
+              key: db-password
+        - name: POSTGRES_USER
+          value: "postgres"
+        - name: POSTGRES_DB
+          value: "immich"
+        - name: POSTGRES_INITDB_ARGS
+          value: "--data-checksums"
+        image: ghcr.io/immich-app/postgres:14-vectorchord0.4.3-pgvectors0.2.0@sha256:bcf63357191b76a916ae5eb93464d65c07511da41e3bf7a8416db519b40b1c23
+        imagePullPolicy: Always
+        name: database
+        resources:
+          limits:
+            cpu: "2"
+            ephemeral-storage: 1Gi
+            memory: 2Gi
+          requests:
+            cpu: 50m
+            memory: 256Mi
+        volumeMounts:
+        - mountPath: /var/lib/postgresql/data
+          name: db-data
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 10
+      volumes:
+      - name: upload-data
+        persistentVolumeClaim:
+          claimName: immich-upload-pvc
+          readOnly: false
+      - name: model-cache
+        hostPath:
+          path: /var/mnt/immich-cache
+          type: DirectoryOrCreate
+      - name: db-data
+        persistentVolumeClaim:
+          claimName: immich-db-pvc
+          readOnly: false
+      - hostPath:
+          path: /etc/localtime
+          type: File
+        name: localtime
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: immich-upload-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 500Gi
+  storageClassName: rook-cephfs-hdd
+  volumeMode: Filesystem
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: immich-db-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 50Gi
+  storageClassName: rook-cephfs
+  volumeMode: Filesystem
