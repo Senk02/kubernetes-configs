@@ -33,6 +33,8 @@ spec:
           value: "immich"
         - name: REDIS_HOSTNAME
           value: "127.0.0.1"
+        - name: IMMICH_PORT
+          value: "2283"
         image: ghcr.io/immich-app/immich-server:release
         imagePullPolicy: Always
         name: immich-server
@@ -62,6 +64,8 @@ spec:
               key: password
         - name: DB_DATABASE_NAME
           value: "immich"
+        - name: IMMICH_PORT
+          value: "2283"
         image: ghcr.io/immich-app/immich-machine-learning:release
         imagePullPolicy: Always
         name: immich-machine-learning
