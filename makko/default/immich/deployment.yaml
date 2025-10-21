@@ -28,7 +28,7 @@ spec:
           valueFrom:
             secretKeyRef:
               name: immich
-              key: db-password
+              key: password
         - name: DB_DATABASE_NAME
           value: "immich"
         - name: REDIS_HOSTNAME
@@ -59,7 +59,7 @@ spec:
           valueFrom:
             secretKeyRef:
               name: immich
-              key: db-password
+              key: password
         - name: DB_DATABASE_NAME
           value: "immich"
         image: ghcr.io/immich-app/immich-machine-learning:release
@@ -92,7 +92,7 @@ spec:
           valueFrom:
             secretKeyRef:
               name: immich
-              key: db-password
+              key: password
         - name: POSTGRES_USER
           value: "postgres"
         - name: POSTGRES_DB
