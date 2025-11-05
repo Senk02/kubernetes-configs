@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todo-db
+  labels:
+    app: todo-db
+    tier: database
+spec:
+  revisionHistoryLimit: 1
+  replicas: 1
+  selector:
+    matchLabels:
+      app: todo-db
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: todo-db
+        tier: database
+    spec:
+      containers:
+      - image: postgres:16-alpine
+        name: postgres
+        env:
+        - name: POSTGRES_DB
+          value: tododb
+        - name: POSTGRES_USER
+          value: todouser
+        - name: POSTGRES_PASSWORD
+          value: todopass
+        - name: PGDATA
+          value: /var/lib/postgresql/data/pgdata
+        volumeMounts:
+        - name: db-data
+          mountPath: /var/lib/postgresql/data
+        ports:
+        - containerPort: 5432
+        resources:
+          limits:
+            cpu: "1"
+            memory: 256Mi
+            ephemeral-storage: 128Mi
+          requests:
+            cpu: 50m
+            memory: 128Mi
+      volumes:
+      - name: db-data
+        persistentVolumeClaim:
+          claimName: todo-db-pvc
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: todo-db-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: rook-cephfs
+  volumeMode: Filesystem

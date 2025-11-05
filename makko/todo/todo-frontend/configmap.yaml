@@ -1,0 +1,73 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: todo-frontend-config
+data:
+  index.html: |
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Todo App</title>
+      <style>
+        body { font-family: Arial; max-width: 600px; margin: 50px auto; padding: 20px; }
+        input { padding: 10px; width: 70%; }
+        button { padding: 10px 20px; }
+        .todo { padding: 10px; border-bottom: 1px solid #ccc; }
+        .todo button { float: right; }
+      </style>
+    </head>
+    <body>
+      <h1>Todo List</h1>
+      <div>
+        <input type="text" id="todoInput" placeholder="Enter a new todo...">
+        <button onclick="addTodo()">Add</button>
+      </div>
+      <div id="todoList"></div>
+      <script>
+        const API_URL = '/api';
+        
+        async function loadTodos() {
+          const res = await fetch(`${API_URL}/todos`);
+          const todos = await res.json();
+          document.getElementById('todoList').innerHTML = todos.map(t => 
+            `<div class="todo">
+              ${t.title}
+              <button onclick="deleteTodo(${t.id})">Delete</button>
+            </div>`
+          ).join('');
+        }
+        
+        async function addTodo() {
+          const input = document.getElementById('todoInput');
+          await fetch(`${API_URL}/todos`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({title: input.value})
+          });
+          input.value = '';
+          loadTodos();
+        }
+        
+        async function deleteTodo(id) {
+          await fetch(`${API_URL}/todos/${id}`, {method: 'DELETE'});
+          loadTodos();
+        }
+        
+        loadTodos();
+      </script>
+    </body>
+    </html>
+  nginx.conf: |
+    server {
+      listen 8080;
+      location / {
+        root /usr/share/nginx/html;
+        index index.html;
+        try_files $uri $uri/ /index.html;
+      }
+      location /api/ {
+        proxy_pass http://todo-api:3000/;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+      }
+    }
