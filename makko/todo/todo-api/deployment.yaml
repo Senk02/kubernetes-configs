@@ -1,3 +1,73 @@
+---
+# Backend Layer - Flask API
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: todo-api-code
+data:
+  app.py: |
+    from flask import Flask, jsonify, request
+    from flask_cors import CORS
+    import psycopg2
+    import os
+    
+    app = Flask(__name__)
+    CORS(app)
+    
+    def get_db():
+        return psycopg2.connect(os.environ['DATABASE_URL'])
+    
+    @app.route('/health')
+    def health():
+        return jsonify({'status': 'ok'})
+    
+    @app.route('/todos', methods=['GET'])
+    def get_todos():
+        conn = get_db()
+        cur = conn.cursor()
+        cur.execute('SELECT id, title FROM todos ORDER BY id')
+        todos = [{'id': row[0], 'title': row[1]} for row in cur.fetchall()]
+        conn.close()
+        return jsonify(todos)
+    
+    @app.route('/todos', methods=['POST'])
+    def add_todo():
+        conn = get_db()
+        cur = conn.cursor()
+        data = request.json
+        cur.execute('INSERT INTO todos (title) VALUES (%s) RETURNING id', (data['title'],))
+        todo_id = cur.fetchone()[0]
+        conn.commit()
+        conn.close()
+        return jsonify({'id': todo_id, 'title': data['title']})
+    
+    @app.route('/todos/<int:todo_id>', methods=['DELETE'])
+    def delete_todo(todo_id):
+        conn = get_db()
+        cur = conn.cursor()
+        cur.execute('DELETE FROM todos WHERE id = %s', (todo_id,))
+        conn.commit()
+        conn.close()
+        return jsonify({'status': 'deleted'})
+    
+    if __name__ == '__main__':
+        conn = get_db()
+        cur = conn.cursor()
+        cur.execute('''
+            CREATE TABLE IF NOT EXISTS todos (
+                id SERIAL PRIMARY KEY,
+                title TEXT NOT NULL
+            )
+        ''')
+        conn.commit()
+        conn.close()
+        app.run(host='0.0.0.0', port=3000)
+  
+  requirements.txt: |
+    flask==3.0.0
+    flask-cors==4.0.0
+    psycopg2-binary==2.9.9
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -17,12 +87,29 @@ spec:
         app: todo-api
         tier: backend
     spec:
+      initContainers:
+      - name: install-deps
+        image: python:3.11-slim
+        command: ['sh', '-c', 'pip install -r /app/requirements.txt --target /deps']
+        volumeMounts:
+        - name: code
+          mountPath: /app
+        - name: deps
+          mountPath: /deps
       containers:
-      - image: ghcr.io/dockersamples/todo-app-api:latest
+      - image: python:3.11-slim
         name: api
+        command: ['python', '/app/app.py']
         env:
         - name: DATABASE_URL
           value: postgresql://todouser:todopass@todo-db:5432/tododb
+        - name: PYTHONPATH
+          value: /deps
+        volumeMounts:
+        - name: code
+          mountPath: /app
+        - name: deps
+          mountPath: /deps
         ports:
         - containerPort: 3000
         resources:
@@ -33,15 +120,9 @@ spec:
           requests:
             cpu: 20m
             memory: 64Mi
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 3000
-          initialDelaySeconds: 10
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 3000
-          initialDelaySeconds: 5
-          periodSeconds: 5
+      volumes:
+      - name: code
+        configMap:
+          name: todo-api-code
+      - name: deps
+        emptyDir: {}
