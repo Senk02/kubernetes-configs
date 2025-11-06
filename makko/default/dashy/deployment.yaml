@@ -37,7 +37,7 @@ spec:
       volumes:
       - name: config
         persistentVolumeClaim:
-          claimName: dashy-config-pvc
+          claimName: dashy-config
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
