@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dashy
+  labels:
+    app: dashy
+spec:
+  revisionHistoryLimit: 1
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dashy
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: dashy
+    spec:
+      containers:
+      - image: lissy93/dashy:latest
+        name: dashy
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: config
+          mountPath: /app/user-data/conf.yml
+          subPath: conf.yml
+        resources:
+          limits:
+            cpu: "1"
+            memory: 512Mi
+            ephemeral-storage: 64Mi
+          requests:
+            cpu: 10m
+            memory: 256Mi
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: dashy-config-pvc
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: dashy-config
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
+  storageClassName: rook-cephfs
+  volumeMode: Filesystem

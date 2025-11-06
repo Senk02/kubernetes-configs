@@ -118,7 +118,7 @@ spec:
             memory: 256Mi
             ephemeral-storage: 128Mi
           requests:
-            cpu: 20m
+            cpu: 10m
             memory: 64Mi
       volumes:
       - name: code
