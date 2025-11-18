@@ -41,12 +41,15 @@ spec:
         command: ["/bin/sh", "-c"]
         args:
           - |
-            npm install && node server.js
+            cp -r /app-config/* /app/ && npm install && node server.js
         env:
         - name: PROMETHEUS_URL
           value: "http://prometheus.monitoring.svc.cluster.local:9090"
         volumeMounts:
-        - name: nodejs-app
+        - name: nodejs-app-config
+          mountPath: /app-config
+          readOnly: true
+        - name: nodejs-app-workspace
           mountPath: /app
         ports:
         - containerPort: 3000
@@ -64,9 +67,11 @@ spec:
         persistentVolumeClaim:
           claimName: nginx-pvc
           readOnly: false
-      - name: nodejs-app
+      - name: nodejs-app-config
         configMap:
           name: metrics-proxy-app
+      - name: nodejs-app-workspace
+        emptyDir: {}
       - name: nginx-config
         configMap:
           name: nginx-metrics-config
