@@ -23,6 +23,8 @@ spec:
         volumeMounts:
         - name: html
           mountPath: /usr/share/nginx/html
+        - name: nginx-config
+          mountPath: /etc/nginx/conf.d
         ports:
         - containerPort: 80
         resources:
@@ -33,15 +35,41 @@ spec:
           requests:
             cpu: 10m
             memory: 16Mi
+      - image: node:18-alpine
+        name: metrics-proxy
+        workingDir: /app
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            npm install && node server.js
+        env:
+        - name: PROMETHEUS_URL
+          value: "http://prometheus.monitoring.svc.cluster.local:9090"
+        volumeMounts:
+        - name: nodejs-app
+          mountPath: /app
+        ports:
+        - containerPort: 3000
+          name: metrics-proxy
+        resources:
+          limits:
+            cpu: "500m"
+            memory: 128Mi
+            ephemeral-storage: 128Mi
+          requests:
+            cpu: 10m
+            memory: 32Mi
       volumes:
       - name: html
         persistentVolumeClaim:
           claimName: nginx-pvc
           readOnly: false
-      - name: html-iem
-        persistentVolumeClaim:
-          claimName: nginx-iem-pvc
-          readOnly: false
+      - name: nodejs-app
+        configMap:
+          name: metrics-proxy-app
+      - name: nginx-config
+        configMap:
+          name: nginx-metrics-config
 ---
 apiVersion: apps/v1 
 kind: Deployment
