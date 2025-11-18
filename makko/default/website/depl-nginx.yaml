@@ -41,7 +41,7 @@ spec:
         command: ["/bin/sh", "-c"]
         args:
           - |
-            cp -r /app-config/* /app/ && npm install && node server.js
+            cp -L /app-config/* /app/ && npm install && node server.js
         env:
         - name: PROMETHEUS_URL
           value: "http://prometheus.monitoring.svc.cluster.local:9090"
