@@ -75,7 +75,7 @@ kind: ConfigMap
 metadata:
   name: nginx-metrics-config
 data:
-  metrics.conf: |
+  default.conf: |
     server {
         listen 80;
         server_name _;
