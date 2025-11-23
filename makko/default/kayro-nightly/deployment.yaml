@@ -39,9 +39,16 @@ spec:
             secretKeyRef:
               name: kayro-nightly
               key: password
+        - name: OWNER_ID
+          value: "224314325387575298"
+        - name: KAYRO_DB_PATH
+          value: "/data/kayro.db"
         image: registry.senk0.com/kayro:latest-dev
         imagePullPolicy: Always
         name: kayro
+        volumeMounts:
+        - name: kayro-nightly-pvc
+          mountPath: /data
         resources:
           limits:
             cpu: "1"
@@ -52,3 +59,21 @@ spec:
             memory: 128Mi
       restartPolicy: Always
       terminationGracePeriodSeconds: 2
+      volumes:
+      - name: assets
+        persistentVolumeClaim:
+          claimName: kayro-nightly-pvc
+          readOnly: false
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: kayro-nightly-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+  storageClassName: rook-cephfs
+  volumeMode: Filesystem
