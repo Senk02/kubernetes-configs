@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: kayro-nightly
+  name: yuri
 spec:
   selector:
-    app: kayro-nightly
+    app: yuri
   ports:
   - protocol: TCP
     port: 8080

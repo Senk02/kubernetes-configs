@@ -19,33 +19,36 @@ spec:
         app: kayro-nightly
     spec:
       containers:
-      - image: registry.senk0.com/kayro-nightly:latest
+      - image: registry.senk0.com/kayro-server:latest
         imagePullPolicy: Always
-        name: kayro-nightly
+        name: kayro-server
         ports:
-        - containerPort: 8080
+        - containerPort: 5000
           protocol: TCP
         resources:
           limits:
-            cpu: "1"
+            cpu: "2"
             ephemeral-storage: 4Gi
-            memory: 4Gi
+            memory: 8Gi
           requests:
-            cpu: 10m
-            memory: 256Mi
-        env:
+            cpu: 100m
+            memory: 2Gi
+      - env:
         - name: DISCORD_TOKEN
           valueFrom:
             secretKeyRef:
               name: kayro-nightly
               key: password
-        - name: SZURUBOORU_TOKEN
-          valueFrom:
-            secretKeyRef:
-              name: szurubooru-api
-              key: password
-        - name: TARGET_CHANNEL_ID
-          value: "1323036066537537546"
-        - name: TARGET_ROLE_ID
-          value: "1321581879924883558"
+        image: registry.senk0.com/kayro:latest-dev
+        imagePullPolicy: Always
+        name: kayro
+        resources:
+          limits:
+            cpu: "1"
+            ephemeral-storage: 1Gi
+            memory: 256Mi
+          requests:
+            cpu: 10m
+            memory: 128Mi
       restartPolicy: Always
+      terminationGracePeriodSeconds: 2
