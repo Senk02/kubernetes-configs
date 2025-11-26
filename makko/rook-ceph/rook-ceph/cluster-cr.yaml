@@ -53,8 +53,8 @@ spec:
     - name: "talos-yha-nr5"
       devices:
       - name: "/dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi2"
-      - name: "/dev/disk/by-id/ata-TEAM_T2531TB_TPBF2309110030301839"
-      - name: "/dev/disk/by-id/ata-TEAM_T2531TB_TPBF2309110030302351"
+      - name: "/dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi3"
+      - name: "/dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi4"
       resources:
         requests:
           cpu: 100m
