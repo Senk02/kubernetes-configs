@@ -17,7 +17,7 @@ spec:
         app: transmission
     spec:
       nodeSelector:
-        kubernetes.io/hostname: talos-nht-60v
+        kubernetes.io/hostname: talos-e6m-uzm
       containers:
       - image: haugene/transmission-openvpn:5.3.2
         name: transmission
