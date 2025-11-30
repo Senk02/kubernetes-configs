@@ -7,6 +7,12 @@ spec:
   cephVersion:
     image: quay.io/ceph/ceph:v19.2.2
   dataDirHostPath: /var/lib/rook
+  cephConfig:
+    global:
+      osd_recovery_sleep_hdd: "0.2"
+      osd_scrub_sleep: "0.1" 
+      osd_snap_trim_sleep: "0.1"
+      osd_op_queue: "wpq"
   mgr:
     count: 2
     allowMultiplePerNode: true
