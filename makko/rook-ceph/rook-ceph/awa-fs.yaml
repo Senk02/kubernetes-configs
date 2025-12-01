@@ -6,6 +6,7 @@ metadata:
 spec:
   metadataPool:
     failureDomain: osd
+    deviceClass: fast-hdd
     replicated:
       size: 3
   dataPools:

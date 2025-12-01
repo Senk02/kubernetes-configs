@@ -6,6 +6,7 @@ metadata:
 spec:
   metadataPool:
     failureDomain: host
+    deviceClass: ssd
     replicated:
       size: 3
   dataPools:
