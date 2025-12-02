@@ -7,7 +7,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.1
+    controller-gen.kubebuilder.io/version: v0.19.0
   name: cephblockpoolradosnamespaces.ceph.rook.io
 spec:
   group: ceph.rook.io
@@ -15,6 +15,9 @@ spec:
     kind: CephBlockPoolRadosNamespace
     listKind: CephBlockPoolRadosNamespaceList
     plural: cephblockpoolradosnamespaces
+    shortNames:
+      - cephbprns
+      - cephrns
     singular: cephblockpoolradosnamespace
   scope: Namespaced
   versions:
@@ -62,11 +65,23 @@ spec:
                   x-kubernetes-validations:
                     - message: blockPoolName is immutable
                       rule: self == oldSelf
+                clusterID:
+                  description: |-
+                    ClusterID to be used for this RadosNamespace in the CSI configuration.
+                    It must be unique among all Ceph clusters managed by Rook.
+                    If not specified, the clusterID will be generated and can be found in the CR status.
+                  maxLength: 36
+                  minLength: 1
+                  pattern: ^[a-zA-Z0-9_-]+$
+                  type: string
+                  x-kubernetes-validations:
+                    - message: ClusterID is immutable
+                      rule: self == oldSelf
                 mirroring:
                   description: Mirroring configuration of CephBlockPoolRadosNamespace
                   properties:
                     mode:
-                      description: Mode is the mirroring mode; either pool or image
+                      description: Mode is the mirroring mode; either pool or image.
                       enum:
                         - ""
                         - pool
@@ -106,6 +121,28 @@ spec:
             status:
               description: Status represents the status of a CephBlockPool Rados Namespace
               properties:
+                conditions:
+                  items:
+                    description: Condition represents a status condition on any Rook-Ceph Custom Resource.
+                    properties:
+                      lastHeartbeatTime:
+                        format: date-time
+                        type: string
+                      lastTransitionTime:
+                        format: date-time
+                        type: string
+                      message:
+                        type: string
+                      reason:
+                        description: ConditionReason is a reason for a condition
+                        type: string
+                      status:
+                        type: string
+                      type:
+                        description: ConditionType represent a resource's status
+                        type: string
+                    type: object
+                  type: array
                 info:
                   additionalProperties:
                     type: string
@@ -167,12 +204,68 @@ spec:
                         daemon_health:
                           description: DaemonHealth is the health of the mirroring daemon
                           type: string
+                        group_health:
+                          description: GroupHealth is the health of the mirrored image group
+                          nullable: true
+                          type: string
+                        group_states:
+                          description: GroupStates is the various state for all mirrored image groups
+                          nullable: true
+                          properties:
+                            error:
+                              description: Error is when the mirroring state is errored
+                              type: integer
+                            replaying:
+                              description: Replaying is when the replay of the mirroring journal is on-going
+                              type: integer
+                            starting_replay:
+                              description: StartingReplay is when the replay of the mirroring journal starts
+                              type: integer
+                            stopped:
+                              description: Stopped is when the mirroring state is stopped
+                              type: integer
+                            stopping_replay:
+                              description: StopReplaying is when the replay of the mirroring journal stops
+                              type: integer
+                            syncing:
+                              description: Syncing is when the image is syncing
+                              type: integer
+                            unknown:
+                              description: Unknown is when the mirroring state is unknown
+                              type: integer
+                          type: object
                         health:
                           description: Health is the mirroring health
                           type: string
                         image_health:
                           description: ImageHealth is the health of the mirrored image
                           type: string
+                        image_states:
+                          description: ImageStates is the various state for all mirrored images
+                          nullable: true
+                          properties:
+                            error:
+                              description: Error is when the mirroring state is errored
+                              type: integer
+                            replaying:
+                              description: Replaying is when the replay of the mirroring journal is on-going
+                              type: integer
+                            starting_replay:
+                              description: StartingReplay is when the replay of the mirroring journal starts
+                              type: integer
+                            stopped:
+                              description: Stopped is when the mirroring state is stopped
+                              type: integer
+                            stopping_replay:
+                              description: StopReplaying is when the replay of the mirroring journal stops
+                              type: integer
+                            syncing:
+                              description: Syncing is when the image is syncing
+                              type: integer
+                            unknown:
+                              description: Unknown is when the mirroring state is unknown
+                              type: integer
+                          type: object
                         states:
                           description: States is the various state for all mirrored images
                           nullable: true
@@ -262,7 +355,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.1
+    controller-gen.kubebuilder.io/version: v0.19.0
   name: cephblockpools.ceph.rook.io
 spec:
   group: ceph.rook.io
@@ -270,6 +363,8 @@ spec:
     kind: CephBlockPool
     listKind: CephBlockPoolList
     plural: cephblockpools
+    shortNames:
+      - cephbp
     singular: cephblockpool
   scope: Namespaced
   versions:
@@ -352,6 +447,7 @@ spec:
                   type: string
                 enableCrushUpdates:
                   description: Allow rook operator to change the pool CRUSH tunables once the pool is created
+                  nullable: true
                   type: boolean
                 enableRBDStats:
                   description: EnableRBDStats is used to enable gathering of statistics for all RBD images in the pool
@@ -360,7 +456,12 @@ spec:
                   description: The erasure code settings
                   properties:
                     algorithm:
-                      description: The algorithm for erasure coding
+                      description: |-
+                        The algorithm for erasure coding.
+                        If absent, defaults to the plugin specified in osd_pool_default_erasure_code_profile.
+                      enum:
+                        - isa
+                        - jerasure
                       type: string
                     codingChunks:
                       description: |-
@@ -389,7 +490,11 @@ spec:
                       description: Enabled whether this pool is mirrored or not
                       type: boolean
                     mode:
-                      description: 'Mode is the mirroring mode: either pool or image'
+                      description: 'Mode is the mirroring mode: pool, image or init-only.'
+                      enum:
+                        - pool
+                        - image
+                        - init-only
                       type: string
                     peers:
                       description: Peers represents the peers spec
@@ -486,6 +591,7 @@ spec:
                       type: string
                     targetSizeRatio:
                       description: TargetSizeRatio gives a hint (%) to Ceph in terms of expected consumption of the total cluster capacity
+                      minimum: 0
                       type: number
                   required:
                     - size
@@ -511,6 +617,32 @@ spec:
             status:
               description: CephBlockPoolStatus represents the mirroring status of Ceph Storage Pool
               properties:
+                cephx:
+                  description: PeerTokenCephxStatus represents the cephx key rotation status for peer tokens
+                  properties:
+                    peerToken:
+                      description: PeerToken shows the rotation status of the peer token associated with the `rbd-mirror-peer` user.
+                      properties:
+                        keyCephVersion:
+                          description: |-
+                            KeyCephVersion reports the Ceph version that created the current generation's keys. This is
+                            same string format as reported by `CephCluster.status.version.version` to allow them to be
+                            compared. E.g., `20.2.0-0`.
+                            For all newly-created resources, this field set to the version of Ceph that created the key.
+                            The special value "Uninitialized" indicates that keys are being created for the first time.
+                            An empty string indicates that the version is unknown, as expected in brownfield deployments.
+                          type: string
+                        keyGeneration:
+                          description: |-
+                            KeyGeneration represents the CephX key generation for the last successful reconcile.
+                            For all newly-created resources, this field is set to `1`.
+                            When keys are rotated due to any rotation policy, the generation is incremented or updated to
+                            the configured policy generation.
+                            Generation `0` indicates that keys existed prior to the implementation of key tracking.
+                          format: int32
+                          type: integer
+                      type: object
+                  type: object
                 conditions:
                   items:
                     description: Condition represents a status condition on any Rook-Ceph Custom Resource.
@@ -594,12 +726,68 @@ spec:
                         daemon_health:
                           description: DaemonHealth is the health of the mirroring daemon
                           type: string
+                        group_health:
+                          description: GroupHealth is the health of the mirrored image group
+                          nullable: true
+                          type: string
+                        group_states:
+                          description: GroupStates is the various state for all mirrored image groups
+                          nullable: true
+                          properties:
+                            error:
+                              description: Error is when the mirroring state is errored
+                              type: integer
+                            replaying:
+                              description: Replaying is when the replay of the mirroring journal is on-going
+                              type: integer
+                            starting_replay:
+                              description: StartingReplay is when the replay of the mirroring journal starts
+                              type: integer
+                            stopped:
+                              description: Stopped is when the mirroring state is stopped
+                              type: integer
+                            stopping_replay:
+                              description: StopReplaying is when the replay of the mirroring journal stops
+                              type: integer
+                            syncing:
+                              description: Syncing is when the image is syncing
+                              type: integer
+                            unknown:
+                              description: Unknown is when the mirroring state is unknown
+                              type: integer
+                          type: object
                         health:
                           description: Health is the mirroring health
                           type: string
                         image_health:
                           description: ImageHealth is the health of the mirrored image
                           type: string
+                        image_states:
+                          description: ImageStates is the various state for all mirrored images
+                          nullable: true
+                          properties:
+                            error:
+                              description: Error is when the mirroring state is errored
+                              type: integer
+                            replaying:
+                              description: Replaying is when the replay of the mirroring journal is on-going
+                              type: integer
+                            starting_replay:
+                              description: StartingReplay is when the replay of the mirroring journal starts
+                              type: integer
+                            stopped:
+                              description: Stopped is when the mirroring state is stopped
+                              type: integer
+                            stopping_replay:
+                              description: StopReplaying is when the replay of the mirroring journal stops
+                              type: integer
+                            syncing:
+                              description: Syncing is when the image is syncing
+                              type: integer
+                            unknown:
+                              description: Unknown is when the mirroring state is unknown
+                              type: integer
+                          type: object
                         states:
                           description: States is the various state for all mirrored images
                           nullable: true
@@ -696,7 +884,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.1
+    controller-gen.kubebuilder.io/version: v0.19.0
   name: cephbucketnotifications.ceph.rook.io
 spec:
   group: ceph.rook.io
@@ -704,10 +892,19 @@ spec:
     kind: CephBucketNotification
     listKind: CephBucketNotificationList
     plural: cephbucketnotifications
+    shortNames:
+      - cephbn
     singular: cephbucketnotification
   scope: Namespaced
   versions:
-    - name: v1
+    - additionalPrinterColumns:
+        - jsonPath: .status.phase
+          name: Phase
+          type: string
+        - jsonPath: .metadata.creationTimestamp
+          name: Age
+          type: date
+      name: v1
       schema:
         openAPIV3Schema:
           description: CephBucketNotification represents a Bucket Notifications
@@ -858,7 +1055,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.1
+    controller-gen.kubebuilder.io/version: v0.19.0
   name: cephbuckettopics.ceph.rook.io
 spec:
   group: ceph.rook.io
@@ -866,6 +1063,8 @@ spec:
     kind: CephBucketTopic
     listKind: CephBucketTopicList
     plural: cephbuckettopics
+    shortNames:
+      - cephbt
     singular: cephbuckettopic
   scope: Namespaced
   versions:
@@ -959,6 +1158,38 @@ spec:
                         disableVerifySSL:
                           description: Indicate whether the server certificate is validated by the client or not
                           type: boolean
+                        mechanism:
+                          default: PLAIN
+                          description: The authentication mechanism for this topic (PLAIN/SCRAM-SHA-512/SCRAM-SHA-256/GSSAPI/OAUTHBEARER)
+                          enum:
+                            - PLAIN
+                            - SCRAM-SHA-512
+                            - SCRAM-SHA-256
+                            - GSSAPI
+                            - OAUTHBEARER
+                          type: string
+                        passwordSecretRef:
+                          description: The kafka password to use for authentication
+                          properties:
+                            key:
+                              description: The key of the secret to select from.  Must be a valid secret key.
+                              type: string
+                            name:
+                              default: ""
+                              description: |-
+                                Name of the referent.
+                                This field is effectively required, but due to backwards compatibility is
+                                allowed to be empty. Instances of this type with an empty value here are
+                                almost certainly wrong.
+                                More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                              type: string
+                            optional:
+                              description: Specify whether the Secret or its key must be defined
+                              type: boolean
+                          required:
+                            - key
+                          type: object
+                          x-kubernetes-map-type: atomic
                         uri:
                           description: The URI of the Kafka endpoint to push notification to
                           minLength: 1
@@ -966,6 +1197,28 @@ spec:
                         useSSL:
                           description: Indicate whether to use SSL when communicating with the broker
                           type: boolean
+                        userSecretRef:
+                          description: The kafka user name to use for authentication
+                          properties:
+                            key:
+                              description: The key of the secret to select from.  Must be a valid secret key.
+                              type: string
+                            name:
+                              default: ""
+                              description: |-
+                                Name of the referent.
+                                This field is effectively required, but due to backwards compatibility is
+                                allowed to be empty. Instances of this type with an empty value here are
+                                almost certainly wrong.
+                                More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                              type: string
+                            optional:
+                              description: Specify whether the Secret or its key must be defined
+                              type: boolean
+                          required:
+                            - key
+                          type: object
+                          x-kubernetes-map-type: atomic
                       required:
                         - uri
                       type: object
@@ -1002,6 +1255,26 @@ spec:
                   type: integer
                 phase:
                   type: string
+                secrets:
+                  items:
+                    properties:
+                      name:
+                        description: name is unique within a namespace to reference a secret resource.
+                        type: string
+                      namespace:
+                        description: namespace defines the space within which the secret name must be unique.
+                        type: string
+                      resourceVersion:
+                        type: string
+                      uid:
+                        description: |-
+                          UID is a type that holds unique ID values, including UUIDs.  Because we
+                          don't ONLY use UUIDs, this is an alias to string.  Being a type captures
+                          intent and helps make sure that UIDs and names do not get conflated.
+                        type: string
+                    type: object
+                    x-kubernetes-map-type: atomic
+                  type: array
               type: object
               x-kubernetes-preserve-unknown-fields: true
           required:
@@ -1017,7 +1290,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.1
+    controller-gen.kubebuilder.io/version: v0.19.0
   name: cephclients.ceph.rook.io
 spec:
   group: ceph.rook.io
@@ -1025,6 +1298,8 @@ spec:
     kind: CephClient
     listKind: CephClientList
     plural: cephclients
+    shortNames:
+      - cephcl
     singular: cephclient
   scope: Namespaced
   versions:
@@ -1067,12 +1342,78 @@ spec:
                   x-kubernetes-preserve-unknown-fields: true
                 name:
                   type: string
+                removeSecret:
+                  description: |-
+                    RemoveSecret indicates whether the current secret for this ceph client should be removed or not.
+                    If true, the K8s secret will be deleted, but the cephx keyring will remain until the CR is deleted.
+                  type: boolean
+                secretName:
+                  description: |-
+                    SecretName is the name of the secret created for this ceph client.
+                    If not specified, the default name is "rook-ceph-client-" as a prefix to the CR name.
+                  type: string
+                  x-kubernetes-validations:
+                    - message: SecretName is immutable and cannot be changed
+                      rule: self == oldSelf
+                security:
+                  description: Security represents security settings
+                  properties:
+                    cephx:
+                      description: 'CephX configures CephX key settings. More: https://docs.ceph.com/en/latest/dev/cephx/'
+                      properties:
+                        keyGeneration:
+                          description: |-
+                            KeyGeneration specifies the desired CephX key generation. This is used when KeyRotationPolicy
+                            is KeyGeneration and ignored for other policies. If this is set to greater than the current
+                            key generation, relevant keys will be rotated, and the generation value will be updated to
+                            this new value (generation values are not necessarily incremental, though that is the
+                            intended use case). If this is set to less than or equal to the current key generation, keys
+                            are not rotated.
+                          format: int32
+                          maximum: 4294967295
+                          minimum: 0
+                          type: integer
+                          x-kubernetes-validations:
+                            - message: keyGeneration cannot be decreased
+                              rule: self >= oldSelf
+                        keyRotationPolicy:
+                          description: |-
+                            KeyRotationPolicy controls if and when CephX keys are rotated after initial creation.
+                            One of Disabled, or KeyGeneration. Default Disabled.
+                          enum:
+                            - ""
+                            - Disabled
+                            - KeyGeneration
+                          type: string
+                      type: object
+                  type: object
               required:
                 - caps
               type: object
             status:
               description: Status represents the status of a Ceph Client
               properties:
+                cephx:
+                  properties:
+                    keyCephVersion:
+                      description: |-
+                        KeyCephVersion reports the Ceph version that created the current generation's keys. This is
+                        same string format as reported by `CephCluster.status.version.version` to allow them to be
+                        compared. E.g., `20.2.0-0`.
+                        For all newly-created resources, this field set to the version of Ceph that created the key.
+                        The special value "Uninitialized" indicates that keys are being created for the first time.
+                        An empty string indicates that the version is unknown, as expected in brownfield deployments.
+                      type: string
+                    keyGeneration:
+                      description: |-
+                        KeyGeneration represents the CephX key generation for the last successful reconcile.
+                        For all newly-created resources, this field is set to `1`.
+                        When keys are rotated due to any rotation policy, the generation is incremented or updated to
+                        the configured policy generation.
+                        Generation `0` indicates that keys existed prior to the implementation of key tracking.
+                      format: int32
+                      type: integer
+                  type: object
                 info:
                   additionalProperties:
                     type: string
@@ -1100,7 +1441,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.1
+    controller-gen.kubebuilder.io/version: v0.19.0
   name: cephclusters.ceph.rook.io
 spec:
   group: ceph.rook.io
@@ -1108,6 +1449,8 @@ spec:
     kind: CephCluster
     listKind: CephClusterList
     plural: cephclusters
+    shortNames:
+      - ceph
     singular: cephcluster
   scope: Namespaced
   versions:
@@ -1184,6 +1527,34 @@ spec:
                   description: Ceph Config options
                   nullable: true
                   type: object
+                cephConfigFromSecret:
+                  additionalProperties:
+                    additionalProperties:
+                      description: SecretKeySelector selects a key of a Secret.
+                      properties:
+                        key:
+                          description: The key of the secret to select from.  Must be a valid secret key.
+                          type: string
+                        name:
+                          default: ""
+                          description: |-
+                            Name of the referent.
+                            This field is effectively required, but due to backwards compatibility is
+                            allowed to be empty. Instances of this type with an empty value here are
+                            almost certainly wrong.
+                            More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                          type: string
+                        optional:
+                          description: Specify whether the Secret or its key must be defined
+                          type: boolean
+                      required:
+                        - key
+                      type: object
+                      x-kubernetes-map-type: atomic
+                    type: object
+                  description: CephConfigFromSecret works exactly like CephConfig but takes config value from Secret Key reference.
+                  nullable: true
+                  type: object
                 cephVersion:
                   description: The version information that instructs Rook to orchestrate a particular version of Ceph.
                   nullable: true
@@ -1242,6 +1613,11 @@ spec:
                             - quick
                           type: string
                       type: object
+                    wipeDevicesFromOtherClusters:
+                      description: |-
+                        WipeDevicesFromOtherClusters wipes the OSD disks belonging to other clusters. This is useful in scenarios where ceph cluster
+                        was reinstalled but OSD disk still contains the metadata from previous ceph cluster.
+                      type: boolean
                   type: object
                 continueUpgradeAfterChecksEvenIfNotHealthy:
                   description: ContinueUpgradeAfterChecksEvenIfNotHealthy defines if an upgrade should continue even if PGs are not clean
@@ -1285,6 +1661,11 @@ spec:
                           description: Enables read affinity for CSI driver.
                           type: boolean
                       type: object
+                    skipUserCreation:
+                      description: |-
+                        SkipUserCreation determines whether CSI users and their associated secrets should be skipped.
+                        If set to true, the user must manually manage these secrets.
+                      type: boolean
                   type: object
                 dashboard:
                   description: Dashboard settings
@@ -1742,6 +2123,9 @@ spec:
                       maximum: 5
                       minimum: 0
                       type: integer
+                    hostNetwork:
+                      description: Whether host networking is enabled for the Ceph Mgr. If not set, the network settings from CephCluster.spec.networking will be applied.
+                      type: boolean
                     modules:
                       description: Modules is the list of ceph manager modules to enable/disable
                       items:
@@ -1782,6 +2166,16 @@ spec:
                       maximum: 9
                       minimum: 0
                       type: integer
+                    externalMonIDs:
+                      description: |-
+                        ExternalMonIDs - optional list of monitor IDs which are deployed externally and not managed by Rook.
+                        If set, Rook will not remove mons with given IDs from quorum.
+                        This parameter is used only for local Rook cluster running in normal mode
+                        and will be ignored if external or stretched mode is used.
+                        leading
+                      items:
+                        type: string
+                      type: array
                     failureDomainLabel:
                       type: string
                     stretchCluster:
@@ -2505,6 +2899,10 @@ spec:
                     exporter:
                       description: Ceph exporter configuration
                       properties:
+                        hostNetwork:
+                          description: Whether host networking is enabled for CephExporter. If not set, the network settings from CephCluster.spec.networking will be applied.
+                          nullable: true
+                          type: boolean
                         perfCountersPrioLimit:
                           default: 5
                           description: Only performance counters greater than or equal to this option are fetched
@@ -2519,7 +2917,9 @@ spec:
                     externalMgrEndpoints:
                       description: ExternalMgrEndpoints points to an existing Ceph prometheus exporter endpoint
                       items:
-                        description: EndpointAddress is a tuple that describes single IP address.
+                        description: |-
+                          EndpointAddress is a tuple that describes single IP address.
+                          Deprecated: This API is deprecated in v1.33+.
                         properties:
                           hostname:
                             description: The Hostname of this endpoint
@@ -2715,7 +3115,7 @@ spec:
                       type: string
                       x-kubernetes-validations:
                         - message: network provider must be disabled (reverted to empty string) before a new provider is enabled
-                          rule: self == '' || self == oldSelf
+                          rule: self == '' || oldSelf == '' || self == oldSelf
                     selectors:
                       additionalProperties:
                         type: string
@@ -3342,8 +3742,116 @@ spec:
                   description: Security represents security settings
                   nullable: true
                   properties:
+                    cephx:
+                      description: 'CephX configures CephX key settings. More: https://docs.ceph.com/en/latest/dev/cephx/'
+                      properties:
+                        csi:
+                          description: |-
+                            CSI configures CephX key rotation settings for the Ceph-CSI daemons in the current Kubernetes cluster.
+                            CSI key rotation can affect existing PV connections, so take care when exercising this option.
+                          properties:
+                            keepPriorKeyCountMax:
+                              description: |-
+                                KeepPriorKeyCountMax tells Rook how many prior keys to keep active.
+                                Generally, this would be set to 1 to allow for a migration period for applications.
+                                If desired, set this to 0 to delete prior keys after migration.
+                                This config only applies to prior keys that already exist.
+                                If PriorKeyCount is set to 2 while only a single key currently exists, only a single prior key will be kept,
+                                and the reported status will only indicate the actual number of prior keys,
+                                not necessarily a reflection of PriorKeyCount config here.
+                              maximum: 10
+                              minimum: 0
+                              type: integer
+                            keyGeneration:
+                              description: |-
+                                KeyGeneration specifies the desired CephX key generation. This is used when KeyRotationPolicy
+                                is KeyGeneration and ignored for other policies. If this is set to greater than the current
+                                key generation, relevant keys will be rotated, and the generation value will be updated to
+                                this new value (generation values are not necessarily incremental, though that is the
+                                intended use case). If this is set to less than or equal to the current key generation, keys
+                                are not rotated.
+                              format: int32
+                              maximum: 4294967295
+                              minimum: 0
+                              type: integer
+                              x-kubernetes-validations:
+                                - message: keyGeneration cannot be decreased
+                                  rule: self >= oldSelf
+                            keyRotationPolicy:
+                              description: |-
+                                KeyRotationPolicy controls if and when CephX keys are rotated after initial creation.
+                                One of Disabled, or KeyGeneration. Default Disabled.
+                              enum:
+                                - ""
+                                - Disabled
+                                - KeyGeneration
+                              type: string
+                          type: object
+                        daemon:
+                          description: |-
+                            Daemon configures CephX key settings for local Ceph daemons managed by Rook and part of the
+                            Ceph cluster. Daemon CephX keys can be rotated without affecting client connections.
+                          properties:
+                            keyGeneration:
+                              description: |-
+                                KeyGeneration specifies the desired CephX key generation. This is used when KeyRotationPolicy
+                                is KeyGeneration and ignored for other policies. If this is set to greater than the current
+                                key generation, relevant keys will be rotated, and the generation value will be updated to
+                                this new value (generation values are not necessarily incremental, though that is the
+                                intended use case). If this is set to less than or equal to the current key generation, keys
+                                are not rotated.
+                              format: int32
+                              maximum: 4294967295
+                              minimum: 0
+                              type: integer
+                              x-kubernetes-validations:
+                                - message: keyGeneration cannot be decreased
+                                  rule: self >= oldSelf
+                            keyRotationPolicy:
+                              description: |-
+                                KeyRotationPolicy controls if and when CephX keys are rotated after initial creation.
+                                One of Disabled, or KeyGeneration. Default Disabled.
+                              enum:
+                                - ""
+                                - Disabled
+                                - KeyGeneration
+                              type: string
+                          type: object
+                        rbdMirrorPeer:
+                          description: |-
+                            RBDMirrorPeer configures CephX key settings of the `rbd-mirror-peer` user that is used for creating
+                            bootstrap peer token used connect peer clusters. Rotating the `rbd-mirror-peer` user key will update
+                            the mirror peer token.
+                            Rotation will affect any existing peers connected to this cluster, so take care when exercising this option.
+                          properties:
+                            keyGeneration:
+                              description: |-
+                                KeyGeneration specifies the desired CephX key generation. This is used when KeyRotationPolicy
+                                is KeyGeneration and ignored for other policies. If this is set to greater than the current
+                                key generation, relevant keys will be rotated, and the generation value will be updated to
+                                this new value (generation values are not necessarily incremental, though that is the
+                                intended use case). If this is set to less than or equal to the current key generation, keys
+                                are not rotated.
+                              format: int32
+                              maximum: 4294967295
+                              minimum: 0
+                              type: integer
+                              x-kubernetes-validations:
+                                - message: keyGeneration cannot be decreased
+                                  rule: self >= oldSelf
+                            keyRotationPolicy:
+                              description: |-
+                                KeyRotationPolicy controls if and when CephX keys are rotated after initial creation.
+                                One of Disabled, or KeyGeneration. Default Disabled.
+                              enum:
+                                - ""
+                                - Disabled
+                                - KeyGeneration
+                              type: string
+                          type: object
+                      type: object
                     keyRotation:
-                      description: KeyRotation defines options for Key Rotation.
+                      description: KeyRotation defines options for rotation of OSD disk encryption keys.
                       nullable: true
                       properties:
                         enabled:
@@ -3784,6 +4292,11 @@ spec:
                       type: array
                     onlyApplyOSDPlacement:
                       type: boolean
+                    osdMaxUpdatesInParallel:
+                      description: The maximum number of OSDs to update in parallel.
+                      format: int32
+                      minimum: 1
+                      type: integer
                     scheduleAlways:
                       description: Whether to always schedule OSDs on a node even if the node is not currently scheduleable or ready
                       type: boolean
@@ -5487,6 +6000,189 @@ spec:
                           type: object
                       type: object
                   type: object
+                cephx:
+                  description: ClusterCephxStatus defines the cephx key rotation status of various daemons on the cephCluster resource
+                  properties:
+                    admin:
+                      description: Admin shows the CephX key status for the client.admin key
+                      properties:
+                        keyCephVersion:
+                          description: |-
+                            KeyCephVersion reports the Ceph version that created the current generation's keys. This is
+                            same string format as reported by `CephCluster.status.version.version` to allow them to be
+                            compared. E.g., `20.2.0-0`.
+                            For all newly-created resources, this field set to the version of Ceph that created the key.
+                            The special value "Uninitialized" indicates that keys are being created for the first time.
+                            An empty string indicates that the version is unknown, as expected in brownfield deployments.
+                          type: string
+                        keyGeneration:
+                          description: |-
+                            KeyGeneration represents the CephX key generation for the last successful reconcile.
+                            For all newly-created resources, this field is set to `1`.
+                            When keys are rotated due to any rotation policy, the generation is incremented or updated to
+                            the configured policy generation.
+                            Generation `0` indicates that keys existed prior to the implementation of key tracking.
+                          format: int32
+                          type: integer
+                      type: object
+                    cephExporter:
+                      description: Ceph Exporter represents the cephx key rotation status of the ceph exporter daemon
+                      properties:
+                        keyCephVersion:
+                          description: |-
+                            KeyCephVersion reports the Ceph version that created the current generation's keys. This is
+                            same string format as reported by `CephCluster.status.version.version` to allow them to be
+                            compared. E.g., `20.2.0-0`.
+                            For all newly-created resources, this field set to the version of Ceph that created the key.
+                            The special value "Uninitialized" indicates that keys are being created for the first time.
+                            An empty string indicates that the version is unknown, as expected in brownfield deployments.
+                          type: string
+                        keyGeneration:
+                          description: |-
+                            KeyGeneration represents the CephX key generation for the last successful reconcile.
+                            For all newly-created resources, this field is set to `1`.
+                            When keys are rotated due to any rotation policy, the generation is incremented or updated to
+                            the configured policy generation.
+                            Generation `0` indicates that keys existed prior to the implementation of key tracking.
+                          format: int32
+                          type: integer
+                      type: object
+                    crashCollector:
+                      description: Crash Collector represents the cephx key rotation status of the crash collector daemon
+                      properties:
+                        keyCephVersion:
+                          description: |-
+                            KeyCephVersion reports the Ceph version that created the current generation's keys. This is
+                            same string format as reported by `CephCluster.status.version.version` to allow them to be
+                            compared. E.g., `20.2.0-0`.
+                            For all newly-created resources, this field set to the version of Ceph that created the key.
+                            The special value "Uninitialized" indicates that keys are being created for the first time.
+                            An empty string indicates that the version is unknown, as expected in brownfield deployments.
+                          type: string
+                        keyGeneration:
+                          description: |-
+                            KeyGeneration represents the CephX key generation for the last successful reconcile.
+                            For all newly-created resources, this field is set to `1`.
+                            When keys are rotated due to any rotation policy, the generation is incremented or updated to
+                            the configured policy generation.
+                            Generation `0` indicates that keys existed prior to the implementation of key tracking.
+                          format: int32
+                          type: integer
+                      type: object
+                    csi:
+                      description: CSI shows the CephX key status for Ceph-CSI components.
+                      properties:
+                        keyCephVersion:
+                          description: |-
+                            KeyCephVersion reports the Ceph version that created the current generation's keys. This is
+                            same string format as reported by `CephCluster.status.version.version` to allow them to be
+                            compared. E.g., `20.2.0-0`.
+                            For all newly-created resources, this field set to the version of Ceph that created the key.
+                            The special value "Uninitialized" indicates that keys are being created for the first time.
+                            An empty string indicates that the version is unknown, as expected in brownfield deployments.
+                          type: string
+                        keyGeneration:
+                          description: |-
+                            KeyGeneration represents the CephX key generation for the last successful reconcile.
+                            For all newly-created resources, this field is set to `1`.
+                            When keys are rotated due to any rotation policy, the generation is incremented or updated to
+                            the configured policy generation.
+                            Generation `0` indicates that keys existed prior to the implementation of key tracking.
+                          format: int32
+                          type: integer
+                        priorKeyCount:
+                          description: PriorKeyCount reports the number of prior-generation CephX keys that remain active for the related component
+                          type: integer
+                      type: object
+                    mgr:
+                      description: Mgr represents the cephx key rotation status of the ceph manager daemon
+                      properties:
+                        keyCephVersion:
+                          description: |-
+                            KeyCephVersion reports the Ceph version that created the current generation's keys. This is
+                            same string format as reported by `CephCluster.status.version.version` to allow them to be
+                            compared. E.g., `20.2.0-0`.
+                            For all newly-created resources, this field set to the version of Ceph that created the key.
+                            The special value "Uninitialized" indicates that keys are being created for the first time.
+                            An empty string indicates that the version is unknown, as expected in brownfield deployments.
+                          type: string
+                        keyGeneration:
+                          description: |-
+                            KeyGeneration represents the CephX key generation for the last successful reconcile.
+                            For all newly-created resources, this field is set to `1`.
+                            When keys are rotated due to any rotation policy, the generation is incremented or updated to
+                            the configured policy generation.
+                            Generation `0` indicates that keys existed prior to the implementation of key tracking.
+                          format: int32
+                          type: integer
+                      type: object
+                    mon:
+                      description: Mon represents the CephX key status of the Monitor daemons
+                      properties:
+                        keyCephVersion:
+                          description: |-
+                            KeyCephVersion reports the Ceph version that created the current generation's keys. This is
+                            same string format as reported by `CephCluster.status.version.version` to allow them to be
+                            compared. E.g., `20.2.0-0`.
+                            For all newly-created resources, this field set to the version of Ceph that created the key.
+                            The special value "Uninitialized" indicates that keys are being created for the first time.
+                            An empty string indicates that the version is unknown, as expected in brownfield deployments.
+                          type: string
+                        keyGeneration:
+                          description: |-
+                            KeyGeneration represents the CephX key generation for the last successful reconcile.
+                            For all newly-created resources, this field is set to `1`.
+                            When keys are rotated due to any rotation policy, the generation is incremented or updated to
+                            the configured policy generation.
+                            Generation `0` indicates that keys existed prior to the implementation of key tracking.
+                          format: int32
+                          type: integer
+                      type: object
+                    osd:
+                      description: OSD shows the CephX key status of of OSDs
+                      properties:
+                        keyCephVersion:
+                          description: |-
+                            KeyCephVersion reports the Ceph version that created the current generation's keys. This is
+                            same string format as reported by `CephCluster.status.version.version` to allow them to be
+                            compared. E.g., `20.2.0-0`.
+                            For all newly-created resources, this field set to the version of Ceph that created the key.
+                            The special value "Uninitialized" indicates that keys are being created for the first time.
+                            An empty string indicates that the version is unknown, as expected in brownfield deployments.
+                          type: string
+                        keyGeneration:
+                          description: |-
+                            KeyGeneration represents the CephX key generation for the last successful reconcile.
+                            For all newly-created resources, this field is set to `1`.
+                            When keys are rotated due to any rotation policy, the generation is incremented or updated to
+                            the configured policy generation.
+                            Generation `0` indicates that keys existed prior to the implementation of key tracking.
+                          format: int32
+                          type: integer
+                      type: object
+                    rbdMirrorPeer:
+                      description: RBDMirrorPeer represents the cephx key rotation status of the `rbd-mirror-peer` user
+                      properties:
+                        keyCephVersion:
+                          description: |-
+                            KeyCephVersion reports the Ceph version that created the current generation's keys. This is
+                            same string format as reported by `CephCluster.status.version.version` to allow them to be
+                            compared. E.g., `20.2.0-0`.
+                            For all newly-created resources, this field set to the version of Ceph that created the key.
+                            The special value "Uninitialized" indicates that keys are being created for the first time.
+                            An empty string indicates that the version is unknown, as expected in brownfield deployments.
+                          type: string
+                        keyGeneration:
+                          description: |-
+                            KeyGeneration represents the CephX key generation for the last successful reconcile.
+                            For all newly-created resources, this field is set to `1`.
+                            When keys are rotated due to any rotation policy, the generation is incremented or updated to
+                            the configured policy generation.
+                            Generation `0` indicates that keys existed prior to the implementation of key tracking.
+                          format: int32
+                          type: integer
+                      type: object
+                  type: object
                 conditions:
                   items:
                     description: Condition represents a status condition on any Rook-Ceph Custom Resource.
@@ -5577,7 +6273,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.1
+    controller-gen.kubebuilder.io/version: v0.19.0
   name: cephcosidrivers.ceph.rook.io
 spec:
   group: ceph.rook.io
@@ -6208,7 +6904,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.1
+    controller-gen.kubebuilder.io/version: v0.19.0
   name: cephfilesystemmirrors.ceph.rook.io
 spec:
   group: ceph.rook.io
@@ -6216,6 +6912,8 @@ spec:
     kind: CephFilesystemMirror
     listKind: CephFilesystemMirrorList
     plural: cephfilesystemmirrors
+    shortNames:
+      - cephfsm
     singular: cephfilesystemmirror
   scope: Namespaced
   versions:
@@ -6838,8 +7536,33 @@ spec:
                   type: object
               type: object
             status:
-              description: Status represents the status of an object
+              description: FileMirrorStatus represents the status of the FileSystem mirror resource
               properties:
+                cephx:
+                  properties:
+                    daemon:
+                      description: Daemon shows the CephX key status for local Ceph daemons associated with this resources.
+                      properties:
+                        keyCephVersion:
+                          description: |-
+                            KeyCephVersion reports the Ceph version that created the current generation's keys. This is
+                            same string format as reported by `CephCluster.status.version.version` to allow them to be
+                            compared. E.g., `20.2.0-0`.
+                            For all newly-created resources, this field set to the version of Ceph that created the key.
+                            The special value "Uninitialized" indicates that keys are being created for the first time.
+                            An empty string indicates that the version is unknown, as expected in brownfield deployments.
+                          type: string
+                        keyGeneration:
+                          description: |-
+                            KeyGeneration represents the CephX key generation for the last successful reconcile.
+                            For all newly-created resources, this field is set to `1`.
+                            When keys are rotated due to any rotation policy, the generation is incremented or updated to
+                            the configured policy generation.
+                            Generation `0` indicates that keys existed prior to the implementation of key tracking.
+                          format: int32
+                          type: integer
+                      type: object
+                  type: object
                 conditions:
                   items:
                     description: Condition represents a status condition on any Rook-Ceph Custom Resource.
@@ -6882,7 +7605,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.1
+    controller-gen.kubebuilder.io/version: v0.19.0
   name: cephfilesystems.ceph.rook.io
 spec:
   group: ceph.rook.io
@@ -6890,6 +7613,8 @@ spec:
     kind: CephFilesystem
     listKind: CephFilesystemList
     plural: cephfilesystems
+    shortNames:
+      - cephfs
     singular: cephfilesystem
   scope: Namespaced
   versions:
@@ -6960,6 +7685,7 @@ spec:
                         type: string
                       enableCrushUpdates:
                         description: Allow rook operator to change the pool CRUSH tunables once the pool is created
+                        nullable: true
                         type: boolean
                       enableRBDStats:
                         description: EnableRBDStats is used to enable gathering of statistics for all RBD images in the pool
@@ -6968,7 +7694,12 @@ spec:
                         description: The erasure code settings
                         properties:
                           algorithm:
-                            description: The algorithm for erasure coding
+                            description: |-
+                              The algorithm for erasure coding.
+                              If absent, defaults to the plugin specified in osd_pool_default_erasure_code_profile.
+                            enum:
+                              - isa
+                              - jerasure
                             type: string
                           codingChunks:
                             description: |-
@@ -6997,7 +7728,11 @@ spec:
                             description: Enabled whether this pool is mirrored or not
                             type: boolean
                           mode:
-                            description: 'Mode is the mirroring mode: either pool or image'
+                            description: 'Mode is the mirroring mode: pool, image or init-only.'
+                            enum:
+                              - pool
+                              - image
+                              - init-only
                             type: string
                           peers:
                             description: Peers represents the peers spec
@@ -7090,6 +7825,7 @@ spec:
                             type: string
                           targetSizeRatio:
                             description: TargetSizeRatio gives a hint (%) to Ceph in terms of expected consumption of the total cluster capacity
+                            minimum: 0
                             type: number
                         required:
                           - size
@@ -7144,6 +7880,7 @@ spec:
                       type: string
                     enableCrushUpdates:
                       description: Allow rook operator to change the pool CRUSH tunables once the pool is created
+                      nullable: true
                       type: boolean
                     enableRBDStats:
                       description: EnableRBDStats is used to enable gathering of statistics for all RBD images in the pool
@@ -7152,7 +7889,12 @@ spec:
                       description: The erasure code settings
                       properties:
                         algorithm:
-                          description: The algorithm for erasure coding
+                          description: |-
+                            The algorithm for erasure coding.
+                            If absent, defaults to the plugin specified in osd_pool_default_erasure_code_profile.
+                          enum:
+                            - isa
+                            - jerasure
                           type: string
                         codingChunks:
                           description: |-
@@ -7181,7 +7923,11 @@ spec:
                           description: Enabled whether this pool is mirrored or not
                           type: boolean
                         mode:
-                          description: 'Mode is the mirroring mode: either pool or image'
+                          description: 'Mode is the mirroring mode: pool, image or init-only.'
+                          enum:
+                            - pool
+                            - image
+                            - init-only
                           type: string
                         peers:
                           description: Peers represents the peers spec
@@ -7274,6 +8020,7 @@ spec:
                           type: string
                         targetSizeRatio:
                           description: TargetSizeRatio gives a hint (%) to Ceph in terms of expected consumption of the total cluster capacity
+                          minimum: 0
                           type: number
                       required:
                         - size
@@ -7317,6 +8064,22 @@ spec:
                       nullable: true
                       type: object
                       x-kubernetes-preserve-unknown-fields: true
+                    cacheMemoryLimitFactor:
+                      description: |-
+                        CacheMemoryLimitFactor is the factor applied to the memory limit to determine the MDS cache memory limit.
+                        MDS cache memory limit should be set to 50-60% of RAM reserved for the MDS container.
+                        MDS uses approximately 125% of the value of mds_cache_memory_limit in RAM.
+                        This factor is applied when resources.limits.memory is set.
+                      maximum: 1
+                      minimum: 0
+                      type: number
+                    cacheMemoryRequestFactor:
+                      description: |-
+                        CacheMemoryRequestFactor is the factor applied to the memory request to determine the MDS cache memory limit.
+                        This factor is applied when resources.requests.memory is set and resources.limits.memory is not set.
+                      maximum: 1
+                      minimum: 0
+                      type: number
                     labels:
                       additionalProperties:
                         type: string
@@ -8276,6 +9039,31 @@ spec:
             status:
               description: CephFilesystemStatus represents the status of a Ceph Filesystem
               properties:
+                cephx:
+                  properties:
+                    daemon:
+                      description: Daemon shows the CephX key status for local Ceph daemons associated with this resources.
+                      properties:
+                        keyCephVersion:
+                          description: |-
+                            KeyCephVersion reports the Ceph version that created the current generation's keys. This is
+                            same string format as reported by `CephCluster.status.version.version` to allow them to be
+                            compared. E.g., `20.2.0-0`.
+                            For all newly-created resources, this field set to the version of Ceph that created the key.
+                            The special value "Uninitialized" indicates that keys are being created for the first time.
+                            An empty string indicates that the version is unknown, as expected in brownfield deployments.
+                          type: string
+                        keyGeneration:
+                          description: |-
+                            KeyGeneration represents the CephX key generation for the last successful reconcile.
+                            For all newly-created resources, this field is set to `1`.
+                            When keys are rotated due to any rotation policy, the generation is incremented or updated to
+                            the configured policy generation.
+                            Generation `0` indicates that keys existed prior to the implementation of key tracking.
+                          format: int32
+                          type: integer
+                      type: object
+                  type: object
                 conditions:
                   items:
                     description: Condition represents a status condition on any Rook-Ceph Custom Resource.
@@ -8461,7 +9249,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.1
+    controller-gen.kubebuilder.io/version: v0.19.0
   name: cephfilesystemsubvolumegroups.ceph.rook.io
 spec:
   group: ceph.rook.io
@@ -8469,6 +9257,9 @@ spec:
     kind: CephFilesystemSubVolumeGroup
     listKind: CephFilesystemSubVolumeGroupList
     plural: cephfilesystemsubvolumegroups
+    shortNames:
+      - cephfssvg
+      - cephsvg
     singular: cephfilesystemsubvolumegroup
   scope: Namespaced
   versions:
@@ -8515,6 +9306,18 @@ spec:
             spec:
               description: Spec represents the specification of a Ceph Filesystem SubVolumeGroup
               properties:
+                clusterID:
+                  description: |-
+                    ClusterID to be used for this subvolume group in the CSI configuration.
+                    It must be unique among all Ceph clusters managed by Rook.
+                    If not specified, the clusterID will be generated and can be found in the CR status.
+                  maxLength: 36
+                  minLength: 1
+                  pattern: ^[a-zA-Z0-9_-]+$
+                  type: string
+                  x-kubernetes-validations:
+                    - message: ClusterID is immutable
+                      rule: self == oldSelf
                 dataPoolName:
                   description: The data pool name for the Ceph Filesystem subvolume group layout, if the default CephFS pool is not desired.
                   type: string
@@ -8599,7 +9402,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.1
+    controller-gen.kubebuilder.io/version: v0.19.0
   name: cephnfses.ceph.rook.io
 spec:
   group: ceph.rook.io
@@ -8612,7 +9415,14 @@ spec:
     singular: cephnfs
   scope: Namespaced
   versions:
-    - name: v1
+    - additionalPrinterColumns:
+        - jsonPath: .status.phase
+          name: Phase
+          type: string
+        - jsonPath: .metadata.creationTimestamp
+          name: Age
+          type: date
+      name: v1
       schema:
         openAPIV3Schema:
           description: CephNFS represents a Ceph NFS
@@ -10536,8 +11346,33 @@ spec:
                 - server
               type: object
             status:
-              description: Status represents the status of an object
+              description: NFSStatus represents the status of Ceph NFS
               properties:
+                cephx:
+                  properties:
+                    daemon:
+                      description: Daemon shows the CephX key status for local Ceph daemons associated with this resources.
+                      properties:
+                        keyCephVersion:
+                          description: |-
+                            KeyCephVersion reports the Ceph version that created the current generation's keys. This is
+                            same string format as reported by `CephCluster.status.version.version` to allow them to be
+                            compared. E.g., `20.2.0-0`.
+                            For all newly-created resources, this field set to the version of Ceph that created the key.
+                            The special value "Uninitialized" indicates that keys are being created for the first time.
+                            An empty string indicates that the version is unknown, as expected in brownfield deployments.
+                          type: string
+                        keyGeneration:
+                          description: |-
+                            KeyGeneration represents the CephX key generation for the last successful reconcile.
+                            For all newly-created resources, this field is set to `1`.
+                            When keys are rotated due to any rotation policy, the generation is incremented or updated to
+                            the configured policy generation.
+                            Generation `0` indicates that keys existed prior to the implementation of key tracking.
+                          format: int32
+                          type: integer
+                      type: object
+                  type: object
                 conditions:
                   items:
                     description: Condition represents a status condition on any Rook-Ceph Custom Resource.
@@ -10581,7 +11416,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.1
+    controller-gen.kubebuilder.io/version: v0.19.0
   name: cephobjectrealms.ceph.rook.io
 spec:
   group: ceph.rook.io
@@ -10589,10 +11424,19 @@ spec:
     kind: CephObjectRealm
     listKind: CephObjectRealmList
     plural: cephobjectrealms
+    shortNames:
+      - cephor
     singular: cephobjectrealm
   scope: Namespaced
   versions:
-    - name: v1
+    - additionalPrinterColumns:
+        - jsonPath: .status.phase
+          name: Phase
+          type: string
+        - jsonPath: .metadata.creationTimestamp
+          name: Age
+          type: date
+      name: v1
       schema:
         openAPIV3Schema:
           description: CephObjectRealm represents a Ceph Object Store Gateway Realm
@@ -10618,6 +11462,9 @@ spec:
               description: ObjectRealmSpec represent the spec of an ObjectRealm
               nullable: true
               properties:
+                defaultRealm:
+                  description: Set this realm as the default in Ceph. Only one realm should be default.
+                  type: boolean
                 pull:
                   description: PullSpec represents the pulling specification of a Ceph Object Storage Gateway Realm
                   properties:
@@ -10671,7 +11518,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.1
+    controller-gen.kubebuilder.io/version: v0.19.0
   name: cephobjectstores.ceph.rook.io
 spec:
   group: ceph.rook.io
@@ -10679,6 +11526,8 @@ spec:
     kind: CephObjectStore
     listKind: CephObjectStoreList
     plural: cephobjectstores
+    shortNames:
+      - cephos
     singular: cephobjectstore
   scope: Namespaced
   versions:
@@ -10796,6 +11645,7 @@ spec:
                       type: string
                     enableCrushUpdates:
                       description: Allow rook operator to change the pool CRUSH tunables once the pool is created
+                      nullable: true
                       type: boolean
                     enableRBDStats:
                       description: EnableRBDStats is used to enable gathering of statistics for all RBD images in the pool
@@ -10804,7 +11654,12 @@ spec:
                       description: The erasure code settings
                       properties:
                         algorithm:
-                          description: The algorithm for erasure coding
+                          description: |-
+                            The algorithm for erasure coding.
+                            If absent, defaults to the plugin specified in osd_pool_default_erasure_code_profile.
+                          enum:
+                            - isa
+                            - jerasure
                           type: string
                         codingChunks:
                           description: |-
@@ -10833,7 +11688,11 @@ spec:
                           description: Enabled whether this pool is mirrored or not
                           type: boolean
                         mode:
-                          description: 'Mode is the mirroring mode: either pool or image'
+                          description: 'Mode is the mirroring mode: pool, image or init-only.'
+                          enum:
+                            - pool
+                            - image
+                            - init-only
                           type: string
                         peers:
                           description: Peers represents the peers spec
@@ -10923,6 +11782,7 @@ spec:
                           type: string
                         targetSizeRatio:
                           description: TargetSizeRatio gives a hint (%) to Ceph in terms of expected consumption of the total cluster capacity
+                          minimum: 0
                           type: number
                       required:
                         - size
@@ -10945,6 +11805,13 @@ spec:
                       type: object
                       x-kubernetes-preserve-unknown-fields: true
                   type: object
+                defaultRealm:
+                  description: |-
+                    Set this realm as the default in Ceph. Only one realm should be default.
+                    Do not set this true on more than one CephObjectStore.
+                    This may not be set when zone is also specified; in this case, the realm
+                    referenced by the zone's zonegroup should configure defaulting behavior.
+                  type: boolean
                 gateway:
                   description: The rgw pod info
                   nullable: true
@@ -11858,6 +12725,25 @@ spec:
                     priorityClassName:
                       description: PriorityClassName sets priority classes on the rgw pods
                       type: string
+                    readAffinity:
+                      description: |-
+                        ReadAffinity defines the RGW read affinity policy to optimize the read requests for the RGW clients
+                        Note: Only supported from Ceph Tentacle (v20)
+                      properties:
+                        type:
+                          description: |-
+                            Type defines the RGW ReadAffinity type
+                            localize: read from the nearest OSD based on crush location of the RGW client
+                            balance: picks a random OSD from the PG's active set
+                            default: read from the primary OSD
+                          enum:
+                            - localize
+                            - balance
+                            - default
+                          type: string
+                      required:
+                        - type
+                      type: object
                     resources:
                       description: The resource requirements for the rgw pods
                       nullable: true
@@ -12373,6 +13259,7 @@ spec:
                       type: string
                     enableCrushUpdates:
                       description: Allow rook operator to change the pool CRUSH tunables once the pool is created
+                      nullable: true
                       type: boolean
                     enableRBDStats:
                       description: EnableRBDStats is used to enable gathering of statistics for all RBD images in the pool
@@ -12381,7 +13268,12 @@ spec:
                       description: The erasure code settings
                       properties:
                         algorithm:
-                          description: The algorithm for erasure coding
+                          description: |-
+                            The algorithm for erasure coding.
+                            If absent, defaults to the plugin specified in osd_pool_default_erasure_code_profile.
+                          enum:
+                            - isa
+                            - jerasure
                           type: string
                         codingChunks:
                           description: |-
@@ -12410,7 +13302,11 @@ spec:
                           description: Enabled whether this pool is mirrored or not
                           type: boolean
                         mode:
-                          description: 'Mode is the mirroring mode: either pool or image'
+                          description: 'Mode is the mirroring mode: pool, image or init-only.'
+                          enum:
+                            - pool
+                            - image
+                            - init-only
                           type: string
                         peers:
                           description: Peers represents the peers spec
@@ -12500,6 +13396,7 @@ spec:
                           type: string
                         targetSizeRatio:
                           description: TargetSizeRatio gives a hint (%) to Ceph in terms of expected consumption of the total cluster capacity
+                          minimum: 0
                           type: number
                       required:
                         - size
@@ -12720,15 +13617,43 @@ spec:
                   nullable: true
                   properties:
                     name:
-                      description: RGW Zone the Object Store is in
+                      description: CephObjectStoreZone name this CephObjectStore is part of
                       type: string
                   required:
                     - name
                   type: object
               type: object
+              x-kubernetes-validations:
+                - message: defaultRealm must not be true when zone.name is set (multisite configuration)
+                  rule: '!(has(self.defaultRealm) && self.defaultRealm == true && has(self.zone) && size(self.zone.name) > 0)'
             status:
               description: ObjectStoreStatus represents the status of a Ceph Object Store resource
               properties:
+                cephx:
+                  properties:
+                    daemon:
+                      description: Daemon shows the CephX key status for local Ceph daemons associated with this resources.
+                      properties:
+                        keyCephVersion:
+                          description: |-
+                            KeyCephVersion reports the Ceph version that created the current generation's keys. This is
+                            same string format as reported by `CephCluster.status.version.version` to allow them to be
+                            compared. E.g., `20.2.0-0`.
+                            For all newly-created resources, this field set to the version of Ceph that created the key.
+                            The special value "Uninitialized" indicates that keys are being created for the first time.
+                            An empty string indicates that the version is unknown, as expected in brownfield deployments.
+                          type: string
+                        keyGeneration:
+                          description: |-
+                            KeyGeneration represents the CephX key generation for the last successful reconcile.
+                            For all newly-created resources, this field is set to `1`.
+                            When keys are rotated due to any rotation policy, the generation is incremented or updated to
+                            the configured policy generation.
+                            Generation `0` indicates that keys existed prior to the implementation of key tracking.
+                          format: int32
+                          type: integer
+                      type: object
+                  type: object
                 conditions:
                   items:
                     description: Condition represents a status condition on any Rook-Ceph Custom Resource.
@@ -12793,7 +13718,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.1
+    controller-gen.kubebuilder.io/version: v0.19.0
   name: cephobjectstoreusers.ceph.rook.io
 spec:
   group: ceph.rook.io
@@ -12804,6 +13729,7 @@ spec:
     shortNames:
       - rcou
       - objectuser
+      - cephosu
     singular: cephobjectstoreuser
   scope: Namespaced
   versions:
@@ -12976,8 +13902,63 @@ spec:
                   description: The namespace where the parent CephCluster and CephObjectStore are found
                   type: string
                 displayName:
-                  description: The display name for the ceph users
+                  description: The display name for the ceph user.
                   type: string
+                keys:
+                  description: |-
+                    Allows specifying credentials for the user. If not provided, the operator
+                    will generate them.
+                  items:
+                    description: |-
+                      ObjectUserKey defines a set of rgw user access credentials to be retrieved
+                      from secret resources.
+                    properties:
+                      accessKeyRef:
+                        description: Secret key selector for the access_key (commonly referred to as AWS_ACCESS_KEY_ID).
+                        properties:
+                          key:
+                            description: The key of the secret to select from.  Must be a valid secret key.
+                            type: string
+                          name:
+                            default: ""
+                            description: |-
+                              Name of the referent.
+                              This field is effectively required, but due to backwards compatibility is
+                              allowed to be empty. Instances of this type with an empty value here are
+                              almost certainly wrong.
+                              More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                            type: string
+                          optional:
+                            description: Specify whether the Secret or its key must be defined
+                            type: boolean
+                        required:
+                          - key
+                        type: object
+                        x-kubernetes-map-type: atomic
+                      secretKeyRef:
+                        description: Secret key selector for the secret_key (commonly referred to as AWS_SECRET_ACCESS_KEY).
+                        properties:
+                          key:
+                            description: The key of the secret to select from.  Must be a valid secret key.
+                            type: string
+                          name:
+                            default: ""
+                            description: |-
+                              Name of the referent.
+                              This field is effectively required, but due to backwards compatibility is
+                              allowed to be empty. Instances of this type with an empty value here are
+                              almost certainly wrong.
+                              More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                            type: string
+                          optional:
+                            description: Specify whether the Secret or its key must be defined
+                            type: boolean
+                        required:
+                          - key
+                        type: object
+                        x-kubernetes-map-type: atomic
+                    type: object
+                  type: array
                 quotas:
                   description: ObjectUserQuotaSpec can be used to set quotas for the object store user to limit their usage. See the [Ceph docs](https://docs.ceph.com/en/latest/radosgw/admin/?#quota-management) for more
                   nullable: true
@@ -13014,6 +13995,27 @@ spec:
                     type: string
                   nullable: true
                   type: object
+                keys:
+                  items:
+                    properties:
+                      name:
+                        description: name is unique within a namespace to reference a secret resource.
+                        type: string
+                      namespace:
+                        description: namespace defines the space within which the secret name must be unique.
+                        type: string
+                      resourceVersion:
+                        type: string
+                      uid:
+                        description: |-
+                          UID is a type that holds unique ID values, including UUIDs.  Because we
+                          don't ONLY use UUIDs, this is an alias to string.  Being a type captures
+                          intent and helps make sure that UIDs and names do not get conflated.
+                        type: string
+                    type: object
+                    x-kubernetes-map-type: atomic
+                  nullable: true
+                  type: array
                 observedGeneration:
                   description: ObservedGeneration is the latest generation observed by the controller.
                   format: int64
@@ -13035,7 +14037,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.1
+    controller-gen.kubebuilder.io/version: v0.19.0
   name: cephobjectzonegroups.ceph.rook.io
 spec:
   group: ceph.rook.io
@@ -13043,6 +14045,8 @@ spec:
     kind: CephObjectZoneGroup
     listKind: CephObjectZoneGroupList
     plural: cephobjectzonegroups
+    shortNames:
+      - cephozg
     singular: cephobjectzonegroup
   scope: Namespaced
   versions:
@@ -13079,7 +14083,7 @@ spec:
               description: ObjectZoneGroupSpec represent the spec of an ObjectZoneGroup
               properties:
                 realm:
-                  description: The display name for the ceph users
+                  description: The name of the realm the zone group is a member of.
                   type: string
               required:
                 - realm
@@ -13130,7 +14134,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.1
+    controller-gen.kubebuilder.io/version: v0.19.0
   name: cephobjectzones.ceph.rook.io
 spec:
   group: ceph.rook.io
@@ -13138,6 +14142,8 @@ spec:
     kind: CephObjectZone
     listKind: CephObjectZoneList
     plural: cephobjectzones
+    shortNames:
+      - cephoz
     singular: cephobjectzone
   scope: Namespaced
   versions:
@@ -13219,6 +14225,7 @@ spec:
                       type: string
                     enableCrushUpdates:
                       description: Allow rook operator to change the pool CRUSH tunables once the pool is created
+                      nullable: true
                       type: boolean
                     enableRBDStats:
                       description: EnableRBDStats is used to enable gathering of statistics for all RBD images in the pool
@@ -13227,7 +14234,12 @@ spec:
                       description: The erasure code settings
                       properties:
                         algorithm:
-                          description: The algorithm for erasure coding
+                          description: |-
+                            The algorithm for erasure coding.
+                            If absent, defaults to the plugin specified in osd_pool_default_erasure_code_profile.
+                          enum:
+                            - isa
+                            - jerasure
                           type: string
                         codingChunks:
                           description: |-
@@ -13256,7 +14268,11 @@ spec:
                           description: Enabled whether this pool is mirrored or not
                           type: boolean
                         mode:
-                          description: 'Mode is the mirroring mode: either pool or image'
+                          description: 'Mode is the mirroring mode: pool, image or init-only.'
+                          enum:
+                            - pool
+                            - image
+                            - init-only
                           type: string
                         peers:
                           description: Peers represents the peers spec
@@ -13346,6 +14362,7 @@ spec:
                           type: string
                         targetSizeRatio:
                           description: TargetSizeRatio gives a hint (%) to Ceph in terms of expected consumption of the total cluster capacity
+                          minimum: 0
                           type: number
                       required:
                         - size
@@ -13398,6 +14415,7 @@ spec:
                       type: string
                     enableCrushUpdates:
                       description: Allow rook operator to change the pool CRUSH tunables once the pool is created
+                      nullable: true
                       type: boolean
                     enableRBDStats:
                       description: EnableRBDStats is used to enable gathering of statistics for all RBD images in the pool
@@ -13406,7 +14424,12 @@ spec:
                       description: The erasure code settings
                       properties:
                         algorithm:
-                          description: The algorithm for erasure coding
+                          description: |-
+                            The algorithm for erasure coding.
+                            If absent, defaults to the plugin specified in osd_pool_default_erasure_code_profile.
+                          enum:
+                            - isa
+                            - jerasure
                           type: string
                         codingChunks:
                           description: |-
@@ -13435,7 +14458,11 @@ spec:
                           description: Enabled whether this pool is mirrored or not
                           type: boolean
                         mode:
-                          description: 'Mode is the mirroring mode: either pool or image'
+                          description: 'Mode is the mirroring mode: pool, image or init-only.'
+                          enum:
+                            - pool
+                            - image
+                            - init-only
                           type: string
                         peers:
                           description: Peers represents the peers spec
@@ -13525,6 +14552,7 @@ spec:
                           type: string
                         targetSizeRatio:
                           description: TargetSizeRatio gives a hint (%) to Ceph in terms of expected consumption of the total cluster capacity
+                          minimum: 0
                           type: number
                       required:
                         - size
@@ -13640,7 +14668,7 @@ spec:
                       type: boolean
                   type: object
                 zoneGroup:
-                  description: The display name for the ceph users
+                  description: The name of the zone group the zone is a member of.
                   type: string
               required:
                 - zoneGroup
@@ -13691,7 +14719,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.1
+    controller-gen.kubebuilder.io/version: v0.19.0
   name: cephrbdmirrors.ceph.rook.io
 spec:
   group: ceph.rook.io
@@ -13699,6 +14727,8 @@ spec:
     kind: CephRBDMirror
     listKind: CephRBDMirrorList
     plural: cephrbdmirrors
+    shortNames:
+      - cephrbdm
     singular: cephrbdmirror
   scope: Namespaced
   versions:
@@ -14341,8 +15371,33 @@ spec:
                 - count
               type: object
             status:
-              description: Status represents the status of an object
+              description: RBDMirrorStatus represents the status of the RBD mirror resource
               properties:
+                cephx:
+                  properties:
+                    daemon:
+                      description: Daemon shows the CephX key status for local Ceph daemons associated with this resources.
+                      properties:
+                        keyCephVersion:
+                          description: |-
+                            KeyCephVersion reports the Ceph version that created the current generation's keys. This is
+                            same string format as reported by `CephCluster.status.version.version` to allow them to be
+                            compared. E.g., `20.2.0-0`.
+                            For all newly-created resources, this field set to the version of Ceph that created the key.
+                            The special value "Uninitialized" indicates that keys are being created for the first time.
+                            An empty string indicates that the version is unknown, as expected in brownfield deployments.
+                          type: string
+                        keyGeneration:
+                          description: |-
+                            KeyGeneration represents the CephX key generation for the last successful reconcile.
+                            For all newly-created resources, this field is set to `1`.
+                            When keys are rotated due to any rotation policy, the generation is incremented or updated to
+                            the configured policy generation.
+                            Generation `0` indicates that keys existed prior to the implementation of key tracking.
+                          format: int32
+                          type: integer
+                      type: object
+                  type: object
                 conditions:
                   items:
                     description: Condition represents a status condition on any Rook-Ceph Custom Resource.
