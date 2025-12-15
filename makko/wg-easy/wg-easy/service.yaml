@@ -10,8 +10,10 @@ spec:
     name: "tcp51821"
     port: 51821
     targetPort: 51821
+    nodePort: 31821
   - protocol: UDP
     name: "udp51820"
     port: 51820
     targetPort: 51820
+    nodePort: 31820
   type: NodePort
