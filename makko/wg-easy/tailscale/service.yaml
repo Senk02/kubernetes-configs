@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: tailscale-subnet-router
+spec:
+  selector:
+    app: tailscale-subnet-router
+  ports:
+  - protocol: UDP
+    name: "tailscale"
+    port: 41641
+    targetPort: 41641
+  type: ClusterIP
