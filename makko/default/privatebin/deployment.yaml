@@ -18,7 +18,7 @@ spec:
         app: privatebin
     spec:
       containers:
-      - image: privatebin/nginx-fpm-alpine:1.7.6
+      - image: privatebin/nginx-fpm-alpine:2.0.3
         name: privatebin
         volumeMounts:
         - name: config
