@@ -18,7 +18,7 @@ spec:
         app: bitwarden-cli
     spec:
       containers:
-      - image: ghcr.io/charlesthomas/bitwarden-cli:2025.6.1
+      - image: ghcr.io/charlesthomas/bitwarden-cli:2025.12.1
         name: bitwarden-cli
         env:
           - name: BW_HOST
