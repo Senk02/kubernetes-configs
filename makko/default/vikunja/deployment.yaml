@@ -52,7 +52,7 @@ spec:
             cpu: 10m
             memory: 384Mi
       - name: mariadb
-        image: mariadb:10.11
+        image: mariadb:12.2
         env:
         - name: MYSQL_ROOT_PASSWORD
           value: "supersecret"
