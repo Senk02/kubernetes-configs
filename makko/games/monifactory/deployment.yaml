@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: monifactory
+  labels:
+    app: monifactory
+spec:
+  revisionHistoryLimit: 1
+  replicas: 1
+  selector:
+    matchLabels:
+      app: monifactory
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: monifactory
+    spec:
+      containers:
+      - image: itzg/minecraft-server:java17
+        name: minecraft
+        env:
+        - name: EULA
+          value: "TRUE"
+        - name: TYPE
+          value: "AUTO_CURSEFORGE"
+        - name: VERSION
+          value: "1.20.1"
+        - name: FORGE_VERSION
+          value: "47.4.0"
+        - name: MEMORY
+          value: "10G"
+        - name: CF_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: curseforge-api-key
+              key: password
+        - name: CF_SLUG
+          value: monifactory
+        - name: USE_AIKAR_FLAGS
+          value: "true"
+        - name: TZ
+          value: "America/Chicago"
+        volumeMounts:
+        - name: data
+          mountPath: /data
+        ports:
+        - containerPort: 25565
+        resources:
+          limits:
+            cpu: "4"
+            memory: 20Gi
+            ephemeral-storage: 64Mi
+          requests:
+            cpu: 500m
+            memory: 10Gi
+            ephemeral-storage: 64Mi
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: minecraft-monifactory
+          readOnly: false
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: minecraft-monifactory
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 30Gi
+  storageClassName: rook-cephfs
+  volumeMode: Filesystem
