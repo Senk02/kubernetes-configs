@@ -20,23 +20,18 @@ spec:
       nodeSelector:
         kubernetes.io/hostname: talos-yha-nr5
       containers:
-      - image: haugene/transmission-openvpn:5.3.2
+      - image: haugene/transmission-wireguard:main
         name: transmission
         securityContext:
-          capabilities:
-            add: ["NET_ADMIN"]
+          privileged: true
         envFrom:
         - configMapRef:
             name: transmission
-        env:
-        - name: OPENVPN_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: transmission
-              key: password
         volumeMounts:
         - name: data
           mountPath: /data
+        - name: wg-config
+          mountPath: /wg-config
         ports:
         - containerPort: 9091
         resources:
@@ -47,10 +42,25 @@ spec:
           requests:
             cpu: 1m
             memory: 64Mi
+      securityContext:
+        fsGroup: 1000
       volumes:
       - name: data
         hostPath:
           path: /var/mnt/transmission-cache
           type: DirectoryOrCreate
-      securityContext:
-        fsGroup: 1000
+      - name: wg-config
+        persistentVolumeClaim:
+          claimName: transmission-wg-config
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: transmission-wg-config
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Mi
+  storageClassName: rook-cephfs

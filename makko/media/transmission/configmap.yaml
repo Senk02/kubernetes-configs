@@ -3,10 +3,7 @@ kind: ConfigMap
 metadata:
   name: transmission
 data:
-  OPENVPN_PROVIDER: "MULLVAD"
-  OPENVPN_CONFIG: "us_rag"
-  OPENVPN_PASSWORD: "m"
-  CREATE_TUN_DEVICE: "true"
+  CONFIG_FILE: "/wg-config/wg0.conf"
   WEBPROXY_ENABLED: "false"
   LOCAL_NETWORK: "10.0.0.0/8,192.168.0.0/16,172.16.0.0/12,100.64.0.0/10,169.254.0.0/16"
   TRANSMISSION_RATIO_LIMIT: "0"
