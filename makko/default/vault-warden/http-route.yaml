@@ -7,6 +7,9 @@ spec:
     - name: external
       namespace: gateway
       sectionName: https
+    - name: internal
+      namespace: gateway
+      sectionName: https
   hostnames:
     - "vault.senk0.com"
   rules:
