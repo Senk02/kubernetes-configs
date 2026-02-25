@@ -18,7 +18,7 @@ spec:
         app: kavita
     spec:
       containers:
-      - image: jvmilazz0/kavita:0.8.6
+      - image: jvmilazz0/kavita:0.8.9
         name: kavita
         volumeMounts:
         - name: media
