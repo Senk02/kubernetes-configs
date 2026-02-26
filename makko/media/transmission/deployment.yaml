@@ -20,18 +20,40 @@ spec:
       nodeSelector:
         kubernetes.io/hostname: talos-yha-nr5
       containers:
-      - image: haugene/transmission-wireguard:main
-        name: transmission
+      - name: gluetun
+        image: qmcgaw/gluetun:latest
         securityContext:
-          privileged: true
+          capabilities:
+            add: ["NET_ADMIN"]
+        envFrom:
+        - configMapRef:
+            name: transmission
+        env:
+        - name: WIREGUARD_PRIVATE_KEY
+          valueFrom:
+            secretKeyRef:
+              name: transmission
+              key: password
+        resources:
+          limits:
+            cpu: "500m"
+            memory: 128Mi
+          requests:
+            cpu: 1m
+            memory: 64Mi
+        volumeMounts:
+        - name: tun
+          mountPath: /dev/net/tun
+      - name: transmission
+        image: lscr.io/linuxserver/transmission:latest
         envFrom:
         - configMapRef:
             name: transmission
         volumeMounts:
         - name: data
-          mountPath: /data
+          mountPath: /downloads
         - name: wg-config
-          mountPath: /wg-config
+          mountPath: /config
         ports:
         - containerPort: 9091
         resources:
@@ -52,6 +74,10 @@ spec:
       - name: wg-config
         persistentVolumeClaim:
           claimName: transmission-wg-config
+      - name: tun
+        hostPath:
+          path: /dev/net/tun
+          type: CharDevice
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
