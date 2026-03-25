@@ -42,6 +42,7 @@ spec:
             ephemeral-storage: 128Mi
           requests:
             cpu: 10m
+            memory: 128Mi
       volumes:
       - name: work
         persistentVolumeClaim:

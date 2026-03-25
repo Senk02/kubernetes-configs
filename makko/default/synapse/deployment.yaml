@@ -46,7 +46,7 @@ spec:
             ephemeral-storage: 128Mi
           requests:
             cpu: 256m
-            memory: 512Mi
+            memory: 256Mi
             ephemeral-storage: 16Mi
       volumes:
         - name: synapse-data

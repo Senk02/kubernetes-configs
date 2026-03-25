@@ -45,7 +45,7 @@ spec:
             ephemeral-storage: 2Gi
           requests:
             cpu: 100m 
-            memory: 512Mi
+            memory: 256Mi
             ephemeral-storage: 32Mi
       volumes:
       - name: media
