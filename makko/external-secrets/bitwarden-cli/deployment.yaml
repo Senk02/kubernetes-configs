@@ -39,6 +39,13 @@ spec:
                 key: BW_PASSWORD
         ports:
         - containerPort: 8087
+        livenessProbe:
+          httpGet:
+            path: /status
+            port: 8087
+          initialDelaySeconds: 30
+          periodSeconds: 30
+          failureThreshold: 3
         resources:
           limits:
             cpu: "1"
