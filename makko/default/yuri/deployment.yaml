@@ -6,7 +6,7 @@ metadata:
   name: yuri
   namespace: default
 spec:
-  replicas: 1
+  replicas: 0
   revisionHistoryLimit: 1
   selector:
     matchLabels:
