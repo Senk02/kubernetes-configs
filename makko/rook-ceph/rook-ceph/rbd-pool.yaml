@@ -4,9 +4,9 @@ metadata:
   name: replicapool-ssd
   namespace: rook-ceph
 spec:
-  failureDomain: host
+  failureDomain: osd
   deviceClass: ssd
   replicated:
-    size: 3
+    size: 2
   parameters:
     compression_mode: none

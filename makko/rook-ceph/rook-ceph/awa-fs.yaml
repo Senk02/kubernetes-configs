@@ -8,13 +8,13 @@ spec:
     failureDomain: osd
     deviceClass: fast-hdd
     replicated:
-      size: 3
+      size: 1
   dataPools:
     - name: replicated
       failureDomain: osd
       deviceClass: fast-hdd
       replicated:
-        size: 3
+        size: 1
   preserveFilesystemOnDelete: true
   metadataServer:
     activeCount: 1

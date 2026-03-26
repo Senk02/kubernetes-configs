@@ -5,16 +5,16 @@ metadata:
   namespace: rook-ceph
 spec:
   metadataPool:
-    failureDomain: host
+    failureDomain: osd
     deviceClass: hdd
     replicated:
-      size: 3
+      size: 2
   dataPools:
     - name: replicated
-      failureDomain: host
+      failureDomain: osd
       deviceClass: hdd
       replicated:
-        size: 3
+        size: 2
   preserveFilesystemOnDelete: true
   metadataServer:
     activeCount: 1
