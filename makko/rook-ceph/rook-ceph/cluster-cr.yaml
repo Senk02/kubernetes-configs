@@ -20,6 +20,8 @@ spec:
     enabled: true
     ssl: false
   removeOSDsIfOutAndSafeToRemove: true
+  priorityClassNames:
+    osd: storage-critical
   storage:
     useAllNodes: false
     useAllDevices: false

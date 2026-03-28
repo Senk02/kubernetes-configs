@@ -1,0 +1,8 @@
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: network-critical
+value: 1500
+preemptionPolicy: PreemptLowerPriority
+globalDefault: false
+description: "Critical priority for network (Cilium) pods that need to preempt other pods"

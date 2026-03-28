@@ -43,6 +43,9 @@ spec:
         k8sServicePort: 7445
         l2announcements:
           enabled: true
+        priorityClassName: network-critical
+        operator:
+          priorityClassName: network-critical
         gatewayAPI:
           enabled: true
           externalTrafficPolicy: Local
