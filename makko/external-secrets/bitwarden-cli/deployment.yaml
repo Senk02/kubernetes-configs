@@ -22,7 +22,7 @@ spec:
           hostnames:
             - "vault.senk0.com"
       containers:
-      - image: ghcr.io/charlesthomas/bitwarden-cli:2026.1.0
+      - image: ghcr.io/charlesthomas/bitwarden-cli:2026.3.0
         name: bitwarden-cli
         env:
           - name: BW_HOST
