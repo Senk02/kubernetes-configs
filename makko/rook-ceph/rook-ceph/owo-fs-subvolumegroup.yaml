@@ -1,0 +1,8 @@
+apiVersion: ceph.rook.io/v1
+kind: CephFilesystemSubVolumeGroup
+metadata:
+  name: owofs-csi
+  namespace: rook-ceph
+spec:
+  filesystemName: owofs
+  name: csi
