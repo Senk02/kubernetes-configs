@@ -1,9 +1,9 @@
 # Talos Image Factory schematic for renkko (arm64)
-# Generate: curl -X POST --data-binary @schematic.yaml https://factory.talos.dev/schematics
+# Currently unused because we need a custom RTL8127 extension that the Image Factory doesn't support.
+# Once the RTL8127 driver is mainlined, remove the imager workflow and use this schematic with:
+#   curl -X POST --data-binary @schematic.yaml https://factory.talos.dev/schematics
 customization:
   systemExtensions:
     officialExtensions:
       - siderolabs/iscsi-tools
       - siderolabs/util-linux-tools
-    imageExtensions:
-      - image: ghcr.io/senk02/talos-r8127:11.015.00-v1.12.6
