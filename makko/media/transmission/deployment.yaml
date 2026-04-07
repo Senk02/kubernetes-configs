@@ -90,3 +90,4 @@ spec:
     requests:
       storage: 10Mi
   storageClassName: rook-cephfs
+  volumeName: pvc-43a801a1-d218-49a0-9eed-f44d69b05e16

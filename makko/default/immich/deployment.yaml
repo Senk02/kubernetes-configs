@@ -143,6 +143,7 @@ spec:
     requests:
       storage: 500Gi
   storageClassName: rook-cephfs-hdd
+  volumeName: pvc-0a10a957-d780-4d3b-a973-71109f83a8e8
   volumeMode: Filesystem
 ---
 apiVersion: v1
@@ -156,4 +157,5 @@ spec:
     requests:
       storage: 50Gi
   storageClassName: rook-cephfs
+  volumeName: pvc-5afb79da-01f4-4a1c-a24c-3524fb942223
   volumeMode: Filesystem

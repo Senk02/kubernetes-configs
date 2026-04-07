@@ -110,6 +110,7 @@ spec:
     requests:
       storage: 10Gi
   storageClassName: rook-cephfs
+  volumeName: pvc-1b7b54ad-a9be-4e6a-8b68-6a56a1787482
   volumeMode: Filesystem
 ---
 apiVersion: v1
@@ -123,6 +124,7 @@ spec:
     requests:
       storage: 10Gi
   storageClassName: rook-cephfs
+  volumeName: pvc-b26b2ae9-6a29-46e5-ac82-164aa394129e
   volumeMode: Filesystem
 ---
 apiVersion: v1
@@ -136,4 +138,5 @@ spec:
     requests:
       storage: 1Gi
   storageClassName: rook-cephfs
+  volumeName: pvc-2e096fc0-097d-47ac-9115-a3b39a20b41f
   volumeMode: Filesystem

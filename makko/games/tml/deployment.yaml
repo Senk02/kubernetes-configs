@@ -77,6 +77,7 @@ spec:
     requests:
       storage: 10Gi  # Adjust as needed for your tModLoader data
   storageClassName: rook-cephfs # Or your preferred storage class
+  volumeName: pvc-a693ec32-6f4c-4fd7-b168-8691d4cc668f
   volumeMode: Filesystem
 ---
 apiVersion: v1
@@ -90,6 +91,7 @@ spec:
     requests:
       storage: 10Gi  # Adjust as needed for your tModLoader data
   storageClassName: rook-cephfs # Or your preferred storage class
+  volumeName: pvc-27411500-d4a8-4aad-8ba5-19268d9f7d66
   volumeMode: Filesystem
 ---
 apiVersion: v1
@@ -103,4 +105,5 @@ spec:
     requests:
       storage: 10Gi  # Adjust as needed for your tModLoader data
   storageClassName: rook-cephfs # Or your preferred storage class
+  volumeName: pvc-ba7b1d1c-835e-430d-b227-c37f13e1e09a
   volumeMode: Filesystem

@@ -10,4 +10,5 @@ spec:
     requests:
       storage: 2Ti
   storageClassName: rook-cephfs-hdd
+  volumeName: pvc-9f43e25e-e743-4e27-90e6-8bee2816fa93
   volumeMode: Filesystem

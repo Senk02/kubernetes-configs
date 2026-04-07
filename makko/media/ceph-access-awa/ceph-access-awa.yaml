@@ -92,3 +92,4 @@ spec:
     requests:
       storage: 1Gi
   storageClassName: rook-cephfs-awa
+  volumeName: pvc-eadb524a-5edc-4778-99e1-608168a8fc74

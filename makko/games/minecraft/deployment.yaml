@@ -82,4 +82,5 @@ spec:
     requests:
       storage: 24Gi
   storageClassName: rook-cephfs
+  volumeName: pvc-07e152fa-a5a3-4460-8c64-d9799a4b85f1
   volumeMode: Filesystem

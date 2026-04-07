@@ -89,6 +89,7 @@ spec:
     requests:
       storage: 10Gi # Adjust size as needed
   storageClassName: rook-cephfs
+  volumeName: pvc-f64c943d-111c-466d-9a34-226c86703ea9
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -101,3 +102,4 @@ spec:
     requests:
       storage: 1Ti
   storageClassName: rook-cephfs-awa
+  volumeName: pvc-c543ebdc-d08a-43b7-afec-e041bff1a343

@@ -56,4 +56,5 @@ spec:
     requests:
       storage: 10Gi
   storageClassName: rook-cephfs-hdd
+  volumeName: pvc-c3c23ab8-0c2c-4217-91ba-856c9382be68
   volumeMode: Filesystem

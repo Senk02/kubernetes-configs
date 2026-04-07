@@ -50,4 +50,5 @@ spec:
     requests:
       storage: 20Gi
   storageClassName: rook-cephfs
+  volumeName: pvc-5f2a46ba-4d65-4913-9220-d3a49fed0365
   volumeMode: Filesystem

@@ -85,4 +85,5 @@ spec:
     requests:
       storage: 30Gi
   storageClassName: rook-rbd
+  volumeName: pvc-ed609601-0b27-44b3-9822-e87d48529791
   volumeMode: Filesystem

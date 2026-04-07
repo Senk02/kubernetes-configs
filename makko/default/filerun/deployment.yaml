@@ -112,6 +112,7 @@ spec:
     requests:
       storage: 2Gi
   storageClassName: rook-cephfs
+  volumeName: pvc-f41e97c1-2f9a-421e-8d71-f6dc1dca8b10
   volumeMode: Filesystem
 ---
 kind: PersistentVolumeClaim
@@ -125,6 +126,7 @@ spec:
     requests:
       storage: 1Ti
   storageClassName: rook-cephfs-hdd
+  volumeName: pvc-929bbc3a-8ebe-4d65-a35d-bb64b610aa5c
   volumeMode: Filesystem
 ---
 kind: PersistentVolumeClaim
@@ -138,4 +140,5 @@ spec:
     requests:
       storage: 8Gi
   storageClassName: rook-cephfs
+  volumeName: pvc-ea1893f6-4dea-4c0e-a61a-f0116cf99377
   volumeMode: Filesystem
