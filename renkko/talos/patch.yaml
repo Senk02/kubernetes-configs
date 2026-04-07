@@ -1,0 +1,29 @@
+cluster:
+  network:
+    cni:
+      name: none
+  proxy:
+    disabled: true
+machine:
+  kubelet:
+    extraMounts:
+      - destination: /var/mnt
+        type: bind
+        source: /var/mnt
+        options:
+          - bind
+          - rshared
+          - rw
+      - destination: /var/lib/rook
+        type: bind
+        source: /var/lib/rook
+        options:
+          - bind
+          - rshared
+          - rw
+    extraArgs:
+      allowed-unsafe-sysctls: "net.ipv4.conf.all.src_valid_mark,net.ipv4.ip_forward"
+  kernel:
+    modules:
+      - name: rbd
+      - name: ceph

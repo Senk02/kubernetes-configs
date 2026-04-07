@@ -1,0 +1,9 @@
+# Talos Image Factory schematic for renkko (arm64)
+# Generate: curl -X POST --data-binary @schematic.yaml https://factory.talos.dev/schematics
+customization:
+  systemExtensions:
+    officialExtensions:
+      - siderolabs/iscsi-tools
+      - siderolabs/util-linux-tools
+    imageExtensions:
+      - image: ghcr.io/senk02/talos-r8127:11.015.00-v1.12.6
