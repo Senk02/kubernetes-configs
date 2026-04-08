@@ -35,6 +35,8 @@ spec:
                 cpu: "100m"
                 memory: "128Mi"
         server:
+          service:
+            type: LoadBalancer
           autoscaling:
             enabled: true
             minReplicas: 2
