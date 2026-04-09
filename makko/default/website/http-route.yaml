@@ -9,6 +9,7 @@ spec:
       sectionName: https
   hostnames:
     - "www.senk0.com"
+    - "makko.senk0.com"
   rules:
     - backendRefs:
         - name: nginx

@@ -1,4 +1,4 @@
-apiVersion: apps/v1 
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nginx
@@ -46,7 +46,7 @@ spec:
         - name: PROMETHEUS_URL
           value: "http://prometheus.monitoring.svc.cluster.local:9090"
         - name: PEER_URL
-          value: "http://renkko.senk0.com"
+          value: "http://makko.senk0.com"
         volumeMounts:
         - name: nodejs-app-config
           mountPath: /app-config
@@ -73,58 +73,3 @@ spec:
       - name: nginx-config
         configMap:
           name: nginx-metrics-config
----
-apiVersion: apps/v1 
-kind: Deployment
-metadata:
-  name: nginx-iem
-  labels:
-    app: nginx-iem
-spec:
-  revisionHistoryLimit: 1
-  replicas: 1
-  selector:
-    matchLabels:
-      app: nginx-iem
-  strategy:
-    type: Recreate
-  template:
-    metadata:
-      labels:
-        app: nginx-iem
-    spec:
-      containers:
-      - image: nginx:1.28.0
-        name: nginx-iem
-        volumeMounts:
-        - name: html-iem
-          mountPath: /usr/share/nginx/html
-        ports:
-        - containerPort: 80
-        resources:
-          limits:
-            cpu: "1"
-            memory: 64Mi
-            ephemeral-storage: 64Mi
-          requests:
-            cpu: 10m
-            memory: 16Mi
-      volumes:
-      - name: html-iem
-        persistentVolumeClaim:
-          claimName: nginx-iem-pvc
-          readOnly: false
----
-kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
-  name: nginx-iem-pvc
-spec:
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: 2Gi
-  storageClassName: rook-cephfs
-  volumeName: pvc-755104f5-e909-4e14-aabf-5e3ff5a54b06
-  volumeMode: Filesystem
