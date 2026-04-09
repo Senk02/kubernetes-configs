@@ -28,18 +28,11 @@ spec:
         deploymentAnnotations:
           reloader.stakater.com/auto: "true"
         redis-ha:
-          enabled: true
-          haproxy:
-            resources:
-              requests:
-                cpu: "100m"
-                memory: "128Mi"
+          enabled: false
         server:
           service:
             type: LoadBalancer
-          autoscaling:
-            enabled: true
-            minReplicas: 2
+          replicas: 1
           resources:
             requests:
               cpu: "250m"
@@ -47,7 +40,7 @@ spec:
         controller:
           replicas: 1
         applicationSet:
-          replicas: 2
+          replicas: 1
   syncPolicy:
     automated:
       allowEmpty: true
