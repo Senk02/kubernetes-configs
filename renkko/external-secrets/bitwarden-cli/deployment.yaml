@@ -17,10 +17,6 @@ spec:
       labels:
         app: bitwarden-cli
     spec:
-      hostAliases:
-        - ip: "10.100.185.25"
-          hostnames:
-            - "vault.senk0.com"
       containers:
       - image: ghcr.io/charlesthomas/bitwarden-cli:2026.1.0
         name: bitwarden-cli
