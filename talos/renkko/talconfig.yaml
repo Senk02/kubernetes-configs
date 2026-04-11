@@ -1,0 +1,72 @@
+---
+clusterName: renkko
+talosVersion: v1.9.5
+kubernetesVersion: v1.32.3
+endpoint: https://10.1.0.230:6443
+allowSchedulingOnControlPlanes: true
+
+cniConfig:
+  name: none
+
+clusterPodNets:
+  - 10.244.0.0/16
+clusterSvcNets:
+  - 10.96.0.0/12
+
+nodes:
+  - hostname: renkko-owner1
+    ipAddress: 10.1.0.230
+    controlPlane: true
+    installDisk: /dev/sda
+    networkInterfaces:
+      - interface: enp1s0
+        addresses:
+          - 10.1.0.230/16
+        routes:
+          - network: 0.0.0.0/0
+            gateway: 10.1.0.1
+
+patches:
+  - |-
+    machine:
+      kubelet:
+        extraArgs:
+          allowed-unsafe-sysctls: net.ipv4.conf.all.src_valid_mark,net.ipv4.ip_forward
+        extraMounts:
+          - destination: /var/mnt
+            type: bind
+            source: /var/mnt
+            options:
+              - bind
+              - rshared
+              - rw
+          - destination: /var/lib/rook
+            type: bind
+            source: /var/lib/rook
+            options:
+              - bind
+              - rshared
+              - rw
+        defaultRuntimeSeccompProfileEnabled: true
+        disableManifestsDirectory: true
+      kernel:
+        modules:
+          - name: rbd
+          - name: ceph
+      features:
+        kubePrism:
+          enabled: true
+          port: 7445
+        hostDNS:
+          enabled: true
+          forwardKubeDNSToHost: true
+  - |-
+    cluster:
+      proxy:
+        disabled: true
+      discovery:
+        enabled: true
+        registries:
+          kubernetes:
+            disabled: true
+          service: {}

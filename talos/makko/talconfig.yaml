@@ -1,0 +1,149 @@
+---
+clusterName: makko
+talosVersion: v1.9.5
+kubernetesVersion: v1.32.4
+endpoint: https://10.0.0.73:6443
+
+cniConfig:
+  name: none
+
+clusterPodNets:
+  - 10.244.0.0/16
+clusterSvcNets:
+  - 10.96.0.0/12
+
+nodes:
+  # Owners (control plane)
+  - hostname: makko-owner1
+    ipAddress: 10.0.0.19
+    controlPlane: true
+    installDisk: /dev/sda
+    ignoreHostname: true
+    nodeLabels:
+      node.kubernetes.io/exclude-from-external-load-balancers: ""
+    networkInterfaces:
+      - interface: end0
+        addresses:
+          - 10.0.0.19/16
+        routes:
+          - network: 0.0.0.0/0
+            gateway: 10.0.0.1
+
+  - hostname: makko-owner2
+    ipAddress: 10.0.0.99
+    controlPlane: true
+    installDisk: /dev/sda
+    ignoreHostname: true
+    nodeLabels:
+      node.kubernetes.io/exclude-from-external-load-balancers: ""
+    networkInterfaces:
+      - interface: end0
+        addresses:
+          - 10.0.0.99/16
+        routes:
+          - network: 0.0.0.0/0
+            gateway: 10.0.0.1
+
+  - hostname: makko-owner3
+    ipAddress: 10.0.0.141
+    controlPlane: true
+    installDisk: /dev/sda
+    ignoreHostname: true
+    nodeLabels:
+      node.kubernetes.io/exclude-from-external-load-balancers: ""
+    networkInterfaces:
+      - interface: end0
+        addresses:
+          - 10.0.0.141/16
+        routes:
+          - network: 0.0.0.0/0
+            gateway: 10.0.0.1
+
+  # Pets (workers)
+  - hostname: makko-pet1
+    ipAddress: 10.0.0.40
+    controlPlane: false
+    installDisk: /dev/sda
+    ignoreHostname: true
+    networkInterfaces:
+      - interface: ens18
+        addresses:
+          - 10.0.0.40/16
+        routes:
+          - network: 0.0.0.0/0
+            gateway: 10.0.0.1
+
+  - hostname: makko-pet2
+    ipAddress: 10.0.0.42
+    controlPlane: false
+    installDisk: /dev/nvme0n1
+    ignoreHostname: true
+    networkInterfaces:
+      - interface: enp0s31f6
+        addresses:
+          - 10.0.0.42/16
+        routes:
+          - network: 0.0.0.0/0
+            gateway: 10.0.0.1
+
+  - hostname: makko-pet3
+    ipAddress: 10.0.0.43
+    controlPlane: false
+    installDisk: /dev/nvme0n1
+    ignoreHostname: true
+    networkInterfaces:
+      - interface: enp0s31f6
+        addresses:
+          - 10.0.0.43/16
+        routes:
+          - network: 0.0.0.0/0
+            gateway: 10.0.0.1
+
+  # Gigabyte worker (disk selector + extra NVMe mount)
+  # TODO: uncomment once node is back online and config is verified
+  # - hostname: makko-pet-gigabyte
+  #   ipAddress: 10.0.0.85
+  #   controlPlane: false
+  #   ignoreHostname: true
+  #   installDiskSelector:
+  #     model: SP512GISSD3K5EV0
+  #   networkInterfaces:
+  #     - interface: enp5s0
+  #       addresses:
+  #         - 10.0.0.85/16
+  #       routes:
+  #         - network: 0.0.0.0/0
+  #           gateway: 10.0.0.1
+  #   patches:
+  #     - |-
+  #       machine:
+  #         disks:
+  #           - device: /dev/disk/by-id/nvme-SPCC_M.2_PCIe_SSD_A231207FN4204800465
+  #             partitions:
+  #               - mountpoint: /var/nvme
+
+patches:
+  - |-
+    machine:
+      kubelet:
+        extraArgs:
+          allowed-unsafe-sysctls: net.ipv4.conf.all.src_valid_mark,net.ipv4.ip_forward
+        defaultRuntimeSeccompProfileEnabled: true
+        disableManifestsDirectory: true
+      features:
+        kubePrism:
+          enabled: true
+          port: 7445
+        hostDNS:
+          enabled: true
+          forwardKubeDNSToHost: true
+  - |-
+    cluster:
+      proxy:
+        disabled: true
+      discovery:
+        enabled: true
+        registries:
+          kubernetes:
+            disabled: true
+          service: {}

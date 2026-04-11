@@ -1,0 +1,7 @@
+# Talhelper generated configs (contain unencrypted secrets)
+**/clusterconfig/
+
+# Old plaintext Talos configs (replaced by talhelper)
+controlplane.yaml
+worker.yaml
+talosconfig
