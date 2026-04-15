@@ -1,6 +1,6 @@
 ---
 clusterName: renkko
-talosVersion: v1.9.5
+talosVersion: v1.12.6
 kubernetesVersion: v1.32.3
 endpoint: https://10.1.0.230:6443
 allowSchedulingOnControlPlanes: true
@@ -17,7 +17,7 @@ nodes:
   - hostname: renkko-owner1
     ipAddress: 10.1.0.230
     controlPlane: true
-    installDisk: /dev/sda
+    installDisk: /dev/nvme0n1
     networkInterfaces:
       - interface: enp1s0
         addresses:
