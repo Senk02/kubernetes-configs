@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: adguard
+  labels:
+    app: adguard
+spec:
+  revisionHistoryLimit: 1
+  replicas: 1
+  selector:
+    matchLabels:
+      app: adguard
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: adguard
+    spec:
+      containers:
+      - image: adguard/adguardhome:v0.107.72
+        name: adguard
+        volumeMounts:
+        - name: config
+          mountPath: /opt/adguardhome/conf
+        - name: work
+          mountPath: /opt/adguardhome/work
+        ports:
+        - containerPort: 80
+        - containerPort: 3000
+        - containerPort: 853
+        - containerPort: 443
+        - containerPort: 784
+        - containerPort: 53
+          protocol: UDP
+        - containerPort: 53
+          protocol: TCP
+        resources:
+          limits:
+            cpu: "1"
+            memory: 512Mi
+            ephemeral-storage: 128Mi
+          requests:
+            cpu: 10m
+            memory: 128Mi
+      volumes:
+      - name: config
+        hostPath:
+          path: /var/lib/adguard/conf
+          type: DirectoryOrCreate
+      - name: work
+        hostPath:
+          path: /var/lib/adguard/work
+          type: DirectoryOrCreate

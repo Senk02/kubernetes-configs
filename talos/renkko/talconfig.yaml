@@ -17,7 +17,7 @@ nodes:
   - hostname: renkko-owner1
     ipAddress: 10.1.0.230
     controlPlane: true
-    installDisk: /dev/sda
+    installDisk: /dev/nvme0n1
     networkInterfaces:
       - interface: enp1s0
         addresses:
