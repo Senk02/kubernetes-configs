@@ -1,0 +1,8 @@
+apiVersion: ceph.rook.io/v1
+kind: CephFilesystemSubVolumeGroup
+metadata:
+  name: uwufs-csi
+  namespace: rook-ceph
+spec:
+  filesystemName: uwufs
+  name: csi

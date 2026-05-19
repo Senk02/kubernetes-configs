@@ -1,0 +1,60 @@
+apiVersion: ceph.rook.io/v1
+kind: CephCluster
+metadata:
+  name: rook-ceph
+  namespace: rook-ceph
+spec:
+  cephVersion:
+    image: quay.io/ceph/ceph:v19.2.3
+  dataDirHostPath: /var/lib/rook
+  mgr:
+    count: 1
+    allowMultiplePerNode: true
+    modules:
+      - name: rook
+        enabled: true
+  mon:
+    count: 1
+    allowMultiplePerNode: true
+  dashboard:
+    enabled: true
+    ssl: false
+  removeOSDsIfOutAndSafeToRemove: true
+  priorityClassNames:
+    osd: storage-critical
+  storage:
+    useAllNodes: false
+    useAllDevices: false
+    nodes:
+    - name: "renkko-owner1"
+      devices:
+      - name: "/dev/disk/by-id/ata-INTEL_SSDSC2KG019T8_PHYG034604LC1P9DGN"
+      resources:
+        requests:
+          cpu: 100m
+          memory: 2Gi
+  resources:
+    crashcollector:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+    mgr:
+      requests:
+        cpu: 100m
+        memory: 512Mi
+    mon:
+      requests:
+        cpu: 50m
+        memory: 512Mi
+    exporter:
+      requests:
+        cpu: 5m
+        memory: 20Mi
+    csi-rbdplugin-provisioner:
+      requests:
+        cpu: 10m
+        memory: 256Mi
+    csi-cephfsplugin:
+      requests:
+        cpu: 10m
+        memory: 64Mi

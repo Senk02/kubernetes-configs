@@ -45,10 +45,34 @@ spec:
             memory: 128Mi
       volumes:
       - name: config
-        hostPath:
-          path: /var/lib/adguard/conf
-          type: DirectoryOrCreate
+        persistentVolumeClaim:
+          claimName: adguard-config
+          readOnly: false
       - name: work
-        hostPath:
-          path: /var/lib/adguard/work
-          type: DirectoryOrCreate
+        persistentVolumeClaim:
+          claimName: adguard-workdir
+          readOnly: false
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: adguard-config
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 8Gi
+  storageClassName: rook-rbd
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: adguard-workdir
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 16Gi
+  storageClassName: rook-rbd
