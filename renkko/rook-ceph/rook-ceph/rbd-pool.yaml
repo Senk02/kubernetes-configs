@@ -3,6 +3,9 @@ kind: CephBlockPool
 metadata:
   name: replicapool
   namespace: rook-ceph
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
 spec:
   failureDomain: osd
   replicated:

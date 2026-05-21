@@ -3,6 +3,9 @@ kind: CephCluster
 metadata:
   name: rook-ceph
   namespace: rook-ceph
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
 spec:
   cephVersion:
     image: quay.io/ceph/ceph:v19.2.3

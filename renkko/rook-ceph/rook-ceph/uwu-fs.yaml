@@ -3,6 +3,9 @@ kind: CephFilesystem
 metadata:
   name: uwufs
   namespace: rook-ceph
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
 spec:
   metadataPool:
     failureDomain: osd
