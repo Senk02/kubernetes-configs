@@ -97,5 +97,5 @@ spec:
           name: bitwarden-login
           kind: ClusterSecretStore
       remoteRef:
-        key: 6b3da1b0-d854-44fe-b902-c36ad6906cec
+        key: d5cfc33e-5b9b-4447-81ed-7d4b132129d9
         property: password

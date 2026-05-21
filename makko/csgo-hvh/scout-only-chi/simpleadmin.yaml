@@ -311,7 +311,7 @@ spec:
           name: bitwarden-login
           kind: ClusterSecretStore
       remoteRef:
-        key: 6b3da1b0-d854-44fe-b902-c36ad6906cec
+        key: d5cfc33e-5b9b-4447-81ed-7d4b132129d9
         property: password
     - secretKey: discord_webhook
       sourceRef:
@@ -319,5 +319,5 @@ spec:
           name: bitwarden-login
           kind: ClusterSecretStore
       remoteRef:
-        key: 86acabcb-be30-4070-81c8-4ce28e1723f5
+        key: 514e470b-a3af-46ba-b645-c472a5b34ac5
         property: password
