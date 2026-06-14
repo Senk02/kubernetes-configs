@@ -58,7 +58,7 @@ spec:
             ephemeral-storage: 20Gi
           requests:
             cpu: 10m
-            memory: 500Mi
+            memory: 512Mi
       volumes:
       - name: rook-ceph-admin-keyring
         secret:

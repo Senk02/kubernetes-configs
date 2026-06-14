@@ -65,7 +65,7 @@ spec:
     crashcollector:
       requests:
         cpu: 100m
-        memory: 128Mi
+        memory: 16Mi
     mgr:
       requests:
         cpu: 100m

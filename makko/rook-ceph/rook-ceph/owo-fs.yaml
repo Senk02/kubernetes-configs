@@ -23,5 +23,5 @@ spec:
       limits:
         memory: "1024Mi"
       requests:
-        cpu: "500m"
-        memory: "1024Mi"
+        cpu: "100m"
+        memory: "512Mi"
