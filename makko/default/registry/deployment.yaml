@@ -18,7 +18,7 @@ spec:
         app: registry
     spec:
       containers:
-      - image: registry:3.0.0
+      - image: registry:3.1.1
         name: registry
         volumeMounts:
         - name: images
