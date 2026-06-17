@@ -43,6 +43,10 @@ spec:
           value: "224314325387575298"
         - name: KAYRO_DB_PATH
           value: "/data/kayro.db"
+        # Both containers share the pod network namespace, so the bot reaches the
+        # detector over localhost (there is no 'scam-detector' Service in k8s).
+        - name: DETECTOR_URL
+          value: "http://localhost:5000/predict"
         image: registry.senk0.com/kayro:latest-dev
         imagePullPolicy: Always
         name: kayro
