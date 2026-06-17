@@ -47,6 +47,9 @@ spec:
         # detector over localhost (there is no 'scam-detector' Service in k8s).
         - name: DETECTOR_URL
           value: "http://localhost:5000/predict"
+        # Max Hamming distance for the scam-image matcher (lower = stricter).
+        - name: IMAGE_MATCH_MAX_DISTANCE
+          value: "3"
         image: registry.senk0.com/kayro:latest-dev
         imagePullPolicy: Always
         name: kayro
@@ -57,7 +60,7 @@ spec:
           limits:
             cpu: "1"
             ephemeral-storage: 1Gi
-            memory: 256Mi
+            memory: 512Mi
           requests:
             cpu: 10m
             memory: 128Mi
