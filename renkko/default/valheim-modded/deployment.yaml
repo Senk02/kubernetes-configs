@@ -1,0 +1,99 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: valheim-modded
+  labels:
+    app: valheim-modded
+spec:
+  revisionHistoryLimit: 1
+  replicas: 1
+  selector:
+    matchLabels:
+      app: valheim-modded
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: valheim-modded
+    spec:
+      imagePullSecrets:
+      - name: ghcr-pull
+      containers:
+      - image: ghcr.io/senk02/valheim-modded-arm64:latest
+        name: valheim-modded
+        volumeMounts:
+        - name: server
+          mountPath: /valheim
+        - name: data
+          mountPath: /data
+        ports:
+        - containerPort: 2456
+          protocol: UDP
+        - containerPort: 2457
+          protocol: UDP
+        env:
+        - name: SERVER_NAME
+          value: "Detroit"
+        - name: WORLD_NAME
+          value: "sagebrush"
+        - name: SERVER_PASS
+          value: "changeme123"
+        - name: PUBLIC
+          value: "1"
+        - name: UPDATE
+          value: "false"
+        - name: TZ
+          value: "CST"
+        # --- FEX emulation tuning (see valheim-modded build context README) ---
+        # Flip FEX_PARANOID_TSO to "0" to cut in-game lag (uses the CP8180's
+        # native RCpc ordering). Revert to "1" if mods deadlock at load.
+        - name: FEX_PARANOID_TSO
+          value: "0"
+        - name: FEX_TSO_ENABLED
+          value: "1"
+        - name: FEX_SMC_CHECKS
+          value: "mtrack"
+        - name: FEX_MULTIBLOCK
+          value: "1"
+        resources:
+          limits:
+            cpu: 6
+            memory: 6144Mi
+            ephemeral-storage: 2Gi
+          requests:
+            cpu: 500m
+            memory: 2048Mi
+      volumes:
+      - name: server
+        persistentVolumeClaim:
+          claimName: valheim-modded-server
+      - name: data
+        persistentVolumeClaim:
+          claimName: valheim-modded-data
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: valheim-modded-server
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 12Gi
+  storageClassName: rook-cephfs
+  volumeMode: Filesystem
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: valheim-modded-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 4Gi
+  storageClassName: rook-cephfs
+  volumeMode: Filesystem
