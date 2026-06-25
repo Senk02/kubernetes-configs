@@ -6,7 +6,8 @@ metadata:
     app: valheim-modded
 spec:
   revisionHistoryLimit: 1
-  replicas: 1
+  # Scaled to 0 during the CephFS->RBD storage migration (see -rbd PVCs below).
+  replicas: 0
   selector:
     matchLabels:
       app: valheim-modded
@@ -96,4 +97,33 @@ spec:
     requests:
       storage: 4Gi
   storageClassName: rook-cephfs
+  volumeMode: Filesystem
+---
+# RBD (block) targets for the CephFS->RBD migration. Data is rsynced from the
+# CephFS PVCs above by a one-off migration pod before the Deployment volumes are
+# switched over. The CephFS PVCs are kept (unused) as a safety net until verified.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: valheim-modded-server-rbd
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 12Gi
+  storageClassName: rook-rbd
+  volumeMode: Filesystem
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: valheim-modded-data-rbd
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 4Gi
+  storageClassName: rook-rbd
   volumeMode: Filesystem
