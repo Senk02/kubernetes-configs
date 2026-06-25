@@ -48,10 +48,11 @@ spec:
         - name: TZ
           value: "CST"
         # --- FEX emulation tuning (see valheim-modded build context README) ---
-        # Flip FEX_PARANOID_TSO to "0" to cut in-game lag (uses the CP8180's
-        # native RCpc ordering). Revert to "1" if mods deadlock at load.
+        # ParanoidTSO=1 (full memory barriers): slower/laggier but reliable.
+        # =0 (native RCpc) is faster but intermittently segfaults at scene
+        # activation under this modpack (hung boot 2026-06-25), so keep =1.
         - name: FEX_PARANOID_TSO
-          value: "0"
+          value: "1"
         - name: FEX_TSO_ENABLED
           value: "1"
         - name: FEX_SMC_CHECKS
