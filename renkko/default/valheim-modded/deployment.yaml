@@ -6,9 +6,9 @@ metadata:
     app: valheim-modded
 spec:
   revisionHistoryLimit: 1
-  # Running on RBD (rook-rbd) after the CephFS->RBD migration. CephFS PVCs are
-  # kept (unused) as a safety net; remove in a later commit once RBD is proven.
-  replicas: 1
+  # Scaled to 0: hosting temporarily handed off to a friend's machine while the
+  # renkko FEX emulation lag is sorted. Save was exported from the RBD PVC.
+  replicas: 0
   selector:
     matchLabels:
       app: valheim-modded
