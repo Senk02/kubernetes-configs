@@ -6,9 +6,9 @@ metadata:
     app: valheim-modded
 spec:
   revisionHistoryLimit: 1
-  # Scaled to 0 to finish the CephFS->RBD migration (copy pod needs the RWO
-  # CephFS volumes). Switched to replicas 1 on RBD in the cutover commit.
-  replicas: 0
+  # Running on RBD (rook-rbd) after the CephFS->RBD migration. CephFS PVCs are
+  # kept (unused) as a safety net; remove in a later commit once RBD is proven.
+  replicas: 1
   selector:
     matchLabels:
       app: valheim-modded
@@ -70,10 +70,10 @@ spec:
       volumes:
       - name: server
         persistentVolumeClaim:
-          claimName: valheim-modded-server
+          claimName: valheim-modded-server-rbd
       - name: data
         persistentVolumeClaim:
-          claimName: valheim-modded-data
+          claimName: valheim-modded-data-rbd
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
