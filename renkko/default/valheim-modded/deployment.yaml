@@ -6,9 +6,9 @@ metadata:
     app: valheim-modded
 spec:
   revisionHistoryLimit: 1
-  # Running on CephFS (volumes below). The CephFS->RBD migration was paused after
-  # a mid-migration node reboot; resume later (RBD PVCs kept, copy unverified).
-  replicas: 1
+  # Scaled to 0 to finish the CephFS->RBD migration (copy pod needs the RWO
+  # CephFS volumes). Switched to replicas 1 on RBD in the cutover commit.
+  replicas: 0
   selector:
     matchLabels:
       app: valheim-modded
