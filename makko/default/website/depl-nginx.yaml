@@ -21,6 +21,7 @@ spec:
       - name: ghcr-secret
       containers:
       - image: ghcr.io/senk02/react-website:latest
+        imagePullPolicy: Always
         name: nginx
         volumeMounts:
         - name: nginx-config
