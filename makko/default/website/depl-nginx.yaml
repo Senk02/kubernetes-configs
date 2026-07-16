@@ -95,7 +95,7 @@ spec:
         app: nginx-iem
     spec:
       containers:
-      - image: nginx:1.28.0
+      - image: nginx:1.31.3
         name: nginx-iem
         volumeMounts:
         - name: html-iem
