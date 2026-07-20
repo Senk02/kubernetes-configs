@@ -1,0 +1,108 @@
+---
+# Non-secret runtime config for the Go aRPG server. Secrets come from the aimrpg-secrets
+# ExternalSecret (see ../postgres/external-secret.yaml).
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: aimrpg-config
+data:
+  AIMRPG_PORT: "7350"
+  AIMRPG_ADMIN_PORT: "7351"
+  AIMRPG_ADMIN_USER: "admin"
+  AIMRPG_PROD: "false" # TLS is terminated at the external gateway; server speaks plain HTTP
+  AIMRPG_REPLAYS_DIR: "/app/replays"
+  AIMRPG_DISCORD_REDIRECT_URI: "https://aimrpg.senk0.com/login/callback"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aimrpg-server
+  labels:
+    app: aimrpg-server
+spec:
+  revisionHistoryLimit: 1
+  replicas: 1
+  strategy:
+    type: Recreate # single writer to the replays PVC (RWO)
+  selector:
+    matchLabels:
+      app: aimrpg-server
+  template:
+    metadata:
+      labels:
+        app: aimrpg-server
+    spec:
+      imagePullSecrets:
+        - name: ghcr-secret # private GHCR image (see ghcr-secret.yaml)
+      containers:
+        - name: aimrpg-server
+          image: ghcr.io/aimrpg/aimrpg-server:v0.1.0
+          imagePullPolicy: IfNotPresent # immutable version tag — Renovate bumps it, ArgoCD deploys
+          envFrom:
+            - configMapRef:
+                name: aimrpg-config
+            - secretRef:
+                name: aimrpg-secrets # AIMRPG_* secrets + POSTGRES_USER/PASSWORD
+          env:
+            # Compose the Postgres DSN from the secret's user/password. These override the
+            # same keys pulled in via envFrom above (explicit env wins), and are referenced
+            # by $(VAR) below — which only resolves against vars declared here in `env`.
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: aimrpg-secrets
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: aimrpg-secrets
+                  key: POSTGRES_PASSWORD
+            - name: AIMRPG_DATABASE_DSN
+              value: "host=postgres port=5432 user=$(POSTGRES_USER) password=$(POSTGRES_PASSWORD) dbname=nakama sslmode=disable"
+          ports:
+            - name: api
+              containerPort: 7350
+            # 7351 (admin console) is bound to 127.0.0.1 inside the pod — intentionally NOT a
+            # containerPort/Service. Reach it with:
+            #   kubectl -n aimrpg port-forward deploy/aimrpg-server 7351:7351
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 7350
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 7350
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            timeoutSeconds: 5
+          volumeMounts:
+            - name: replays
+              mountPath: /app/replays
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: "2"
+              memory: 1Gi
+      volumes:
+        - name: replays
+          persistentVolumeClaim:
+            claimName: aimrpg-replays
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: aimrpg-replays
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+  storageClassName: rook-cephfs
+  volumeMode: Filesystem

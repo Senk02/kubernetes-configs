@@ -7,4 +7,20 @@
   kubernetes: {
     fileMatch: ["^makko/.+\\.ya?ml$"],
   },
+  packageRules: [
+    {
+      // aimRPG images publish an immutable :v<VERSION> on every VERSION bump (CI in
+      // aimRPG/aRPG-server). The shared preset only auto-merges docker *digest* updates, so
+      // opt these images into auto-merging version bumps too: Renovate commits the new tag
+      // straight to main (branch automerge) and ArgoCD deploys it — no manual step.
+      matchDatasources: ["docker"],
+      matchPackageNames: [
+        "ghcr.io/aimrpg/aimrpg-server",
+      ],
+      matchUpdateTypes: ["major", "minor", "patch"],
+      automerge: true,
+      automergeType: "branch",
+      ignoreTests: true,
+    },
+  ],
 }

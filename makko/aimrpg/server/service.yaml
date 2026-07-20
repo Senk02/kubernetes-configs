@@ -1,0 +1,13 @@
+# API only (7350). The admin console (7351) is loopback-bound in the pod and never routed.
+apiVersion: v1
+kind: Service
+metadata:
+  name: aimrpg-server
+spec:
+  selector:
+    app: aimrpg-server
+  ports:
+    - name: api
+      port: 7350
+      targetPort: 7350
+  type: ClusterIP
