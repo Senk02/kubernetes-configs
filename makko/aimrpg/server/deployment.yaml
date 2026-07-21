@@ -36,7 +36,7 @@ spec:
         - name: ghcr-secret # private GHCR image (see ghcr-secret.yaml)
       containers:
         - name: aimrpg-server
-          image: ghcr.io/aimrpg/aimrpg-server:v0.1.0
+          image: ghcr.io/aimrpg/aimrpg-server:v0.1.1
           imagePullPolicy: IfNotPresent # immutable version tag — Renovate bumps it, ArgoCD deploys
           envFrom:
             - configMapRef:
