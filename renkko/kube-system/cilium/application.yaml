@@ -17,6 +17,11 @@ spec:
         ipam:
           mode: kubernetes
         kubeProxyReplacement: true
+        # Keep L7 proxy ports stable across a delayed agent restart. At the 15m
+        # default the checkpoint goes stale, so the agent reallocates ports while
+        # the separate cilium-envoy DaemonSet keeps serving the old listeners.
+        extraArgs:
+          - --restored-proxy-ports-age-limit=1440
         securityContext:
           capabilities:
             ciliumAgent:
