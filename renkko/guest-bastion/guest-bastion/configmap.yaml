@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: guest-bastion-config
+  namespace: guest-bastion
+data:
+  # Friend's SSH PUBLIC key (not sensitive). Add more lines to grant more people.
+  authorized_keys: |
+    ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIM/82T+Jgv4RP+UwMYWfI8IYqN/hi0EC4v9SbpSN2ALM admin@tiny
+  # Runs at container init (before sshd) to enable TCP forwarding so the friend
+  # can use `ssh -D` SOCKS / tunnels. Egress is still CIDR-locked (see
+  # networkpolicy.yaml), so forwarding only reaches the internet, never the LAN.
+  10-forwarding: |
+    #!/bin/sh
+    sed -i 's/^[#[:space:]]*AllowTcpForwarding.*/AllowTcpForwarding yes/' /etc/ssh/sshd_config
+    grep -q '^AllowTcpForwarding' /etc/ssh/sshd_config || echo 'AllowTcpForwarding yes' >> /etc/ssh/sshd_config

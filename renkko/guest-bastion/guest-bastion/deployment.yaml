@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: guest-bastion
+  namespace: guest-bastion
+  labels: { app: guest-bastion }
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: guest-bastion }
+  template:
+    metadata:
+      labels: { app: guest-bastion }
+    spec:
+      # Never use cluster DNS (10.96.0.10 is inside the denied range). Public resolver only.
+      dnsPolicy: None
+      dnsConfig:
+        nameservers: ["1.1.1.1", "1.0.0.1"]
+      automountServiceAccountToken: false
+      securityContext:
+        # Confine syscalls to the runtime default set -> shrinks kernel attack
+        # surface (the main road to a container escape).
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: sshd
+          image: lscr.io/linuxserver/openssh-server:latest
+          securityContext:
+            # no_new_privs: a non-root session (the friend, uid 1000) can no longer
+            # gain privileges via setuid binaries -> defeats setuid privesc scripts.
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["NET_RAW"]   # no raw sockets / packet crafting from the box
+          env:
+            - { name: PUID, value: "1000" }
+            - { name: PGID, value: "1000" }
+            - { name: TZ, value: "Etc/UTC" }
+            - { name: USER_NAME, value: "friend" }
+            - { name: PASSWORD_ACCESS, value: "false" }
+            - { name: SUDO_ACCESS, value: "false" }
+            - { name: PUBLIC_KEY_FILE, value: "/keys/authorized_keys" }
+            - { name: LISTEN_PORT, value: "2222" }
+          ports:
+            - { name: ssh, containerPort: 2222 }
+          volumeMounts:
+            - { name: authkey, mountPath: /keys, readOnly: true }
+            - { name: sshd-init, mountPath: /custom-cont-init.d, readOnly: true }
+          resources:
+            requests: { cpu: "50m", memory: "64Mi" }
+            limits:   { cpu: "500m", memory: "256Mi" }
+      volumes:
+        - name: authkey
+          configMap:
+            name: guest-bastion-config
+            items:
+              - { key: authorized_keys, path: authorized_keys }
+        - name: sshd-init
+          configMap:
+            name: guest-bastion-config
+            defaultMode: 0755
+            items:
+              - { key: 10-forwarding, path: 10-forwarding }
