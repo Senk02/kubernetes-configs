@@ -82,6 +82,11 @@ spec:
           volumeMounts:
             - name: replays
               mountPath: /app/replays
+            - name: packs # encrypted module blobs served at /packs/ (populated out-of-band)
+              mountPath: /app/packs
+            - name: manifest # pack manifest served by the modules RPC; overrides the image's baked copy
+              mountPath: /app/manifest.json
+              subPath: manifest.json
           resources:
             requests:
               cpu: 100m
@@ -93,6 +98,12 @@ spec:
         - name: replays
           persistentVolumeClaim:
             claimName: aimrpg-replays
+        - name: packs
+          persistentVolumeClaim:
+            claimName: aimrpg-packs # see packs-pvc.yaml
+        - name: manifest
+          configMap:
+            name: aimrpg-manifest # see manifest-configmap.yaml
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim

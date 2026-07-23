@@ -1,0 +1,530 @@
+# Generated: encrypted-pack manifest served by aimrpg-server (mounted at /app/manifest.json).
+# Produced by `cmd/pack` against the client modules; regenerate + reapply when packs change.
+# Pairs with the AIMRPG_PACK_KEYS secret (per-artifact keys) and the aimrpg-packs PVC (blobs).
+apiVersion: v1
+data:
+  manifest.json: |-
+    {
+      "schema": 1,
+      "release": "dev",
+      "platforms": [
+        "linux.arm64",
+        "linux.x86_64",
+        "windows.x86_64"
+      ],
+      "artifacts": [
+        {
+          "id": "gameplay.arena",
+          "kind": "module",
+          "format": "gdextension",
+          "version": 1,
+          "platform": "linux.x86_64",
+          "size": 3033736,
+          "hash": "sha256:afb09c4b7c5fbcdcffe9376563e20078541528cb514dc90c4e6e3cd001491a8d",
+          "url": "packs/gameplay.arena.v1.linux.x86_64.bin",
+          "enc": {
+            "algo": "xchacha20poly1305",
+            "key_id": "k_gameplay.arena_v1_linux.x86_64"
+          },
+          "gdextension": {
+            "entry_symbol": "arena_init",
+            "compat_min": "4.7"
+          }
+        },
+        {
+          "id": "gameplay.benchmark",
+          "kind": "module",
+          "format": "gdextension",
+          "version": 1,
+          "platform": "linux.x86_64",
+          "size": 3054216,
+          "hash": "sha256:48de618a6bc1e23d0e0643eb4101b6c94650e26046977c9ef80cf018f6fb1349",
+          "url": "packs/gameplay.benchmark.v1.linux.x86_64.bin",
+          "enc": {
+            "algo": "xchacha20poly1305",
+            "key_id": "k_gameplay.benchmark_v1_linux.x86_64"
+          },
+          "gdextension": {
+            "entry_symbol": "benchmark_init",
+            "compat_min": "4.7"
+          },
+          "deps": [
+            "ui.widgets"
+          ]
+        },
+        {
+          "id": "system.game-content",
+          "kind": "module",
+          "format": "gdextension",
+          "version": 1,
+          "platform": "linux.x86_64",
+          "size": 2943624,
+          "hash": "sha256:862977b57fdadab5680cbeba0ad10df94a522267b1a13f290e9e8ee8eb3f7ea8",
+          "url": "packs/system.game-content.v1.linux.x86_64.bin",
+          "enc": {
+            "algo": "xchacha20poly1305",
+            "key_id": "k_system.game-content_v1_linux.x86_64"
+          },
+          "gdextension": {
+            "entry_symbol": "game_content_init",
+            "compat_min": "4.7"
+          },
+          "deps": [
+            "assets.content-tables"
+          ]
+        },
+        {
+          "id": "system.game-data",
+          "kind": "module",
+          "format": "gdextension",
+          "version": 1,
+          "platform": "linux.x86_64",
+          "size": 2988680,
+          "hash": "sha256:b33914c11e927a6fc957ce2b1890a3b865ce68695ad9d50ec78cac4337fb3695",
+          "url": "packs/system.game-data.v1.linux.x86_64.bin",
+          "enc": {
+            "algo": "xchacha20poly1305",
+            "key_id": "k_system.game-data_v1_linux.x86_64"
+          },
+          "gdextension": {
+            "entry_symbol": "game_data_init",
+            "compat_min": "4.7"
+          }
+        },
+        {
+          "id": "system.game-state",
+          "kind": "module",
+          "format": "gdextension",
+          "version": 1,
+          "platform": "linux.x86_64",
+          "size": 2878088,
+          "hash": "sha256:8cc94c0e135c0b709886566c171838fb9e59f63c69e4aab9223959b3ac4d726d",
+          "url": "packs/system.game-state.v1.linux.x86_64.bin",
+          "enc": {
+            "algo": "xchacha20poly1305",
+            "key_id": "k_system.game-state_v1_linux.x86_64"
+          },
+          "gdextension": {
+            "entry_symbol": "game_state_init",
+            "compat_min": "4.7"
+          }
+        },
+        {
+          "id": "gameplay.actors",
+          "kind": "module",
+          "format": "gdextension",
+          "version": 1,
+          "platform": "linux.x86_64",
+          "size": 3783304,
+          "hash": "sha256:b4020981c3bfd6c6b92179ea5b0088b8cbeaa1b28c03db21d3d4950544442b7b",
+          "url": "packs/gameplay.actors.v1.linux.x86_64.bin",
+          "enc": {
+            "algo": "xchacha20poly1305",
+            "key_id": "k_gameplay.actors_v1_linux.x86_64"
+          },
+          "gdextension": {
+            "entry_symbol": "actors_init",
+            "compat_min": "4.7"
+          }
+        },
+        {
+          "id": "gameplay.session",
+          "kind": "module",
+          "format": "gdextension",
+          "version": 1,
+          "platform": "linux.x86_64",
+          "size": 2943592,
+          "hash": "sha256:42ef575347f825736c31c1aca77c350e5d77300a533a578b6962bf37fc1fa150",
+          "url": "packs/gameplay.session.v1.linux.x86_64.bin",
+          "enc": {
+            "algo": "xchacha20poly1305",
+            "key_id": "k_gameplay.session_v1_linux.x86_64"
+          },
+          "gdextension": {
+            "entry_symbol": "session_init",
+            "compat_min": "4.7"
+          }
+        },
+        {
+          "id": "system.nodebug",
+          "kind": "module",
+          "format": "gdextension",
+          "version": 2,
+          "platform": "linux.arm64",
+          "size": 1713256,
+          "hash": "sha256:dca1951937b26180b7b7c15fc0b2480e3cdc9f47a26d51ac7f4fe5a59af02804",
+          "url": "packs/system.nodebug.v2.linux.arm64.bin",
+          "enc": {
+            "algo": "xchacha20poly1305",
+            "key_id": "k_system.nodebug_v2_linux.arm64"
+          },
+          "gdextension": {
+            "entry_symbol": "nodebug_init",
+            "compat_min": "4.7"
+          }
+        },
+        {
+          "id": "system.nodebug",
+          "kind": "module",
+          "format": "gdextension",
+          "version": 2,
+          "platform": "windows.x86_64",
+          "size": 1460264,
+          "hash": "sha256:3cd31320311111bc62e25bea941457d48cc7df4ee5eff20b3493fe8797c753ca",
+          "url": "packs/system.nodebug.v2.windows.x86_64.bin",
+          "enc": {
+            "algo": "xchacha20poly1305",
+            "key_id": "k_system.nodebug_v2_windows.x86_64"
+          },
+          "gdextension": {
+            "entry_symbol": "nodebug_init",
+            "compat_min": "4.7"
+          }
+        },
+        {
+          "id": "system.nodebug",
+          "kind": "module",
+          "format": "gdextension",
+          "version": 2,
+          "platform": "linux.x86_64",
+          "size": 2386568,
+          "hash": "sha256:c68be2ea3a81752d67b04c0b79b3fcbb0565aff2915500f1e0769851f6cc909f",
+          "url": "packs/system.nodebug.v2.linux.x86_64.bin",
+          "enc": {
+            "algo": "xchacha20poly1305",
+            "key_id": "k_system.nodebug_v2_linux.x86_64"
+          },
+          "gdextension": {
+            "entry_symbol": "nodebug_init",
+            "compat_min": "4.7"
+          }
+        },
+        {
+          "id": "scenario.beam",
+          "kind": "module",
+          "format": "gdextension",
+          "version": 1,
+          "platform": "linux.x86_64",
+          "size": 4045480,
+          "hash": "sha256:381861ac1e28d121d4b76d5bb1f74c381e161dcadf8e7e9cb717d129f59c16b4",
+          "url": "packs/scenario.beam.v1.linux.x86_64.bin",
+          "enc": {
+            "algo": "xchacha20poly1305",
+            "key_id": "k_scenario.beam_v1_linux.x86_64"
+          },
+          "gdextension": {
+            "entry_symbol": "beam_init",
+            "compat_min": "4.7"
+          }
+        },
+        {
+          "id": "scenario.bosses",
+          "kind": "module",
+          "format": "gdextension",
+          "version": 1,
+          "platform": "linux.x86_64",
+          "size": 4111016,
+          "hash": "sha256:7f7248c016b7f740e52cd0b94c3827af4d8ac5f0229e2f067e9804fa3408a56e",
+          "url": "packs/scenario.bosses.v1.linux.x86_64.bin",
+          "enc": {
+            "algo": "xchacha20poly1305",
+            "key_id": "k_scenario.bosses_v1_linux.x86_64"
+          },
+          "gdextension": {
+            "entry_symbol": "bosses_init",
+            "compat_min": "4.7"
+          }
+        },
+        {
+          "id": "scenario.bounceshot",
+          "kind": "module",
+          "format": "gdextension",
+          "version": 1,
+          "platform": "linux.x86_64",
+          "size": 7523048,
+          "hash": "sha256:4e8b475d5f516ad822a6a5f5744cc4e0c0107275daf0c7ba9fa871640e323198",
+          "url": "packs/scenario.bounceshot.v1.linux.x86_64.bin",
+          "enc": {
+            "algo": "xchacha20poly1305",
+            "key_id": "k_scenario.bounceshot_v1_linux.x86_64"
+          },
+          "gdextension": {
+            "entry_symbol": "bounceshot_init",
+            "compat_min": "4.7"
+          }
+        },
+        {
+          "id": "scenario.cooking",
+          "kind": "module",
+          "format": "gdextension",
+          "version": 1,
+          "platform": "linux.x86_64",
+          "size": 6036136,
+          "hash": "sha256:9c2282141f4ee2a1be7d5e772f46b3c3082af41a7b0cb687fcd68d11dd879f29",
+          "url": "packs/scenario.cooking.v1.linux.x86_64.bin",
+          "enc": {
+            "algo": "xchacha20poly1305",
+            "key_id": "k_scenario.cooking_v1_linux.x86_64"
+          },
+          "gdextension": {
+            "entry_symbol": "cooking_init",
+            "compat_min": "4.7"
+          }
+        },
+        {
+          "id": "scenario.crafting",
+          "kind": "module",
+          "format": "gdextension",
+          "version": 1,
+          "platform": "linux.x86_64",
+          "size": 3898024,
+          "hash": "sha256:a35dca3bf1186b3968b1d5f60d2ba8c0708023d51f8bb934cc940148a610f99d",
+          "url": "packs/scenario.crafting.v1.linux.x86_64.bin",
+          "enc": {
+            "algo": "xchacha20poly1305",
+            "key_id": "k_scenario.crafting_v1_linux.x86_64"
+          },
+          "gdextension": {
+            "entry_symbol": "crafting_init",
+            "compat_min": "4.7"
+          }
+        },
+        {
+          "id": "scenario.dynamic",
+          "kind": "module",
+          "format": "gdextension",
+          "version": 1,
+          "platform": "linux.x86_64",
+          "size": 4471496,
+          "hash": "sha256:9432d9511e9d17a565827bf3992ddd4b8301299d3965b9a0b6b54839ed265a33",
+          "url": "packs/scenario.dynamic.v1.linux.x86_64.bin",
+          "enc": {
+            "algo": "xchacha20poly1305",
+            "key_id": "k_scenario.dynamic_v1_linux.x86_64"
+          },
+          "gdextension": {
+            "entry_symbol": "dynamic_init",
+            "compat_min": "4.7"
+          }
+        },
+        {
+          "id": "scenario.gathering",
+          "kind": "module",
+          "format": "gdextension",
+          "version": 1,
+          "platform": "linux.x86_64",
+          "size": 4315848,
+          "hash": "sha256:1f7d69732850a5f570be65362cc3ee8b3382f441c750bc5faf0486434d727694",
+          "url": "packs/scenario.gathering.v1.linux.x86_64.bin",
+          "enc": {
+            "algo": "xchacha20poly1305",
+            "key_id": "k_scenario.gathering_v1_linux.x86_64"
+          },
+          "gdextension": {
+            "entry_symbol": "gathering_init",
+            "compat_min": "4.7"
+          }
+        },
+        {
+          "id": "scenario.smithing",
+          "kind": "module",
+          "format": "gdextension",
+          "version": 1,
+          "platform": "linux.x86_64",
+          "size": 3947176,
+          "hash": "sha256:fdb45b181079d38431ffe4fe514852071268a22b7865c3ce7d67937044efddbf",
+          "url": "packs/scenario.smithing.v1.linux.x86_64.bin",
+          "enc": {
+            "algo": "xchacha20poly1305",
+            "key_id": "k_scenario.smithing_v1_linux.x86_64"
+          },
+          "gdextension": {
+            "entry_symbol": "smithing_init",
+            "compat_min": "4.7"
+          }
+        },
+        {
+          "id": "scenario.tracking",
+          "kind": "module",
+          "format": "gdextension",
+          "version": 1,
+          "platform": "linux.x86_64",
+          "size": 3914408,
+          "hash": "sha256:872afcba209d988319e5ae98f96c1448aef41d876728cabb1c97f575ceaad19d",
+          "url": "packs/scenario.tracking.v1.linux.x86_64.bin",
+          "enc": {
+            "algo": "xchacha20poly1305",
+            "key_id": "k_scenario.tracking_v1_linux.x86_64"
+          },
+          "gdextension": {
+            "entry_symbol": "tracking_init",
+            "compat_min": "4.7"
+          }
+        },
+        {
+          "id": "system.crashreport",
+          "kind": "module",
+          "format": "gdextension",
+          "version": 1,
+          "platform": "linux.x86_64",
+          "size": 3320552,
+          "hash": "sha256:9bb9ebda2c584c645e69ab294d3cdfdcc38c66cd690ec976fe4a56ba71ad6451",
+          "url": "packs/system.crashreport.v1.linux.x86_64.bin",
+          "enc": {
+            "algo": "xchacha20poly1305",
+            "key_id": "k_system.crashreport_v1_linux.x86_64"
+          },
+          "gdextension": {
+            "entry_symbol": "crashreport_init",
+            "compat_min": "4.7"
+          }
+        },
+        {
+          "id": "system.dialogue",
+          "kind": "module",
+          "format": "gdextension",
+          "version": 1,
+          "platform": "linux.x86_64",
+          "size": 3201640,
+          "hash": "sha256:965bb47cc5d5cc5b61adaaf514f0784c1d5f78706099b6e336a1b1774d624cda",
+          "url": "packs/system.dialogue.v1.linux.x86_64.bin",
+          "enc": {
+            "algo": "xchacha20poly1305",
+            "key_id": "k_system.dialogue_v1_linux.x86_64"
+          },
+          "gdextension": {
+            "entry_symbol": "dialogue_init",
+            "compat_min": "4.7"
+          }
+        },
+        {
+          "id": "system.platform",
+          "kind": "module",
+          "format": "gdextension",
+          "version": 1,
+          "platform": "linux.x86_64",
+          "size": 3213992,
+          "hash": "sha256:ea04b4a5d7700653a4c6147f6664fa81d70650fd1ac6d37e1ad713708ac7ef64",
+          "url": "packs/system.platform.v1.linux.x86_64.bin",
+          "enc": {
+            "algo": "xchacha20poly1305",
+            "key_id": "k_system.platform_v1_linux.x86_64"
+          },
+          "gdextension": {
+            "entry_symbol": "platform_init",
+            "compat_min": "4.7"
+          }
+        },
+        {
+          "id": "system.replay",
+          "kind": "module",
+          "format": "gdextension",
+          "version": 1,
+          "platform": "linux.x86_64",
+          "size": 3984104,
+          "hash": "sha256:a72a704793e0d29033b47795c07f1de27f254ac1856624ee2bf78da923d99b34",
+          "url": "packs/system.replay.v1.linux.x86_64.bin",
+          "enc": {
+            "algo": "xchacha20poly1305",
+            "key_id": "k_system.replay_v1_linux.x86_64"
+          },
+          "gdextension": {
+            "entry_symbol": "replay_init",
+            "compat_min": "4.7"
+          }
+        },
+        {
+          "id": "system.telemetry",
+          "kind": "module",
+          "format": "gdextension",
+          "version": 1,
+          "platform": "linux.x86_64",
+          "size": 3267176,
+          "hash": "sha256:b3d92582abfd10ec8d16eaa99477a0b73e3e0ac933075d399714416d2fb81352",
+          "url": "packs/system.telemetry.v1.linux.x86_64.bin",
+          "enc": {
+            "algo": "xchacha20poly1305",
+            "key_id": "k_system.telemetry_v1_linux.x86_64"
+          },
+          "gdextension": {
+            "entry_symbol": "telemetry_init",
+            "compat_min": "4.7"
+          }
+        },
+        {
+          "id": "ui.menu",
+          "kind": "module",
+          "format": "gdextension",
+          "version": 1,
+          "platform": "linux.x86_64",
+          "size": 3910440,
+          "hash": "sha256:cbe577f41e9c489d57a4f57ce0292362698b84dfb760b22bc0323e394b996554",
+          "url": "packs/ui.menu.v1.linux.x86_64.bin",
+          "enc": {
+            "algo": "xchacha20poly1305",
+            "key_id": "k_ui.menu_v1_linux.x86_64"
+          },
+          "gdextension": {
+            "entry_symbol": "ui_menu_init",
+            "compat_min": "4.7"
+          }
+        },
+        {
+          "id": "ui.overlays",
+          "kind": "module",
+          "format": "gdextension",
+          "version": 1,
+          "platform": "linux.x86_64",
+          "size": 3066472,
+          "hash": "sha256:4ff1af22d781f40a635431b57dbd1b6fd0e7339a2785574b8dd05a060bd0562f",
+          "url": "packs/ui.overlays.v1.linux.x86_64.bin",
+          "enc": {
+            "algo": "xchacha20poly1305",
+            "key_id": "k_ui.overlays_v1_linux.x86_64"
+          },
+          "gdextension": {
+            "entry_symbol": "ui_overlays_init",
+            "compat_min": "4.7"
+          }
+        },
+        {
+          "id": "ui.widgets",
+          "kind": "module",
+          "format": "gdextension",
+          "version": 1,
+          "platform": "linux.x86_64",
+          "size": 3209896,
+          "hash": "sha256:236ca8c3e21a7fb9f90980bf15d17da40e4f7f2c0dbe3ea5673db8fa022f3c92",
+          "url": "packs/ui.widgets.v1.linux.x86_64.bin",
+          "enc": {
+            "algo": "xchacha20poly1305",
+            "key_id": "k_ui.widgets_v1_linux.x86_64"
+          },
+          "gdextension": {
+            "entry_symbol": "ui_widgets_init",
+            "compat_min": "4.7"
+          }
+        },
+        {
+          "id": "util.core",
+          "kind": "module",
+          "format": "gdextension",
+          "version": 1,
+          "platform": "linux.x86_64",
+          "size": 3357288,
+          "hash": "sha256:c7189cee617c94e8d91d63715bf9245142a4037b675f102c58024f7d17c2e434",
+          "url": "packs/util.core.v1.linux.x86_64.bin",
+          "enc": {
+            "algo": "xchacha20poly1305",
+            "key_id": "k_util.core_v1_linux.x86_64"
+          },
+          "gdextension": {
+            "entry_symbol": "util_init",
+            "compat_min": "4.7"
+          }
+        }
+      ]
+    }
+kind: ConfigMap
+metadata:
+  name: aimrpg-manifest
