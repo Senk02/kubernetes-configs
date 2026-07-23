@@ -1,0 +1,14 @@
+# Persists the whole /config dir (host keys, sshd_config, authorized_keys) so the
+# sshd host identity is stable across pod restarts/rolls -> the client never sees a
+# "REMOTE HOST IDENTIFICATION HAS CHANGED" warning again. rook-rbd is Retain.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: guest-bastion-config
+  namespace: guest-bastion
+spec:
+  accessModes: ["ReadWriteOnce"]
+  storageClassName: rook-rbd
+  resources:
+    requests:
+      storage: 1Gi

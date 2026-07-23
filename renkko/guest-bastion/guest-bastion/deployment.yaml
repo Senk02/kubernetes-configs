@@ -6,6 +6,10 @@ metadata:
   labels: { app: guest-bastion }
 spec:
   replicas: 1
+  # RWO host-key volume can't be mounted by two pods at once; Recreate ensures
+  # the old pod releases it before the new one starts.
+  strategy:
+    type: Recreate
   selector:
     matchLabels: { app: guest-bastion }
   template:
@@ -43,8 +47,12 @@ spec:
           ports:
             - { name: ssh, containerPort: 2222 }
           volumeMounts:
+            # PUBLIC_KEY_FILE source (image appends it to /config/.ssh/authorized_keys)
             - { name: authkey, mountPath: /keys, readOnly: true }
-            - { name: sshd-init, mountPath: /custom-cont-init.d, readOnly: true }
+            # Persist the whole /config: host keys (stable identity), sshd_config, authorized_keys
+            - { name: config, mountPath: /config }
+            # sshd drop-in dir -> AllowTcpForwarding yes (image enables the Include)
+            - { name: sshd-dropin, mountPath: /config/sshd/sshd_config.d, readOnly: true }
           resources:
             requests: { cpu: "50m", memory: "64Mi" }
             limits:   { cpu: "500m", memory: "256Mi" }
@@ -54,9 +62,11 @@ spec:
             name: guest-bastion-config
             items:
               - { key: authorized_keys, path: authorized_keys }
-        - name: sshd-init
+        - name: sshd-dropin
           configMap:
             name: guest-bastion-config
-            defaultMode: 0755
             items:
-              - { key: 10-forwarding, path: 10-forwarding }
+              - { key: forwarding.conf, path: forwarding.conf }
+        - name: config
+          persistentVolumeClaim:
+            claimName: guest-bastion-config
