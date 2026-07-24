@@ -18,7 +18,6 @@ spec:
       dnsConfig:
         nameservers: ["1.1.1.1", "1.0.0.1"]
       automountServiceAccountToken: false
-      hostUsers: false
       securityContext:
         seccompProfile:
           type: RuntimeDefault
@@ -26,7 +25,7 @@ spec:
         - name: sshd
           image: lscr.io/linuxserver/openssh-server:latest
           securityContext:
-            allowPrivilegeEscalation: true
+            allowPrivilegeEscalation: false
             capabilities:
               drop: ["NET_RAW"]
           env:
@@ -35,7 +34,7 @@ spec:
             - { name: TZ, value: "Etc/UTC" }
             - { name: USER_NAME, value: "friend" }
             - { name: PASSWORD_ACCESS, value: "false" }
-            - { name: SUDO_ACCESS, value: "true" }
+            - { name: SUDO_ACCESS, value: "false" }
             - { name: PUBLIC_KEY_FILE, value: "/keys/authorized_keys" }
             - { name: LISTEN_PORT, value: "2222" }
           ports:
