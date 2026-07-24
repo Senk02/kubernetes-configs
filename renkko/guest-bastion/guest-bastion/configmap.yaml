@@ -4,12 +4,7 @@ metadata:
   name: guest-bastion-config
   namespace: guest-bastion
 data:
-  # Friend's SSH PUBLIC key (not sensitive). Appended to authorized_keys by the image.
   authorized_keys: |
     ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIM/82T+Jgv4RP+UwMYWfI8IYqN/hi0EC4v9SbpSN2ALM admin@tiny
-  # sshd drop-in: enable TCP forwarding so the friend can use `ssh -D` SOCKS / tunnels.
-  # Mounted at /config/sshd/sshd_config.d/ — the image auto-enables the Include, which
-  # sits at the top of sshd_config, so this wins (OpenSSH is first-match-wins).
-  # Egress is still CIDR-locked (networkpolicy.yaml), so forwarding only reaches the internet.
   forwarding.conf: |
     AllowTcpForwarding yes

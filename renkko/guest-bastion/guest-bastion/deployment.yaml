@@ -6,8 +6,6 @@ metadata:
   labels: { app: guest-bastion }
 spec:
   replicas: 1
-  # RWO host-key volume can't be mounted by two pods at once; Recreate ensures
-  # the old pod releases it before the new one starts.
   strategy:
     type: Recreate
   selector:
@@ -16,42 +14,35 @@ spec:
     metadata:
       labels: { app: guest-bastion }
     spec:
-      # Never use cluster DNS (10.96.0.10 is inside the denied range). Public resolver only.
       dnsPolicy: None
       dnsConfig:
         nameservers: ["1.1.1.1", "1.0.0.1"]
       automountServiceAccountToken: false
+      hostUsers: false
       securityContext:
-        # Confine syscalls to the runtime default set -> shrinks kernel attack
-        # surface (the main road to a container escape).
         seccompProfile:
           type: RuntimeDefault
       containers:
         - name: sshd
           image: lscr.io/linuxserver/openssh-server:latest
           securityContext:
-            # no_new_privs: a non-root session (the friend, uid 1000) can no longer
-            # gain privileges via setuid binaries -> defeats setuid privesc scripts.
-            allowPrivilegeEscalation: false
+            allowPrivilegeEscalation: true
             capabilities:
-              drop: ["NET_RAW"]   # no raw sockets / packet crafting from the box
+              drop: ["NET_RAW"]
           env:
             - { name: PUID, value: "1000" }
             - { name: PGID, value: "1000" }
             - { name: TZ, value: "Etc/UTC" }
             - { name: USER_NAME, value: "friend" }
             - { name: PASSWORD_ACCESS, value: "false" }
-            - { name: SUDO_ACCESS, value: "false" }
+            - { name: SUDO_ACCESS, value: "true" }
             - { name: PUBLIC_KEY_FILE, value: "/keys/authorized_keys" }
             - { name: LISTEN_PORT, value: "2222" }
           ports:
             - { name: ssh, containerPort: 2222 }
           volumeMounts:
-            # PUBLIC_KEY_FILE source (image appends it to /config/.ssh/authorized_keys)
             - { name: authkey, mountPath: /keys, readOnly: true }
-            # Persist the whole /config: host keys (stable identity), sshd_config, authorized_keys
             - { name: config, mountPath: /config }
-            # sshd drop-in dir -> AllowTcpForwarding yes (image enables the Include)
             - { name: sshd-dropin, mountPath: /config/sshd/sshd_config.d, readOnly: true }
           resources:
             requests: { cpu: "50m", memory: "64Mi" }

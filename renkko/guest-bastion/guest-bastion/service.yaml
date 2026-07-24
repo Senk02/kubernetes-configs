@@ -4,7 +4,7 @@ metadata:
   name: guest-bastion
   namespace: guest-bastion
   annotations:
-    io.cilium/lb-ipam-ips: "10.1.1.150"   # free VIP in renkko's 10.1.1.100-240 pool
+    io.cilium/lb-ipam-ips: "10.1.1.150"
 spec:
   type: LoadBalancer
   selector: { app: guest-bastion }

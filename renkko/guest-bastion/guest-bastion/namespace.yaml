@@ -3,6 +3,4 @@ kind: Namespace
 metadata:
   name: guest-bastion
   labels:
-    # linuxserver image runs an s6 init as root; keep PSA relaxed in this
-    # (network-isolated) namespace so the pod is admitted.
     pod-security.kubernetes.io/enforce: privileged
