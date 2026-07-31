@@ -18,7 +18,7 @@ spec:
         app: cobbleverse
     spec:
       containers:
-      - image: itzg/minecraft-server:java21
+      - image: itzg/minecraft-server:java25
         name: minecraft
         stdin: true
         tty: true
@@ -33,6 +33,8 @@ spec:
           value: fabric
         - name: VERSION
           value: "1.21.1"
+        - name: MODRINTH_PROJECTS
+          value: "configurable:3.5.2"
         - name: MEMORY
           value: "8G"
         - name: USE_AIKAR_FLAGS
