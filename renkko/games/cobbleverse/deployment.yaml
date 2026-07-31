@@ -1,0 +1,93 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cobbleverse
+  labels:
+    app: cobbleverse
+spec:
+  revisionHistoryLimit: 1
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cobbleverse
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: cobbleverse
+    spec:
+      containers:
+      - image: itzg/minecraft-server:java21
+        name: minecraft
+        stdin: true
+        tty: true
+        env:
+        - name: EULA
+          value: "TRUE"
+        - name: TYPE
+          value: "AUTO_CURSEFORGE"
+        - name: CF_SLUG
+          value: cobbleverse-cobblemon
+        - name: CF_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: curseforge-api-key
+              key: password
+        - name: MEMORY
+          value: "8G"
+        - name: USE_AIKAR_FLAGS
+          value: "true"
+        - name: VIEW_DISTANCE
+          value: "8"
+        - name: SIMULATION_DISTANCE
+          value: "6"
+        - name: MAX_TICK_TIME
+          value: "-1"
+        - name: MOTD
+          value: "Cobbleverse on renkko"
+        - name: TZ
+          value: "America/Chicago"
+        volumeMounts:
+        - name: data
+          mountPath: /data
+        ports:
+        - containerPort: 25565
+          protocol: TCP
+        startupProbe:
+          exec:
+            command: ["mc-health"]
+          initialDelaySeconds: 120
+          periodSeconds: 15
+          failureThreshold: 120
+        readinessProbe:
+          exec:
+            command: ["mc-health"]
+          periodSeconds: 30
+          failureThreshold: 3
+        resources:
+          limits:
+            cpu: "8"
+            memory: 11Gi
+          requests:
+            cpu: 500m
+            memory: 9Gi
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: minecraft-cobbleverse
+          readOnly: false
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: minecraft-cobbleverse
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 25Gi
+  storageClassName: rook-rbd
+  volumeMode: Filesystem
