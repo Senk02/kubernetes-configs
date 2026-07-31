@@ -26,14 +26,13 @@ spec:
         - name: EULA
           value: "TRUE"
         - name: TYPE
-          value: "AUTO_CURSEFORGE"
-        - name: CF_SLUG
-          value: cobbleverse-cobblemon
-        - name: CF_API_KEY
-          valueFrom:
-            secretKeyRef:
-              name: curseforge-api-key
-              key: password
+          value: "MODRINTH"
+        - name: MODRINTH_MODPACK
+          value: cobbleverse
+        - name: MODRINTH_LOADER
+          value: fabric
+        - name: VERSION
+          value: "1.21.1"
         - name: MEMORY
           value: "8G"
         - name: USE_AIKAR_FLAGS
