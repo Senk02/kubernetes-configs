@@ -25,6 +25,8 @@ spec:
         env:
         - name: EULA
           value: "TRUE"
+        - name: SKIP_SERVER_PROPERTIES
+          value: "true"
         - name: TYPE
           value: "MODRINTH"
         - name: MODRINTH_MODPACK
@@ -45,19 +47,14 @@ spec:
           value: "8G"
         - name: USE_AIKAR_FLAGS
           value: "true"
-        - name: VIEW_DISTANCE
-          value: "8"
-        - name: SIMULATION_DISTANCE
-          value: "6"
-        - name: MAX_TICK_TIME
-          value: "-1"
-        - name: MOTD
-          value: "Cobbleverse on renkko"
         - name: TZ
           value: "America/Chicago"
         volumeMounts:
         - name: data
           mountPath: /data
+        - name: server-properties
+          mountPath: /data/server.properties
+          subPath: server.properties
         ports:
         - containerPort: 25565
           protocol: TCP
@@ -84,6 +81,9 @@ spec:
         persistentVolumeClaim:
           claimName: minecraft-cobbleverse
           readOnly: false
+      - name: server-properties
+        configMap:
+          name: cobbleverse-server-properties
 
 ---
 kind: PersistentVolumeClaim
