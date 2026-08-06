@@ -61,11 +61,6 @@ patches:
           enabled: true
           forwardKubeDNSToHost: true
   - |-
-    machine:
-      install:
-        extraKernelArgs:
-          - pcie_aspm=off
-  - |-
     cluster:
       proxy:
         disabled: true
