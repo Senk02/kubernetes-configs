@@ -76,11 +76,44 @@ spec:
           requests:
             cpu: 500m
             memory: 9Gi
+      - image: itzg/mc-backup
+        name: backup
+        env:
+        - name: ENABLE_SAVE_ALL
+          value: "false"
+        - name: BACKUP_INTERVAL
+          value: "30m"
+        - name: PRUNE_BACKUPS_DAYS
+          value: "2"
+        - name: SRC_DIR
+          value: /data
+        - name: DEST_DIR
+          value: /backups
+        - name: EXCLUDES
+          value: "*.jar,cache,logs,*.tmp,mods,libraries,versions,resourcepacks"
+        - name: TZ
+          value: "America/Chicago"
+        volumeMounts:
+        - name: data
+          mountPath: /data
+          readOnly: true
+        - name: backups
+          mountPath: /backups
+        resources:
+          limits:
+            cpu: "2"
+            memory: 1Gi
+          requests:
+            cpu: 50m
+            memory: 128Mi
       volumes:
       - name: data
         persistentVolumeClaim:
           claimName: minecraft-cobbleverse
           readOnly: false
+      - name: backups
+        persistentVolumeClaim:
+          claimName: cobbleverse-backups
       - name: server-properties
         configMap:
           name: cobbleverse-server-properties
@@ -96,5 +129,19 @@ spec:
   resources:
     requests:
       storage: 25Gi
+  storageClassName: rook-rbd
+  volumeMode: Filesystem
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: cobbleverse-backups
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 120Gi
   storageClassName: rook-rbd
   volumeMode: Filesystem
