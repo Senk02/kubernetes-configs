@@ -79,8 +79,11 @@ spec:
       - image: itzg/mc-backup
         name: backup
         env:
-        - name: ENABLE_SAVE_ALL
-          value: "false"
+        - name: RCON_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: cobbleverse-server-properties
+              key: rconPassword
         - name: BACKUP_INTERVAL
           value: "30m"
         - name: PRUNE_BACKUPS_DAYS
@@ -115,8 +118,8 @@ spec:
         persistentVolumeClaim:
           claimName: cobbleverse-backups
       - name: server-properties
-        configMap:
-          name: cobbleverse-server-properties
+        secret:
+          secretName: cobbleverse-server-properties
 
 ---
 kind: PersistentVolumeClaim
