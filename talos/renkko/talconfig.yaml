@@ -18,6 +18,14 @@ nodes:
     ipAddress: 10.1.0.230
     controlPlane: true
     installDisk: /dev/nvme0n1
+    schematic:
+      customization:
+        extraKernelArgs:
+          - pcie_aspm=off
+        systemExtensions:
+          officialExtensions:
+            - siderolabs/iscsi-tools
+            - siderolabs/util-linux-tools
     networkInterfaces:
       - interface: enp1s0
         addresses:
