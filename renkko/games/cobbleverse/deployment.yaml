@@ -38,7 +38,12 @@ spec:
         - name: MODRINTH_VERSION
           value: "1.7.42"
         - name: MODRINTH_PROJECTS
-          value: "configurable:3.5.2"
+          value: "configurable:3.5.2,cobblemon-exp.-all:0.0.2"
+        # FTB Backups 2 is CurseForge-only (not published to Modrinth), so it is
+        # pulled by direct CDN URL rather than via MODRINTH_PROJECTS. 1.0.28 is the
+        # newest build that targets 1.21.1 (1.0.29+ jumped to 1.21.3/1.21.4/1.21.5).
+        - name: MODS
+          value: "https://mediafilez.forgecdn.net/files/5501/350/ftbbackups2-fabric-1.21-1.0.28.jar"
         - name: MODRINTH_EXCLUDE_FILES
           value: "c2me"
         - name: MODRINTH_FORCE_SYNCHRONIZE
@@ -52,6 +57,13 @@ spec:
         volumeMounts:
         - name: data
           mountPath: /data
+        # FTB Backups 2 defaults to backup_location "." which resolves to
+        # <serverdir>/backups. Mounting the 120Gi backups PVC there keeps backups off
+        # the 25Gi world volume without needing a config file. subPath isolates them
+        # from the mc-backup sidecar's old world-*.tar.gz at the PVC root.
+        - name: backups
+          mountPath: /data/backups
+          subPath: ftb
         - name: server-properties
           mountPath: /data/server.properties
           subPath: server.properties
@@ -76,39 +88,6 @@ spec:
           requests:
             cpu: 500m
             memory: 9Gi
-      - image: itzg/mc-backup
-        name: backup
-        env:
-        - name: RCON_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: cobbleverse-server-properties
-              key: rconPassword
-        - name: BACKUP_INTERVAL
-          value: "30m"
-        - name: PRUNE_BACKUPS_DAYS
-          value: "2"
-        - name: SRC_DIR
-          value: /data
-        - name: DEST_DIR
-          value: /backups
-        - name: EXCLUDES
-          value: "*.jar,cache,logs,*.tmp,mods,libraries,versions,resourcepacks"
-        - name: TZ
-          value: "America/Chicago"
-        volumeMounts:
-        - name: data
-          mountPath: /data
-          readOnly: true
-        - name: backups
-          mountPath: /backups
-        resources:
-          limits:
-            cpu: "2"
-            memory: 1Gi
-          requests:
-            cpu: 50m
-            memory: 128Mi
       volumes:
       - name: data
         persistentVolumeClaim:
