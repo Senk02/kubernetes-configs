@@ -37,8 +37,10 @@ spec:
           value: "1.21.1"
         - name: MODRINTH_VERSION
           value: "1.7.42"
+        # polylib is a hard dependency of ftbbackups2 (requires >= 2100.0.3-build.153);
+        # the cobbleverse pack does not ship it, so the server fails to start without it.
         - name: MODRINTH_PROJECTS
-          value: "configurable:3.5.2,cobblemon-exp.-all:0.0.2"
+          value: "configurable:3.5.2,cobblemon-exp.-all:0.0.2,polylib:2100.0.3-build.160"
         # FTB Backups 2 is CurseForge-only (not published to Modrinth), so it is
         # pulled by direct CDN URL rather than via MODRINTH_PROJECTS. 1.0.28 is the
         # newest build that targets 1.21.1 (1.0.29+ jumped to 1.21.3/1.21.4/1.21.5).
