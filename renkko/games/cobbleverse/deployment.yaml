@@ -37,15 +37,14 @@ spec:
           value: "1.21.1"
         - name: MODRINTH_VERSION
           value: "1.7.42"
-        # polylib is a hard dependency of ftbbackups2 (requires >= 2100.0.3-build.153);
-        # the cobbleverse pack does not ship it, so the server fails to start without it.
+        # advanced-backups replaces ftbbackups2, which is inert on this pack: LibJF's
+        # ASM transformer cannot process ftbbackups2's repacked Quartz scheduler
+        # ("JSR/RET are not supported with computeFrames option"), so its init throws
+        # and it registers no commands. polylib went with it -- it existed only as an
+        # ftbbackups2 dependency. cobblemon-saveguard guards against the Cobblemon
+        # store corruption that a power loss causes (zeroes both the live file and .old).
         - name: MODRINTH_PROJECTS
-          value: "configurable:3.5.2,cobblemon-exp.-all:0.0.2,polylib:2100.0.3-build.160"
-        # FTB Backups 2 is CurseForge-only (not published to Modrinth), so it is
-        # pulled by direct CDN URL rather than via MODRINTH_PROJECTS. 1.0.28 is the
-        # newest build that targets 1.21.1 (1.0.29+ jumped to 1.21.3/1.21.4/1.21.5).
-        - name: MODS
-          value: "https://mediafilez.forgecdn.net/files/5501/350/ftbbackups2-fabric-1.21-1.0.28.jar"
+          value: "configurable:3.5.2,cobblemon-exp.-all:0.0.2,advanced-backups:3.7.1,cobblemon-saveguard:1.0.0-mc1.21.1-eng"
         - name: MODRINTH_EXCLUDE_FILES
           value: "c2me"
         - name: MODRINTH_FORCE_SYNCHRONIZE
@@ -59,10 +58,9 @@ spec:
         volumeMounts:
         - name: data
           mountPath: /data
-        # FTB Backups 2 defaults to backup_location "." which resolves to
-        # <serverdir>/backups. Mounting the 120Gi backups PVC there keeps backups off
-        # the 25Gi world volume without needing a config file. subPath isolates them
-        # from the mc-backup sidecar's old world-*.tar.gz at the PVC root.
+        # Backup mods default to writing <serverdir>/backups. Mounting the 120Gi backups
+        # PVC there keeps backups off the 25Gi world volume. subPath isolates them from
+        # the retired mc-backup sidecar's world-*.tar.gz at the PVC root.
         - name: backups
           mountPath: /data/backups
           subPath: ftb
