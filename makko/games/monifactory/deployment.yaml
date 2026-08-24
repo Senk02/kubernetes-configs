@@ -16,7 +16,12 @@ metadata:
     app: monifactory
 spec:
   revisionHistoryLimit: 1
-  replicas: 1
+  # Temporarily 0: this pod's 12Gi request is pinned to talos-yha-nr5, the same
+  # node all three ceph mons are nodeSelector-pinned to. While CephFS is down
+  # this pod cannot start, yet it still holds the reservation the mons need to
+  # regain quorum and bring CephFS back -- a deadlock. Restore to 1 once
+  # `ceph -s` reports quorum.
+  replicas: 0
   selector:
     matchLabels:
       app: monifactory
