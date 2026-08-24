@@ -44,7 +44,6 @@ spec:
           memory: 2Gi
     - name: "talos-73x-rd9"
       devices:
-      - name: "/dev/disk/by-id/ata-OOS14000G_000F3PGE"
       - name: "/dev/disk/by-id/ata-ST4000NM010A-2HZ111_WJG0M3DJ"
       - name: "/dev/disk/by-id/ata-ST4000NM010A-2HZ111_WS22BE9S"
       - name: "/dev/disk/by-id/nvme-SPCC_M.2_PCIe_SSD_PA9012R001145"
