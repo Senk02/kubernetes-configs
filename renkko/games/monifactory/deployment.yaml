@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: monifactory
+  labels:
+    app: monifactory
+spec:
+  revisionHistoryLimit: 1
+  replicas: 0
+  selector:
+    matchLabels:
+      app: monifactory
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: monifactory
+    spec:
+      # NOTE: deliberately no priorityClassName here. The makko copy runs with
+      # game-server-high-priority, which is safe on a 7-node cluster but not on a
+      # single node -- a 12Gi Pending game server preempting Ceph is exactly what
+      # took the mons out on makko. On renkko the same pod would be able to evict
+      # rook-ceph-osd-0, i.e. all storage for both servers.
+      containers:
+      - image: itzg/minecraft-server:java17
+        name: minecraft
+        stdin: true
+        tty: true
+        env:
+        - name: EULA
+          value: "TRUE"
+        - name: TYPE
+          value: "AUTO_CURSEFORGE"
+        - name: VERSION
+          value: "1.20.1"
+        - name: FORGE_VERSION
+          value: "47.4.0"
+        - name: MEMORY
+          value: "10G"
+        - name: CF_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: curseforge-api-key
+              key: password
+        - name: CF_SLUG
+          value: monifactory
+        - name: USE_AIKAR_FLAGS
+          value: "true"
+        - name: TZ
+          value: "America/Chicago"
+        volumeMounts:
+        - name: data
+          mountPath: /data
+        ports:
+        - containerPort: 25565
+          protocol: TCP
+        resources:
+          # Heap is pinned at 10G by MEMORY above. The limit is 13Gi rather than
+          # makko's 16Gi because this node is shared with cobbleverse (11Gi limit)
+          # and rook-ceph on a single 30.4Gi box: 16+11 would let the two servers
+          # alone overcommit the node and put the OSD in reach of the OOM killer.
+          # 13Gi leaves ~3Gi of non-heap headroom for metaspace/GC/netty.
+          limits:
+            cpu: "4"
+            memory: 13Gi
+          requests:
+            cpu: 100m
+            memory: 12Gi
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: minecraft-monifactory
+          readOnly: false
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: minecraft-monifactory
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 30Gi
+  storageClassName: rook-rbd
+  volumeMode: Filesystem
