@@ -6,7 +6,7 @@ metadata:
     app: monifactory
 spec:
   revisionHistoryLimit: 1
-  replicas: 0
+  replicas: 1
   selector:
     matchLabels:
       app: monifactory
@@ -37,7 +37,7 @@ spec:
         - name: FORGE_VERSION
           value: "47.4.0"
         - name: MEMORY
-          value: "10G"
+          value: "6G"
         - name: CF_API_KEY
           valueFrom:
             secretKeyRef:
@@ -45,8 +45,11 @@ spec:
               key: password
         - name: CF_SLUG
           value: monifactory
+        # Aikar's flags are deliberately OFF here: they set -XX:+AlwaysPreTouch,
+        # which commits the whole heap at JVM start instead of growing into it.
+        # At 10G that took the node down 103 s in, next to cobbleverse's 8G.
         - name: USE_AIKAR_FLAGS
-          value: "true"
+          value: "false"
         - name: TZ
           value: "America/Chicago"
         volumeMounts:
@@ -63,10 +66,10 @@ spec:
           # 13Gi leaves ~3Gi of non-heap headroom for metaspace/GC/netty.
           limits:
             cpu: "4"
-            memory: 13Gi
+            memory: 8Gi
           requests:
             cpu: 100m
-            memory: 12Gi
+            memory: 7Gi
       volumes:
       - name: data
         persistentVolumeClaim:
