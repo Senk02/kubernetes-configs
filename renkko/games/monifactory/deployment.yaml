@@ -23,7 +23,11 @@ spec:
       # took the mons out on makko. On renkko the same pod would be able to evict
       # rook-ceph-osd-0, i.e. all storage for both servers.
       containers:
-      - image: itzg/minecraft-server:java17
+      # Pinned, NOT :java17. The java17 tag rebuilt on 2026-08-29 ships every file
+      # in /image/scripts as 0 bytes, so the entrypoint dies with
+      # "exec /image/scripts/start: exec format error". 2026.8.2 (2026-08-23) is
+      # the last good build -- verified 1393-byte scripts on this node's arch.
+      - image: itzg/minecraft-server:2026.8.2-java17
         name: minecraft
         stdin: true
         tty: true
