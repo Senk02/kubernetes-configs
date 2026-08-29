@@ -22,6 +22,17 @@ nodes:
       customization:
         extraKernelArgs:
           - pcie_aspm=off
+          # Disables CONFIG_PAGE_TABLE_CHECK, a hardening check that validates
+          # page-table entries on every page alloc/free. On this board it is the
+          # direct cause of the recurring hard resets: page_ext_lookup() returns
+          # NULL and __page_table_check_zero() dereferences it, panicking in
+          # post_alloc_hook <- folio_alloc <- iomap_file_buffered_write, i.e. on
+          # ANY buffered block-device write. bluefs_buffered_io=false (2026-08-22)
+          # only removed Ceph as a writer and bought 184 h; monifactory unpacking
+          # a modpack onto ext4-on-RBD reproduced it in 11 min. The check is not
+          # required for correct operation, so turning it off removes the bug
+          # rather than damping one trigger. See renkko-hardware-instability.
+          - page_table_check=off
         systemExtensions:
           officialExtensions:
             - siderolabs/iscsi-tools
