@@ -59,11 +59,9 @@ spec:
         - containerPort: 25565
           protocol: TCP
         resources:
-          # Heap is pinned at 10G by MEMORY above. The limit is 13Gi rather than
-          # makko's 16Gi because this node is shared with cobbleverse (11Gi limit)
-          # and rook-ceph on a single 30.4Gi box: 16+11 would let the two servers
-          # alone overcommit the node and put the OSD in reach of the OOM killer.
-          # 13Gi leaves ~3Gi of non-heap headroom for metaspace/GC/netty.
+          # Heap is 6G (MEMORY above), so 8Gi leaves ~2Gi for metaspace/GC/netty.
+          # Sized to coexist with cobbleverse (11Gi limit) and rook-ceph on a
+          # single 30.4Gi node; makko's 16Gi limit is far too large to share.
           limits:
             cpu: "4"
             memory: 8Gi
