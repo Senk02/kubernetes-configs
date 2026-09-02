@@ -27,7 +27,25 @@ spec:
     # exactly one mon per schedulable node with no slack -- if a worker dies,
     # Rook cannot build a replacement mon, but quorum still survives 2/3,
     # which is the part that matters.
-    allowMultiplePerNode: false
+    #
+    # ⚠ TEMPORARILY BACK TO true (2026-09-02). Flipping this to false does NOT
+    # relocate existing mons -- placement comes from the `mapping` in the
+    # rook-ceph-mon-endpoints configmap, and Rook preserves an existing mon's
+    # node assignment. All false does is change the pod anti-affinity, which
+    # makes every mon deployment differ from its spec and queues a rollout.
+    #
+    # That rollout deadlocks if fewer than 3 mon deployments exist: quorum
+    # threshold is 2, so `ceph` answers EBUSY ("not enough monitors would be
+    # available") to every ok-to-stop check, and Rook updates existing mons
+    # BEFORE creating missing ones -- so it never gets around to recreating
+    # the third. Observed stuck 6+ min on "checking if we can stop the
+    # deployment rook-ceph-mon-f" while the cluster sat at quorum [a,f].
+    #
+    # Relocating mons requires rewriting that configmap mapping (mon addresses
+    # are per-mon Service ClusterIPs, so they survive a node change), with all
+    # 3 mons up so one can be stopped at a time. Set this back to false only
+    # AFTER the mons are actually spread.
+    allowMultiplePerNode: true
   dashboard:
     enabled: true
     ssl: false
