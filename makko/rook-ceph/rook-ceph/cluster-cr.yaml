@@ -15,37 +15,44 @@ spec:
         enabled: true
   mon:
     count: 3
-    # MUST stay false. With `true`, Rook happily stacked all three mons onto
-    # talos-yha-nr5 (verified 2026-09-01 via the rook-ceph-mon-endpoints
-    # mapping: a/f/h all -> 10.0.0.40), which makes losing that one node a
-    # total cluster outage -- no quorum, every RBD/CephFS mount hangs. That
-    # node is also the smallest (/var/lib/rook is 135G vs 476G/465G) and has
-    # filled up before.
+    # Keep false. With `true` Rook had stacked all three mons onto
+    # talos-yha-nr5, which made losing that one node a total cluster outage --
+    # no quorum, every RBD/CephFS mount hangs. It is also the smallest node
+    # (/var/lib/rook 135G vs 476G on 73x-rd9 and 465G on bm5-aks) and has
+    # filled up before. As of 2026-09-02 they are spread one per node:
+    # a -> talos-yha-nr5, f -> talos-bm5-aks, h -> talos-73x-rd9.
     #
-    # Only 3 nodes can hold a mon at all: the other three are control-plane
-    # with a NoSchedule taint, and talos-e6m-uzm is unreachable. So this is
-    # exactly one mon per schedulable node with no slack -- if a worker dies,
-    # Rook cannot build a replacement mon, but quorum still survives 2/3,
-    # which is the part that matters.
+    # ⚠ This flag does NOT relocate anything. It only adds required pod
+    # anti-affinity, which prevents future re-stacking. Actual placement lives
+    # in the `mapping` key of the rook-ceph-mon-endpoints configmap (NOT in
+    # git), and Rook preserves an existing mon's node assignment -- it derives
+    # each mon deployment's `nodeSelector: kubernetes.io/hostname` from it.
     #
-    # ⚠ TEMPORARILY BACK TO true (2026-09-02). Flipping this to false does NOT
-    # relocate existing mons -- placement comes from the `mapping` in the
-    # rook-ceph-mon-endpoints configmap, and Rook preserves an existing mon's
-    # node assignment. All false does is change the pod anti-affinity, which
-    # makes every mon deployment differ from its spec and queues a rollout.
+    # To move a mon: patch ONLY that `mapping` key, then restart the operator
+    # so it reloads (it caches the mapping and rewrites the configmap on every
+    # reconcile, so editing without a restart gets overwritten). Rook then
+    # rolls the mon to the new node by itself. Safe because each mon has its
+    # own Service ClusterIP, so its monmap address survives the move, and
+    # because CSI clients read the separate `data` key -- never touch that or
+    # `csi-cluster-config-json`. The moved mon starts with an empty
+    # /var/lib/rook/mon-<id> and re-syncs from quorum.
     #
-    # That rollout deadlocks if fewer than 3 mon deployments exist: quorum
-    # threshold is 2, so `ceph` answers EBUSY ("not enough monitors would be
-    # available") to every ok-to-stop check, and Rook updates existing mons
-    # BEFORE creating missing ones -- so it never gets around to recreating
-    # the third. Observed stuck 6+ min on "checking if we can stop the
-    # deployment rook-ceph-mon-f" while the cluster sat at quorum [a,f].
+    # ⚠ Do this only with all 3 mons UP. If fewer than 3 mon deployments
+    # exist, the quorum threshold of 2 makes ceph answer every ok-to-stop
+    # check with EBUSY ("not enough monitors would be available"), and Rook
+    # updates existing mons BEFORE creating missing ones -- so it never
+    # recreates the third and the rollout deadlocks. Never delete a mon
+    # deployment expecting auto-failover: the mon health checker only runs
+    # after a SUCCESSFUL reconcile, and reconciles currently never finish
+    # (the operator loops forever on "OSD n is not ok-to-stop" because
+    # awafs's 20 inactive PGs make ok-to-stop unsatisfiable).
     #
-    # Relocating mons requires rewriting that configmap mapping (mon addresses
-    # are per-mon Service ClusterIPs, so they survive a node change), with all
-    # 3 mons up so one can be stopped at a time. Set this back to false only
-    # AFTER the mons are actually spread.
-    allowMultiplePerNode: true
+    # Only 3 nodes can hold a mon: the other three are control-plane with a
+    # NoSchedule taint and talos-e6m-uzm is unreachable. So this is one mon per
+    # schedulable node with no slack -- if a worker dies Rook cannot build a
+    # replacement mon, but quorum still survives 2/3, which is the part that
+    # matters.
+    allowMultiplePerNode: false
   dashboard:
     enabled: true
     ssl: false
