@@ -15,13 +15,32 @@ spec:
         enabled: true
   mon:
     count: 3
-    allowMultiplePerNode: true
+    # MUST stay false. With `true`, Rook happily stacked all three mons onto
+    # talos-yha-nr5 (verified 2026-09-01 via the rook-ceph-mon-endpoints
+    # mapping: a/f/h all -> 10.0.0.40), which makes losing that one node a
+    # total cluster outage -- no quorum, every RBD/CephFS mount hangs. That
+    # node is also the smallest (/var/lib/rook is 135G vs 476G/465G) and has
+    # filled up before.
+    #
+    # Only 3 nodes can hold a mon at all: the other three are control-plane
+    # with a NoSchedule taint, and talos-e6m-uzm is unreachable. So this is
+    # exactly one mon per schedulable node with no slack -- if a worker dies,
+    # Rook cannot build a replacement mon, but quorum still survives 2/3,
+    # which is the part that matters.
+    allowMultiplePerNode: false
   dashboard:
     enabled: true
     ssl: false
   removeOSDsIfOutAndSafeToRemove: true
   priorityClassNames:
     osd: storage-critical
+    # mon had NO priority class, while a game server sat at
+    # game-server-high-priority (1000). That inversion already cost this
+    # cluster its quorum once: a 12Gi Pending game server held the
+    # reservation and the mons could not schedule. Storage must outrank
+    # anything it is storage *for*.
+    mon: storage-critical
+    mgr: storage-critical
   storage:
     useAllNodes: false
     useAllDevices: false
