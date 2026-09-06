@@ -113,6 +113,15 @@ data:
         root /usr/share/nginx/html;
         index index.html;
 
+        # The nightly build is a second SPA living under /nightly. It needs
+        # its own fallback: the root's try_files would answer
+        # /nightly/anything with the root index.html, which then loads the
+        # root's bundle and silently serves the old site from a URL that
+        # promised the new one.
+        location /nightly/ {
+            try_files $uri $uri/ /nightly/index.html;
+        }
+
         # Serve static files
         location / {
             try_files $uri $uri/ /index.html;
