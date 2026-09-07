@@ -20,10 +20,7 @@ spec:
       imagePullSecrets:
       - name: ghcr-secret
       containers:
-      # Pinned to the nightly tag, not :latest. This image serves the current
-      # production tree at / and the nightly branch's build at /nightly.
-      # Rolling back is a one-line change back to :latest.
-      - image: ghcr.io/senk02/react-website:nightly
+      - image: ghcr.io/senk02/react-website:latest
         imagePullPolicy: Always
         name: nginx
         volumeMounts:
