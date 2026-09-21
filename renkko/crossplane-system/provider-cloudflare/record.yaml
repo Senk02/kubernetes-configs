@@ -1,15 +1,18 @@
 apiVersion: dns.cloudflare.millstone.tech/v1alpha1
 kind: Record
 metadata:
-  name: xp-test
+  name: java
+  annotations:
+    crossplane.io/external-name: f5720854a9f8c6a7dacee135d6243260
 spec:
   deletionPolicy: Orphan
+  managementPolicies: ["Observe"]
   providerConfigRef:
     name: default
   forProvider:
     zoneId: a5a86c3b982b551c1fd2096576201bf9
-    name: xp-test.senk0.com
+    name: java.senk0.com
     type: A
-    content: 192.0.2.1
-    ttl: 60
+    content: 147.185.221.25
+    ttl: 1
     proxied: false
