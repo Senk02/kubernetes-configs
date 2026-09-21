@@ -1,0 +1,15 @@
+apiVersion: dns.cloudflare.millstone.tech/v1alpha1
+kind: Record
+metadata:
+  name: xyzzy
+spec:
+  deletionPolicy: Orphan
+  providerConfigRef:
+    name: default
+  forProvider:
+    zoneId: a5a86c3b982b551c1fd2096576201bf9
+    name: xyzzy.senk0.com
+    type: CNAME
+    content: dyn.senk0.com
+    ttl: 1
+    proxied: false
