@@ -1,0 +1,22 @@
+apiVersion: dns.cloudflare.millstone.tech/v1alpha1
+kind: Record
+metadata:
+  name: srv-matrix-element
+  annotations:
+    crossplane.io/external-name: a5a86c3b982b551c1fd2096576201bf9/e078c83f8b33eb9b371b156dcec1d103
+spec:
+  deletionPolicy: Orphan
+  managementPolicies: ["Observe"]
+  providerConfigRef:
+    name: default
+  forProvider:
+    zoneId: a5a86c3b982b551c1fd2096576201bf9
+    name: "_matrix._tcp.element.senk0.com"
+    type: SRV
+    ttl: 1
+    proxied: false
+    data:
+      priority: 10
+      weight: 0
+      port: 8448
+      target: "element.senk0.com"

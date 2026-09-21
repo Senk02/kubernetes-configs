@@ -1,0 +1,22 @@
+apiVersion: dns.cloudflare.millstone.tech/v1alpha1
+kind: Record
+metadata:
+  name: srv-mc-moni
+  annotations:
+    crossplane.io/external-name: a5a86c3b982b551c1fd2096576201bf9/c39c47d0edcb4557ea128f872554c1c5
+spec:
+  deletionPolicy: Orphan
+  managementPolicies: ["Observe"]
+  providerConfigRef:
+    name: default
+  forProvider:
+    zoneId: a5a86c3b982b551c1fd2096576201bf9
+    name: "_minecraft._tcp.moni.senk0.com"
+    type: SRV
+    ttl: 1
+    proxied: false
+    data:
+      priority: 0
+      weight: 5
+      port: 49566
+      target: "moni.senk0.com"
