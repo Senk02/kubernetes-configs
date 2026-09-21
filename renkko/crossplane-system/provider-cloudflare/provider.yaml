@@ -3,4 +3,20 @@ kind: Provider
 metadata:
   name: provider-cloudflare
 spec:
-  package: ghcr.io/millstonehq/provider-cloudflare:v0.1.0
+  package: ghcr.io/millstonehq/provider-cloudflare:xpkg
+  runtimeConfigRef:
+    name: provider-cloudflare-runtime
+---
+apiVersion: pkg.crossplane.io/v1beta1
+kind: DeploymentRuntimeConfig
+metadata:
+  name: provider-cloudflare-runtime
+spec:
+  deploymentTemplate:
+    spec:
+      selector: {}
+      template:
+        spec:
+          containers:
+            - name: package-runtime
+              image: ghcr.io/millstonehq/provider-cloudflare:v0.1.0
