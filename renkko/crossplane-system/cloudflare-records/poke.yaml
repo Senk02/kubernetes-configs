@@ -3,10 +3,9 @@ kind: Record
 metadata:
   name: poke
   annotations:
-    crossplane.io/external-name: a5a86c3b982b551c1fd2096576201bf9/1499ade1fde5ecff4a7c8f991b676418
+    crossplane.io/external-name: 1499ade1fde5ecff4a7c8f991b676418
 spec:
   deletionPolicy: Orphan
-  managementPolicies: ["Observe"]
   providerConfigRef:
     name: default
   forProvider:

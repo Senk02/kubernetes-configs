@@ -3,10 +3,9 @@ kind: Record
 metadata:
   name: ha
   annotations:
-    crossplane.io/external-name: a5a86c3b982b551c1fd2096576201bf9/4563a5f7bba74f0a08712ea9bb97f6f4
+    crossplane.io/external-name: 4563a5f7bba74f0a08712ea9bb97f6f4
 spec:
   deletionPolicy: Orphan
-  managementPolicies: ["Observe"]
   providerConfigRef:
     name: default
   forProvider:

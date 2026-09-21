@@ -3,10 +3,9 @@ kind: Record
 metadata:
   name: mx-aspmx2
   annotations:
-    crossplane.io/external-name: a5a86c3b982b551c1fd2096576201bf9/79f139c5445dc74d0249baf0f7ffca1f
+    crossplane.io/external-name: 79f139c5445dc74d0249baf0f7ffca1f
 spec:
   deletionPolicy: Orphan
-  managementPolicies: ["Observe"]
   providerConfigRef:
     name: default
   forProvider:

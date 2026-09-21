@@ -3,10 +3,9 @@ kind: Record
 metadata:
   name: txt-dkim-google
   annotations:
-    crossplane.io/external-name: a5a86c3b982b551c1fd2096576201bf9/98767690d46029dbd0f9f2399b4584be
+    crossplane.io/external-name: 98767690d46029dbd0f9f2399b4584be
 spec:
   deletionPolicy: Orphan
-  managementPolicies: ["Observe"]
   providerConfigRef:
     name: default
   forProvider:

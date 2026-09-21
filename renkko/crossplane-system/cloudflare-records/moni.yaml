@@ -3,10 +3,9 @@ kind: Record
 metadata:
   name: moni
   annotations:
-    crossplane.io/external-name: a5a86c3b982b551c1fd2096576201bf9/2827fe39efce729896aeb3648bb4e7e9
+    crossplane.io/external-name: 2827fe39efce729896aeb3648bb4e7e9
 spec:
   deletionPolicy: Orphan
-  managementPolicies: ["Observe"]
   providerConfigRef:
     name: default
   forProvider:

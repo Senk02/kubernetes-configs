@@ -3,10 +3,9 @@ kind: Record
 metadata:
   name: element
   annotations:
-    crossplane.io/external-name: a5a86c3b982b551c1fd2096576201bf9/de4ede0e53c2d18a6ef30d713dcd7fa1
+    crossplane.io/external-name: de4ede0e53c2d18a6ef30d713dcd7fa1
 spec:
   deletionPolicy: Orphan
-  managementPolicies: ["Observe"]
   providerConfigRef:
     name: default
   forProvider:

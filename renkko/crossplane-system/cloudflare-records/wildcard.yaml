@@ -3,10 +3,9 @@ kind: Record
 metadata:
   name: wildcard
   annotations:
-    crossplane.io/external-name: a5a86c3b982b551c1fd2096576201bf9/885e663990c12e17ba11127e1cfb040f
+    crossplane.io/external-name: 885e663990c12e17ba11127e1cfb040f
 spec:
   deletionPolicy: Orphan
-  managementPolicies: ["Observe"]
   providerConfigRef:
     name: default
   forProvider:
