@@ -3,10 +3,9 @@ kind: Record
 metadata:
   name: srv-mc-moni
   annotations:
-    crossplane.io/external-name: a5a86c3b982b551c1fd2096576201bf9/c39c47d0edcb4557ea128f872554c1c5
+    crossplane.io/external-name: c39c47d0edcb4557ea128f872554c1c5
 spec:
   deletionPolicy: Orphan
-  managementPolicies: ["Observe"]
   providerConfigRef:
     name: default
   forProvider:

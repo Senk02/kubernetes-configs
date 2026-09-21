@@ -3,10 +3,9 @@ kind: Record
 metadata:
   name: srv-mc-java
   annotations:
-    crossplane.io/external-name: a5a86c3b982b551c1fd2096576201bf9/91867e06de7dc18d5b8a135f0cd470d8
+    crossplane.io/external-name: 91867e06de7dc18d5b8a135f0cd470d8
 spec:
   deletionPolicy: Orphan
-  managementPolicies: ["Observe"]
   providerConfigRef:
     name: default
   forProvider:
