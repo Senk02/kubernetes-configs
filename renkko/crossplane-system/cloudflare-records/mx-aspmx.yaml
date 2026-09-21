@@ -1,0 +1,19 @@
+apiVersion: dns.cloudflare.millstone.tech/v1alpha1
+kind: Record
+metadata:
+  name: mx-aspmx
+  annotations:
+    crossplane.io/external-name: a5a86c3b982b551c1fd2096576201bf9/9df747995a82909d71497132dc276f00
+spec:
+  deletionPolicy: Orphan
+  managementPolicies: ["Observe"]
+  providerConfigRef:
+    name: default
+  forProvider:
+    zoneId: a5a86c3b982b551c1fd2096576201bf9
+    name: "senk0.com"
+    type: MX
+    content: "aspmx.l.google.com"
+    ttl: 1
+    proxied: false
+    priority: 1

@@ -1,0 +1,18 @@
+apiVersion: dns.cloudflare.millstone.tech/v1alpha1
+kind: Record
+metadata:
+  name: txt-spf
+  annotations:
+    crossplane.io/external-name: a5a86c3b982b551c1fd2096576201bf9/2453c8edcdd4c113a9fe73e443b3ebee
+spec:
+  deletionPolicy: Orphan
+  managementPolicies: ["Observe"]
+  providerConfigRef:
+    name: default
+  forProvider:
+    zoneId: a5a86c3b982b551c1fd2096576201bf9
+    name: "senk0.com"
+    type: TXT
+    content: "v=spf1 include:_spf.google.com ~all"
+    ttl: 3600
+    proxied: false

@@ -1,0 +1,18 @@
+apiVersion: dns.cloudflare.millstone.tech/v1alpha1
+kind: Record
+metadata:
+  name: txt-google-verify
+  annotations:
+    crossplane.io/external-name: a5a86c3b982b551c1fd2096576201bf9/84eaf714b29b1b3a729e3ff25d0fa28d
+spec:
+  deletionPolicy: Orphan
+  managementPolicies: ["Observe"]
+  providerConfigRef:
+    name: default
+  forProvider:
+    zoneId: a5a86c3b982b551c1fd2096576201bf9
+    name: "senk0.com"
+    type: TXT
+    content: "google-site-verification=wxNrGXOq_cV7FCviSBL1ftwHpXjriCqjF40BAMK_bVk"
+    ttl: 1
+    proxied: false

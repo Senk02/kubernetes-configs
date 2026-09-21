@@ -1,0 +1,18 @@
+apiVersion: dns.cloudflare.millstone.tech/v1alpha1
+kind: Record
+metadata:
+  name: txt-dkim-google
+  annotations:
+    crossplane.io/external-name: a5a86c3b982b551c1fd2096576201bf9/98767690d46029dbd0f9f2399b4584be
+spec:
+  deletionPolicy: Orphan
+  managementPolicies: ["Observe"]
+  providerConfigRef:
+    name: default
+  forProvider:
+    zoneId: a5a86c3b982b551c1fd2096576201bf9
+    name: "google._domainkey.senk0.com"
+    type: TXT
+    content: "v=DKIM1; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA6Ge0qVQ4l7tf6jFokEw3gXTs55geKU5CBSvR5JW+DXeuV9fzdAE1+skf49/AxpJ63xdxYks0Um6STkt3vwEwBE/YHFzsN1WA5jJdHxrnSs0aVXVJA99zMKaJ3ZbPuZ0Fm05DYrievxaCDutMFxd8+I9ZGTW/Bv5C04LKjneaVJ/K5mm15TmCR7PSQYHK9bIcSlA+WIHe4O1bCQzpBW2Gg0tmt/lYdSdA1kivkSPVq74brpg40YLIawp1hp7c4zi7cZdi1jFLaQ56PGXo6FeUFZUzblWkmh1LnzFjv4Vp0RS9Bhj6Nk8bbZ1F4EesgRbhkEnwDfP0ta9YMIoSkjtzHQIDAQAB"
+    ttl: 1
+    proxied: false
