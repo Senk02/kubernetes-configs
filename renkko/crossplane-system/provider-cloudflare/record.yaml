@@ -3,7 +3,7 @@ kind: Record
 metadata:
   name: java
   annotations:
-    crossplane.io/external-name: f5720854a9f8c6a7dacee135d6243260
+    crossplane.io/external-name: a5a86c3b982b551c1fd2096576201bf9/f5720854a9f8c6a7dacee135d6243260
 spec:
   deletionPolicy: Orphan
   managementPolicies: ["Observe"]
