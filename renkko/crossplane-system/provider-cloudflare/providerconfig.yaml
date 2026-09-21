@@ -1,0 +1,11 @@
+apiVersion: cloudflare.millstone.tech/v1beta1
+kind: ProviderConfig
+metadata:
+  name: default
+spec:
+  credentials:
+    source: Secret
+    secretRef:
+      name: cloudflare-api-token
+      namespace: crossplane-system
+      key: api_token
