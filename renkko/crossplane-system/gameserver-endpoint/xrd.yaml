@@ -43,6 +43,9 @@ spec:
                   default: 5
                 comment:
                   type: string
+                namespace:
+                  type: string
+                  default: games
                 recordId:
                   type: string
               required:

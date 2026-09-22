@@ -7,3 +7,4 @@ spec:
     - records.dns.cloudflare.millstone.tech
     - zones.zone.cloudflare.millstone.tech
     - firewallnats.ip.routeros.sindrip.io
+    - objects.kubernetes.crossplane.io
