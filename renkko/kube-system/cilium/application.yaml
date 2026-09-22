@@ -51,6 +51,7 @@ spec:
         priorityClassName: network-critical
         operator:
           priorityClassName: network-critical
+          replicas: 1
         gatewayAPI:
           enabled: true
           externalTrafficPolicy: Local
