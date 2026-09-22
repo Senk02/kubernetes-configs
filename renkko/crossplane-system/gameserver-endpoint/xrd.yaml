@@ -46,8 +46,6 @@ spec:
                 namespace:
                   type: string
                   default: games
-                recordId:
-                  type: string
               required:
                 - subdomain
                 - externalPort

@@ -57,11 +57,6 @@ spec:
               - type: FromCompositeFieldPath
                 fromFieldPath: spec.weight
                 toFieldPath: spec.forProvider.data.weight
-              - type: FromCompositeFieldPath
-                fromFieldPath: spec.recordId
-                toFieldPath: metadata.annotations[crossplane.io/external-name]
-                policy:
-                  fromFieldPath: Optional
           - name: nat-rule
             base:
               apiVersion: ip.routeros.sindrip.io/v1alpha1
