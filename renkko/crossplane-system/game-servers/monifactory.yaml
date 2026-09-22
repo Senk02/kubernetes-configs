@@ -1,0 +1,10 @@
+apiVersion: homelab.senk0.com/v1alpha1
+kind: GameServerEndpoint
+metadata:
+  name: monifactory
+spec:
+  subdomain: moni
+  externalPort: 49566
+  internalAddress: 10.1.1.106
+  internalPort: 25565
+  comment: monifactory mc
