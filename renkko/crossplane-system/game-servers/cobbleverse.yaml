@@ -1,0 +1,11 @@
+apiVersion: homelab.senk0.com/v1alpha1
+kind: GameServerEndpoint
+metadata:
+  name: cobbleverse
+spec:
+  subdomain: poke
+  externalPort: 49565
+  internalAddress: 10.1.1.105
+  internalPort: 25565
+  comment: cobbleverse mc
+  recordId: e21f344a06d8da042097c366bcdd8017
