@@ -1,0 +1,52 @@
+apiVersion: apiextensions.crossplane.io/v2
+kind: CompositeResourceDefinition
+metadata:
+  name: gameserverendpoints.homelab.senk0.com
+spec:
+  scope: Cluster
+  group: homelab.senk0.com
+  names:
+    kind: GameServerEndpoint
+    plural: gameserverendpoints
+  versions:
+    - name: v1alpha1
+      served: true
+      referenceable: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                subdomain:
+                  type: string
+                service:
+                  type: string
+                  default: "_minecraft._tcp"
+                externalPort:
+                  type: integer
+                  minimum: 1
+                  maximum: 65535
+                internalAddress:
+                  type: string
+                internalPort:
+                  type: integer
+                  default: 25565
+                  minimum: 1
+                  maximum: 65535
+                priority:
+                  type: integer
+                  default: 0
+                weight:
+                  type: integer
+                  default: 5
+                comment:
+                  type: string
+                recordId:
+                  type: string
+              required:
+                - subdomain
+                - externalPort
+                - internalAddress
+                - comment

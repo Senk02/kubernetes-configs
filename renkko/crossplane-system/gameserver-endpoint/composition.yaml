@@ -1,0 +1,105 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: gameserverendpoint-cloudflare-routeros
+spec:
+  compositeTypeRef:
+    apiVersion: homelab.senk0.com/v1alpha1
+    kind: GameServerEndpoint
+  mode: Pipeline
+  pipeline:
+    - step: render
+      functionRef:
+        name: function-patch-and-transform
+      input:
+        apiVersion: pt.fn.crossplane.io/v1beta1
+        kind: Resources
+        resources:
+          - name: srv-record
+            base:
+              apiVersion: dns.cloudflare.millstone.tech/v1alpha1
+              kind: Record
+              spec:
+                deletionPolicy: Orphan
+                managementPolicies: ["Observe"]
+                providerConfigRef:
+                  name: default
+                forProvider:
+                  zoneId: a5a86c3b982b551c1fd2096576201bf9
+                  type: SRV
+                  ttl: 1
+                  proxied: false
+                  data: {}
+            patches:
+              - type: CombineFromComposite
+                combine:
+                  variables:
+                    - fromFieldPath: spec.service
+                    - fromFieldPath: spec.subdomain
+                  strategy: string
+                  string:
+                    fmt: "%s.%s.senk0.com"
+                toFieldPath: spec.forProvider.name
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.subdomain
+                toFieldPath: spec.forProvider.data.target
+                transforms:
+                  - type: string
+                    string:
+                      type: Format
+                      fmt: "%s.senk0.com"
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.externalPort
+                toFieldPath: spec.forProvider.data.port
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.priority
+                toFieldPath: spec.forProvider.data.priority
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.weight
+                toFieldPath: spec.forProvider.data.weight
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.recordId
+                toFieldPath: metadata.annotations[crossplane.io/external-name]
+                policy:
+                  fromFieldPath: Optional
+          - name: nat-rule
+            base:
+              apiVersion: ip.routeros.sindrip.io/v1alpha1
+              kind: FirewallNAT
+              spec:
+                deletionPolicy: Orphan
+                managementPolicies: ["Observe"]
+                providerConfigRef:
+                  name: default
+                forProvider:
+                  chain: dstnat
+                  action: dst-nat
+                  protocol: tcp
+                  inInterface: ether2
+            patches:
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.comment
+                toFieldPath: spec.forProvider.comment
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.comment
+                toFieldPath: metadata.annotations[crossplane.io/external-name]
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.externalPort
+                toFieldPath: spec.forProvider.dstPort
+                transforms:
+                  - type: convert
+                    convert:
+                      toType: string
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.internalAddress
+                toFieldPath: spec.forProvider.toAddresses
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.internalPort
+                toFieldPath: spec.forProvider.toPorts
+                transforms:
+                  - type: convert
+                    convert:
+                      toType: string
+    - step: ready
+      functionRef:
+        name: function-auto-ready
