@@ -1,0 +1,75 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: acme-challenge-cleanup
+spec:
+  schedule: "0 4 * * 0"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: cleanup
+              image: python:3.13-alpine
+              env:
+                - name: CF_ZONE
+                  value: a5a86c3b982b551c1fd2096576201bf9
+                - name: MAX_AGE_HOURS
+                  value: "24"
+                - name: CF_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: cloudflare-api-token
+                      key: api_token
+              resources:
+                requests:
+                  cpu: 10m
+                  memory: 32Mi
+                limits:
+                  memory: 64Mi
+              command:
+                - python3
+                - -c
+                - |
+                  import datetime, json, os, urllib.request
+
+                  TOKEN = os.environ["CF_TOKEN"]
+                  ZONE = os.environ["CF_ZONE"]
+                  MAX_AGE = float(os.environ.get("MAX_AGE_HOURS", "24"))
+                  BASE = "https://api.cloudflare.com/client/v4"
+
+                  def call(method, path):
+                      req = urllib.request.Request(BASE + path, method=method)
+                      req.add_header("Authorization", "Bearer " + TOKEN)
+                      with urllib.request.urlopen(req, timeout=30) as resp:
+                          return json.load(resp)
+
+                  listing = call("GET", "/zones/%s/dns_records?type=TXT&per_page=200" % ZONE)
+                  if not listing.get("success"):
+                      raise SystemExit("list failed: %s" % listing.get("errors"))
+
+                  now = datetime.datetime.now(datetime.timezone.utc)
+                  deleted = kept = 0
+
+                  for rec in listing["result"]:
+                      if not rec["name"].startswith("_acme-challenge"):
+                          continue
+                      created = datetime.datetime.fromisoformat(rec["created_on"].replace("Z", "+00:00"))
+                      age = (now - created).total_seconds() / 3600
+                      if age < MAX_AGE:
+                          print("keep    %s age=%.1fh (below threshold)" % (rec["id"], age))
+                          kept += 1
+                          continue
+                      res = call("DELETE", "/zones/%s/dns_records/%s" % (ZONE, rec["id"]))
+                      if res.get("success"):
+                          print("deleted %s age=%.1fh" % (rec["id"], age))
+                          deleted += 1
+                      else:
+                          print("FAILED  %s %s" % (rec["id"], res.get("errors")))
+
+                  print("done: deleted=%d kept=%d" % (deleted, kept))
