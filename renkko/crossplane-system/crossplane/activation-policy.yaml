@@ -1,0 +1,9 @@
+apiVersion: apiextensions.crossplane.io/v1alpha1
+kind: ManagedResourceActivationPolicy
+metadata:
+  name: default
+spec:
+  activate:
+    - records.dns.cloudflare.millstone.tech
+    - zones.zone.cloudflare.millstone.tech
+    - firewallnats.ip.routeros.sindrip.io
