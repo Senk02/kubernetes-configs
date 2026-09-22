@@ -1,0 +1,19 @@
+apiVersion: ip.routeros.sindrip.io/v1alpha1
+kind: FirewallNAT
+metadata:
+  name: nat-valheim
+  annotations:
+    crossplane.io/external-name: "valheim-detroit"
+spec:
+  managementPolicies: ["Observe"]
+  deletionPolicy: Orphan
+  providerConfigRef:
+    name: default
+  forProvider:
+    comment: "valheim-detroit"
+    chain: dstnat
+    action: dst-nat
+    protocol: udp
+    inInterface: ether2
+    dstPort: "2456-2457"
+    toAddresses: 10.1.1.104

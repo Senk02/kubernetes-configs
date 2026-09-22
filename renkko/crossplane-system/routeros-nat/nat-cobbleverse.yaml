@@ -1,0 +1,20 @@
+apiVersion: ip.routeros.sindrip.io/v1alpha1
+kind: FirewallNAT
+metadata:
+  name: nat-cobbleverse
+  annotations:
+    crossplane.io/external-name: "cobbleverse mc"
+spec:
+  managementPolicies: ["Observe"]
+  deletionPolicy: Orphan
+  providerConfigRef:
+    name: default
+  forProvider:
+    comment: "cobbleverse mc"
+    chain: dstnat
+    action: dst-nat
+    protocol: tcp
+    inInterface: ether2
+    dstPort: "49565"
+    toAddresses: 10.1.1.105
+    toPorts: "25565"
