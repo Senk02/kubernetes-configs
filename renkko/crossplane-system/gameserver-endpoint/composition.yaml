@@ -21,7 +21,7 @@ spec:
               kind: Record
               spec:
                 deletionPolicy: Orphan
-                managementPolicies: ["Observe"]
+                managementPolicies: ["Observe", "Create", "Update", "Delete"]
                 providerConfigRef:
                   name: default
                 forProvider:
@@ -68,7 +68,7 @@ spec:
               kind: FirewallNAT
               spec:
                 deletionPolicy: Orphan
-                managementPolicies: ["Observe"]
+                managementPolicies: ["Observe", "Create", "Update", "Delete"]
                 providerConfigRef:
                   name: default
                 forProvider:
