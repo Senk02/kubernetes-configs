@@ -6,6 +6,7 @@ metadata:
     crossplane.io/external-name: e21f344a06d8da042097c366bcdd8017
 spec:
   deletionPolicy: Orphan
+  managementPolicies: ["Observe", "Create", "Update", "Delete"]
   providerConfigRef:
     name: default
   forProvider:
