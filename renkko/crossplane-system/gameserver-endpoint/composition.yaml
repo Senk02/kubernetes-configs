@@ -141,10 +141,13 @@ spec:
                 fromFieldPath: spec.internalPort
                 toFieldPath: spec.forProvider.manifest.spec.ports[0].name
                 transforms:
+                  - type: convert
+                    convert:
+                      toType: string
                   - type: string
                     string:
                       type: Format
-                      fmt: "%dtcp"
+                      fmt: "%stcp"
     - step: ready
       functionRef:
         name: function-auto-ready
