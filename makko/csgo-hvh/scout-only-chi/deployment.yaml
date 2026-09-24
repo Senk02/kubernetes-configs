@@ -21,7 +21,7 @@ spec:
         kubernetes.io/hostname: talos-73x-rd9
       initContainers:
       - name: change-volume-ownership
-        image: busybox:1.37
+        image: busybox:1.38
         command: ["sh", "-c", "chown -R 1000:1000 /home/steam/cs2-dedicated"]
         volumeMounts:
         - name: cs2-data-nvme
