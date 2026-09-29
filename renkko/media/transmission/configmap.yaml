@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: transmission
+data:
+  PUID: "1000"
+  PGID: "1000"
+  TRANSMISSION_RATIO_LIMIT: "0"
+  TRANSMISSION_RATIO_LIMIT_ENABLED: "true"
+  VPN_SERVICE_PROVIDER: "mullvad"
+  VPN_TYPE: "wireguard"
+  SERVER_CITIES: "Chicago IL"
+  WIREGUARD_ADDRESSES: "10.67.15.247/32"
+  FIREWALL_INPUT_PORTS: "9091"

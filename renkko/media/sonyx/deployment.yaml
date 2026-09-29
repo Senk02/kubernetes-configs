@@ -1,0 +1,94 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sonyx
+  labels:
+    app: sonyx
+spec:
+  revisionHistoryLimit: 1
+  replicas: 0
+  selector:
+    matchLabels:
+      app: sonyx
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: sonyx
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+      containers:
+        - image: deluan/navidrome:latest
+          name: sonyx
+          ports:
+            - containerPort: 4533
+          env:
+            - name: ND_BASEURL
+              value: "https://sonyx.senk0.com"
+            - name: ND_ENABLESHARING
+              value: "true"
+            - name: ND_ENABLETRANSCODINGCONFIG
+              value: "true"
+            - name: ND_IMAGECACHESIZE
+              value: "5000"
+            - name: ND_LASTFM_APIKEY
+              valueFrom:
+                secretKeyRef:
+                  name: sonyx-secrets
+                  key: lastfm-api-key
+            - name: ND_LASTFM_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: sonyx-secrets
+                  key: lastfm-api-secret
+            - name: ND_SPOTIFY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: sonyx-secrets
+                  key: spotify-client-id
+            - name: ND_SPOTIFY_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: sonyx-secrets
+                  key: spotify-client-secret
+            - name: ND_PROMETHEUS_ENABLED
+              value: "true"
+            - name: ND_PROMETHEUS_METRICSPATH
+              value: "/metrics"
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: music
+              mountPath: /music
+              subPath: library/music
+              readOnly: true
+          resources:
+            limits:
+              cpu: "1"
+              memory: 1Gi
+            requests:
+              cpu: "200m"
+              memory: 128Mi
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: sonyx-data-pvc
+      - name: music
+        hostPath:
+          path: /var/mnt/media
+          type: Directory
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: sonyx-data-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: rook-rbd

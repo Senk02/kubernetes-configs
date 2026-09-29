@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jellyfin
+  labels:
+    app: jellyfin
+spec:
+  revisionHistoryLimit: 1
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jellyfin
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: jellyfin
+    spec:
+      containers:
+      - image: jellyfin/jellyfin:10.11.6
+        name: jellyfin
+        volumeMounts:
+        - name: media
+          mountPath: /media
+          subPath: library
+        - name: config
+          mountPath: /config
+        - name: cache
+          mountPath: /cache
+        ports:
+        - containerPort: 8096
+        resources:
+          limits:
+            memory: 4096Mi
+            ephemeral-storage: 8Gi
+          requests:
+            cpu: "0.1"
+            memory: 2048Mi
+      volumes:
+      - name: cache
+        emptyDir:
+          sizeLimit: 32Gi
+      - name: config
+        persistentVolumeClaim:
+          claimName: jellyfin-config
+      - name: media
+        hostPath:
+          path: /var/mnt/media
+          type: Directory
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: jellyfin-config
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 32Gi
+  storageClassName: rook-rbd
+  volumeMode: Filesystem

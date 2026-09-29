@@ -1,0 +1,10 @@
+apiVersion: v1alpha1
+kind: UserVolumeConfig
+name: media
+provisioning:
+  diskSelector:
+    match: '!system_disk && disk.transport == "usb" && disk.size > 10000000000000u'
+  minSize: 10TB
+  grow: true
+filesystem:
+  type: xfs

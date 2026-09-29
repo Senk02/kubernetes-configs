@@ -1,0 +1,91 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: transmission
+  labels:
+    app: transmission
+spec:
+  revisionHistoryLimit: 1
+  replicas: 0
+  selector:
+    matchLabels:
+      app: transmission
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: transmission
+    spec:
+      containers:
+      - name: gluetun
+        image: qmcgaw/gluetun:latest
+        securityContext:
+          capabilities:
+            add: ["NET_ADMIN"]
+        envFrom:
+        - configMapRef:
+            name: transmission
+        env:
+        - name: WIREGUARD_PRIVATE_KEY
+          valueFrom:
+            secretKeyRef:
+              name: transmission
+              key: password
+        resources:
+          limits:
+            cpu: "500m"
+            memory: 128Mi
+          requests:
+            cpu: 1m
+            memory: 64Mi
+        volumeMounts:
+        - name: tun
+          mountPath: /dev/net/tun
+      - name: transmission
+        image: lscr.io/linuxserver/transmission:latest
+        envFrom:
+        - configMapRef:
+            name: transmission
+        volumeMounts:
+        - name: data
+          mountPath: /downloads
+          subPath: downloads
+        - name: wg-config
+          mountPath: /config
+        ports:
+        - containerPort: 9091
+        resources:
+          limits:
+            cpu: "1"
+            memory: 512Mi
+            ephemeral-storage: 64Mi
+          requests:
+            cpu: 1m
+            memory: 64Mi
+      securityContext:
+        fsGroup: 1000
+      volumes:
+      - name: data
+        hostPath:
+          path: /var/mnt/media
+          type: Directory
+      - name: wg-config
+        persistentVolumeClaim:
+          claimName: transmission-wg-config
+      - name: tun
+        hostPath:
+          path: /dev/net/tun
+          type: CharDevice
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: transmission-wg-config
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: rook-rbd

@@ -1,0 +1,62 @@
+apiVersion: apps/v1 
+kind: Deployment
+metadata:
+  name: kavita
+  labels:
+    app: kavita
+spec:
+  revisionHistoryLimit: 1
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kavita
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: kavita
+    spec:
+      containers:
+      - image: jvmilazz0/kavita:0.9.0
+        name: kavita
+        volumeMounts:
+        - name: media
+          mountPath: /books
+          subPath: library/books/books
+        - name: config
+          mountPath: /kavita/config
+        - name: media
+          mountPath: /manga
+          subPath: library/books/manga
+        ports:
+        - containerPort: 5000
+        resources:
+          limits:
+            cpu: "1"
+            memory: 512Mi
+            ephemeral-storage: 64Mi
+          requests:
+            cpu: 50m
+            memory: 256Mi
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: kavita-config
+      - name: media
+        hostPath:
+          path: /var/mnt/media
+          type: Directory
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: kavita-config
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: rook-rbd
+  volumeMode: Filesystem
