@@ -17,6 +17,11 @@ spec:
       labels:
         app: transmission
     spec:
+      hostAliases:
+      - ip: "10.102.61.120"
+        hostnames: ["sonarr"]
+      - ip: "10.107.140.162"
+        hostnames: ["radarr"]
       containers:
       - name: gluetun
         image: qmcgaw/gluetun:latest
@@ -63,6 +68,40 @@ spec:
           requests:
             cpu: 1m
             memory: 64Mi
+      - name: prowlarr
+        image: lscr.io/linuxserver/prowlarr:2.4.0
+        env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        - name: TZ
+          value: "America/Chicago"
+        volumeMounts:
+        - name: prowlarr-config
+          mountPath: /config
+        ports:
+        - containerPort: 9696
+        resources:
+          limits:
+            cpu: "1"
+            memory: 512Mi
+            ephemeral-storage: 64Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi
+      - name: flaresolverr
+        image: ghcr.io/flaresolverr/flaresolverr:v3.5.0
+        ports:
+        - containerPort: 8191
+        resources:
+          limits:
+            cpu: "1"
+            memory: 1Gi
+            ephemeral-storage: 1Gi
+          requests:
+            cpu: 10m
+            memory: 256Mi
       securityContext:
         fsGroup: 1000
       volumes:
@@ -73,6 +112,9 @@ spec:
       - name: wg-config
         persistentVolumeClaim:
           claimName: transmission-wg-config
+      - name: prowlarr-config
+        persistentVolumeClaim:
+          claimName: prowlarr-config
       - name: tun
         hostPath:
           path: /dev/net/tun
