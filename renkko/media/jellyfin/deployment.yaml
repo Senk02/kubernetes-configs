@@ -18,7 +18,7 @@ spec:
         app: jellyfin
     spec:
       containers:
-      - image: jellyfin/jellyfin:10.11.6
+      - image: jellyfin/jellyfin:10.11.11
         name: jellyfin
         volumeMounts:
         - name: media
