@@ -1,0 +1,19 @@
+apiVersion: ip.routeros.sindrip.io/v1alpha1
+kind: FirewallNAT
+metadata:
+  name: nat-media-hairpin
+  annotations:
+    crossplane.io/external-name: "media-hairpin"
+spec:
+  managementPolicies: ["Observe", "Create", "Update", "Delete"]
+  deletionPolicy: Delete
+  providerConfigRef:
+    name: default
+  forProvider:
+    comment: "media-hairpin"
+    chain: srcnat
+    action: masquerade
+    protocol: tcp
+    srcAddress: 10.1.0.0/16
+    dstAddress: 10.1.1.103
+    dstPort: "80,443"

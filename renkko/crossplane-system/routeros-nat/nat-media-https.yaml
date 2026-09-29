@@ -1,0 +1,20 @@
+apiVersion: ip.routeros.sindrip.io/v1alpha1
+kind: FirewallNAT
+metadata:
+  name: nat-media-https
+  annotations:
+    crossplane.io/external-name: "media-https"
+spec:
+  managementPolicies: ["Observe", "Create", "Update", "Delete"]
+  deletionPolicy: Delete
+  providerConfigRef:
+    name: default
+  forProvider:
+    comment: "media-https"
+    chain: dstnat
+    action: dst-nat
+    protocol: tcp
+    dstAddressType: local
+    dstAddress: "!10.1.0.0/16"
+    dstPort: "443"
+    toAddresses: 10.1.1.103
