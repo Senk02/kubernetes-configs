@@ -89,7 +89,7 @@ spec:
     spec:
       initContainers:
       - name: install-deps
-        image: python:3.11-slim
+        image: python:3.14-slim
         command: ['sh', '-c', 'pip install -r /app/requirements.txt --target /deps']
         volumeMounts:
         - name: code
@@ -97,7 +97,7 @@ spec:
         - name: deps
           mountPath: /deps
       containers:
-      - image: python:3.11-slim
+      - image: python:3.14-slim
         name: api
         command: ['python', '/app/app.py']
         env:
