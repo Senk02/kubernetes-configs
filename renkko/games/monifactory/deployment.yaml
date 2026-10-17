@@ -63,6 +63,8 @@ spec:
           value: "false"
         - name: TZ
           value: "America/Chicago"
+        - name: MAX_TICK_TIME
+          value: "-1"
         volumeMounts:
         - name: data
           mountPath: /data
