@@ -41,10 +41,9 @@ spec:
         # ASM transformer cannot process ftbbackups2's repacked Quartz scheduler
         # ("JSR/RET are not supported with computeFrames option"), so its init throws
         # and it registers no commands. polylib went with it -- it existed only as an
-        # ftbbackups2 dependency. cobblemon-saveguard guards against the Cobblemon
-        # store corruption that a power loss causes (zeroes both the live file and .old).
+        # ftbbackups2 dependency.
         - name: MODRINTH_PROJECTS
-          value: "configurable:3.5.2,cobblemon-exp.-all:0.0.2,advanced-backups:3.7.1,cobblemon-saveguard:1.0.0-mc1.21.1-eng"
+          value: "configurable:3.5.2,cobblemon-exp.-all:0.0.2,advanced-backups:3.7.1"
         - name: MODRINTH_EXCLUDE_FILES
           value: "c2me"
         - name: MODRINTH_FORCE_SYNCHRONIZE
