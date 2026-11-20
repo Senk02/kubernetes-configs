@@ -1,0 +1,104 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: unifi
+  labels:
+    app: unifi
+spec:
+  revisionHistoryLimit: 1
+  replicas: 1
+  selector:
+    matchLabels:
+      app: unifi
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: unifi
+    spec:
+      initContainers:
+      - image: busybox:1.37.0
+        name: system-properties
+        command:
+        - sh
+        - -c
+        - |
+          mkdir -p /config/data
+          [ -e /config/data/system.properties ] || cat > /config/data/system.properties <<EOF
+          db.mongo.local=false
+          db.mongo.uri=mongodb://127.0.0.1:27017/unifi
+          statdb.mongo.uri=mongodb://127.0.0.1:27017/unifi_stat
+          unifi.db.name=unifi
+          system_ip=10.1.1.107
+          EOF
+          chown -R 1000:1000 /config
+        volumeMounts:
+        - name: data
+          mountPath: /config
+          subPath: config
+      containers:
+      - image: lscr.io/linuxserver/unifi-network-application:10.6.109-ls155
+        name: unifi
+        env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        - name: TZ
+          value: "America/Chicago"
+        - name: MEM_LIMIT
+          value: "1024"
+        volumeMounts:
+        - name: data
+          mountPath: /config
+          subPath: config
+        ports:
+        - containerPort: 8443
+        - containerPort: 8080
+        - containerPort: 3478
+          protocol: UDP
+        - containerPort: 10001
+          protocol: UDP
+        - containerPort: 6789
+        resources:
+          limits:
+            cpu: "2"
+            memory: 2Gi
+            ephemeral-storage: 2Gi
+          requests:
+            cpu: 100m
+            memory: 768Mi
+      - image: mongo:8.0.19
+        name: mongo
+        args: ["--bind_ip", "127.0.0.1"]
+        volumeMounts:
+        - name: data
+          mountPath: /data/db
+          subPath: db
+        resources:
+          limits:
+            cpu: "1"
+            memory: 1Gi
+            ephemeral-storage: 1Gi
+          requests:
+            cpu: 50m
+            memory: 256Mi
+      securityContext:
+        fsGroup: 1000
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: unifi-data
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: unifi-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: rook-rbd

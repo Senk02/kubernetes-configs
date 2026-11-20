@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: unifi
+spec:
+  selector:
+    app: unifi
+  ports:
+  - name: https
+    protocol: TCP
+    port: 8443
+    targetPort: 8443
+  - name: inform
+    protocol: TCP
+    port: 8080
+    targetPort: 8080
+  - name: stun
+    protocol: UDP
+    port: 3478
+    targetPort: 3478
+  - name: discovery
+    protocol: UDP
+    port: 10001
+    targetPort: 10001
+  - name: speedtest
+    protocol: TCP
+    port: 6789
+    targetPort: 6789
+  type: LoadBalancer
+  loadBalancerIP: 10.1.1.107
