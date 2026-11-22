@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: puppy-trainer
+  labels:
+    app: puppy-trainer
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: puppy-trainer
+  template:
+    metadata:
+      labels:
+        app: puppy-trainer
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+      - name: puppy-trainer
+        image: registry.senk0.com/puppy-trainer:latest
+        imagePullPolicy: Always
+        env:
+        - name: DISCORD_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: puppy-trainer
+              key: password
+        - name: MODEL_DIR
+          value: /data/models
+        - name: DB_PATH
+          value: /data/puppy.db
+        - name: TTS_THREADS
+          value: "4"
+        volumeMounts:
+        - name: data
+          mountPath: /data
+        resources:
+          requests:
+            cpu: 250m
+            memory: 768Mi
+          limits:
+            cpu: "4"
+            memory: 2Gi
+            ephemeral-storage: 512Mi
+      terminationGracePeriodSeconds: 5
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: puppy-trainer
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: puppy-trainer
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: rook-rbd
+  resources:
+    requests:
+      storage: 2Gi
