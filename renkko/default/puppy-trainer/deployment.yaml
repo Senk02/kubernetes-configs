@@ -37,6 +37,8 @@ spec:
           value: /data/puppy.db
         - name: TTS_THREADS
           value: "4"
+        - name: VOICE_DEBUG
+          value: "1"
         volumeMounts:
         - name: data
           mountPath: /data
