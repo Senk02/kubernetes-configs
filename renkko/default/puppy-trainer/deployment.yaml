@@ -23,7 +23,7 @@ spec:
         fsGroup: 1000
       containers:
       - name: puppy-trainer
-        image: registry.senk0.com/puppy-trainer:latest
+        image: localhost:5000/puppy-trainer:latest
         imagePullPolicy: Always
         env:
         - name: DISCORD_TOKEN
