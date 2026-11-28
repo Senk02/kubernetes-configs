@@ -20,7 +20,7 @@ spec:
       nodeSelector:
         kubernetes.io/hostname: talos-yha-nr5
       containers:
-      - image: lscr.io/linuxserver/radarr:6.2.1
+      - image: lscr.io/linuxserver/radarr:7.0.3
         name: radarr
         env:
         - name: PUID
